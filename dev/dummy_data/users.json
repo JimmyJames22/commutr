@@ -1,0 +1,106 @@
+[
+  {
+    "name": "Bob Student",
+    "email": "bobby_boy22@milton.edu",
+    "gradYear": "2022",
+    "driver": true,
+    "carCapacity": "3",
+    "address1": "7 Don St, Boston, MA 02124"
+  },
+  {
+    "name": "Henry Student",
+    "email": "henry_cat22@milton.edu",
+    "gradYear": "2022",
+    "driver": true,
+    "carCapacity": "6",
+    "address1": "162 Monroe Rd, Quincy, MA 02169"
+  },
+  {
+    "name": "Hazel Student",
+    "email": "hazel_brown22@milton.edu",
+    "gradYear": "2022",
+    "driver": true,
+    "carCapacity": "5",
+    "address1": "79 Endicott St, Westwood, MA 02090"
+  },
+  {
+    "name": "Davey Student",
+    "email": "davey_don23@milton.edu",
+    "gradYear": "2023",
+    "driver": false,
+    "carCapacity": "0",
+    "address1": "19 Caton St, Boston, MA 02126"
+  },
+  {
+    "name": "Carly Student",
+    "email": "carly_carly24@milton.edu",
+    "gradYear": "2024",
+    "driver": false,
+    "carCapacity": "0",
+    "address1": "79 Gladeside Ave, Boston, MA 02126"
+  },
+  {
+    "name": "Katy Student",
+    "email": "katy_catman24@milton.edu",
+    "gradYear": "2024",
+    "driver": false,
+    "carCapacity": "0",
+    "address1": "36 Gallivan Blvd, Boston, MA 02124"
+  },
+  {
+    "name": "Frank Student",
+    "email": "frank_sinatra25@milton.edu",
+    "gradYear": "2025",
+    "driver": false,
+    "carCapacity": "0",
+    "address1": "114 Milton St, Boston, MA 02124"
+  },
+  {
+    "name": "Carrie Student",
+    "email": "carrie_underwood25@milton.edu",
+    "gradYear": "2025",
+    "driver": false,
+    "carCapacity": "0",
+    "address1": "1 Enterprise Dr, Quincy, MA 02171"
+  },
+  {
+    "name": "Steven Student",
+    "email": "steven_hawking24@milton.edu",
+    "gradYear": "2024",
+    "driver": false,
+    "carCapacity": "0",
+    "address1": "144 Wilson Ave, Quincy, MA 02170"
+  },
+  {
+    "name": "Samuel Student",
+    "email": "samuel_kaufman22@milton.edu",
+    "gradYear": "2022",
+    "driver": false,
+    "carCapacity": "0",
+    "address1": "99 Hillside Ave, Quincy, MA 02170"
+  },
+  {
+    "name": "Gunter Student",
+    "email": "gunsy_bunsy22@milton.edu",
+    "gradYear": "2022",
+    "driver": false,
+    "carCapacity": "0",
+    "address1": "1 Grogan Ave, Quincy, MA 02169"
+  },
+  {
+    "name": "David Student",
+    "email": "david_cloud24@milton.edu",
+    "gradYear": "2024",
+    "driver": false,
+    "carCapacity": "0",
+    "address1": "1 Grogan Ave, Quincy, MA 02169"
+  },
+  {
+    "name": "John Student",
+    "email": "john_adams24@milton.edu",
+    "gradYear": "2024",
+    "driver": false,
+    "carCapacity": "0",
+    "address1": "196 Ricciuti Dr, Quincy, MA 02169"
+  }
+]
