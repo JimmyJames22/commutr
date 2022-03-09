@@ -14,22 +14,24 @@ let milton_coords = [
 
 // initialize other variables
 let i;
+let student_coords = [];
+let driver_coords = [];
 let student_list = [];
 let driver_list = [];
 
 // function for making the data
 const makeUsers = () => {
   // calls to the looper function to make users
-  looper(350, 0.1, 0.4, student_list);
-  looper(125, 0.1, 0.5, driver_list);
+  looper(350, 0.1, 0.4, false, student_coords, student_list);
+  looper(125, 0.1, 0.5, true, driver_coords, driver_list);
 
   // print out user lists
-  console.log(student_list);
-  console.log(driver_list);
+  console.log(student_coords);
+  console.log(driver_coords);
 };
 
 // looper function
-const looper = (num, min, max, arr) => {
+const looper = (num, min, max, is_driver, arr, list) => {
   // initialize variables to save space
   let thta;
   let dist;
@@ -69,12 +71,12 @@ var myChart = new Chart(ctx, {
       },
       {
         label: "Drivers",
-        data: driver_list,
+        data: driver_coords,
         backgroundColor: "rgba(122, 122, 255, 1)",
       },
       {
         label: "Passengers",
-        data: student_list,
+        data: student_coords,
         backgroundColor: "rgba(122, 255, 122, 1)",
       },
     ],
