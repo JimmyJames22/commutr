@@ -1,4 +1,4 @@
-[
+let names = [
   "Aaren",
   "Aarika",
   "Abagael",
@@ -4944,5 +4944,7 @@
   "Zsa Zsa",
   "Zsazsa",
   "Zulema",
-  "Zuzana"
-]
+  "Zuzana",
+];
+
+exports.names = names;
