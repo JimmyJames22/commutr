@@ -83,9 +83,11 @@ const looper = (num, min, max, is_driver, arr, list) => {
     id_counter++;
     user.phone = Math.ceil(Math.random() * 9999999999);
     if (is_driver) {
+      user.is_driver = true;
       user.car_capacity = Math.ceil(Math.random() * 4);
       class_year = 2026 - Math.ceil(Math.random() * 3);
     } else {
+      user.is_driver = false;
       user.car_capacity = -1;
       class_year = 2026 - Math.ceil(Math.random() * 4);
     }
