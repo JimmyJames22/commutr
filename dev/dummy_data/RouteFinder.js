@@ -16,7 +16,7 @@ let dist;
 let i;
 let j;
 
-let routeTolerance = 2; // maximum of 115% original commute time for drivers
+let routeTolerance = 4; // maximum of % original commute time for drivers
 
 let userMap = [];
 
@@ -92,14 +92,17 @@ processDistances();
 // console.log(users[3].distanceToUid(4));
 
 function formRoutes(route) {
-  var repeat = false;
-  var last_stop = route.last_stop;
-  var student;
-  for (var x = 0; x < students.length; x++) {
+  let repeat = false;
+  let last_stop = route.last_stop;
+  let student;
+  for (let x = 0; x < students.length; x++) {
+    student = students[x];
     // check for repeat passengers
     // ! PROBLEM CODE -- ALWAYS ADDING THE SAME USER
-    for (var y = 0; y < route.stops.length; y++) {
-      if (x === route.stops[y]) {
+    for (let y = 0; y < route.stops.length; y++) {
+      console.log(student.uid + ", " + route.stops[y]);
+      if (student.uid == route.stops[y]) {
+        console.log("BREAK");
         repeat = true;
         break;
       }
@@ -109,23 +112,22 @@ function formRoutes(route) {
       continue;
     }
 
-    student = students[x];
     if (
       route.max_dist >
       last_stop.distanceToUid(student.uid) +
         route.last_stop_dist +
         student.to_school
     ) {
-      console.log(
-        "Calling formRoutes: " +
-          route.stops +
-          ", " +
-          route.max_dist +
-          ", " +
-          (route.last_stop_dist +
-            route.last_stop.distanceToUid(student.uid) +
-            student.to_school)
-      );
+      // console.log(
+      //   "Calling formRoutes: " +
+      //     route.stops +
+      //     ", " +
+      //     route.max_dist +
+      //     ", " +
+      //     (route.last_stop_dist +
+      //       route.last_stop.distanceToUid(student.uid) +
+      //       student.to_school)
+      // );
       route.last_stop_dist =
         last_stop.distanceToUid(student.uid) + route.last_stop_dist;
       route.total_dist =
@@ -180,6 +182,8 @@ initRoutes();
 
 /*
   *- Start by looping through all drivers and checking which users have a route less that adds 15% or less distance to their route to school
-  ?- If there is, store the potential route and check if there are any other passengers along the way that can be picked up and add less than 15% of the distance
-   - Store the potential routes and return the one that picks up the most passengers (1) and has the least increase in distance for the driver (2)
-*/
+  * If there is, store the potential route and check if there are any other passengers along the way that can be picked up and add less than 15% of the distance
+  * - Store the potential routes and return the one that picks up the most passengers (1) and has the least increase in distance for the driver (2)
+  = Check to make sure code works
+  - Build a system for easily viewing the route engine output
+  */
