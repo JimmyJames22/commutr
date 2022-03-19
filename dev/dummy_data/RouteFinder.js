@@ -16,7 +16,9 @@ let dist;
 let i;
 let j;
 
-let routeTolerance = 4; // maximum of % original commute time for drivers
+let route_dist_tolerance = 4; // maximum multiple of original commute time for drivers
+let route_stops_weight = 0.5;
+let route_dist_weight = 0.5;
 
 let userMap = [];
 
@@ -36,7 +38,10 @@ class User {
     this.to_school = Math.sqrt(
       Math.pow(this.x - school_data.x, 2) + Math.pow(this.y - school_data.y, 2)
     );
-    this.route = [];
+    if (this.is_driver) {
+      this.routes = [];
+      this.best_route;
+    }
   }
 
   distanceToUser(user) {
@@ -87,22 +92,14 @@ function processDistances() {
 
 processDistances();
 
-// console.log(users);
-// console.log(userMap);
-// console.log(users[3].distanceToUid(4));
-
 function formRoutes(route) {
   let repeat = false;
   let last_stop = route.last_stop;
   let student;
   for (let x = 0; x < students.length; x++) {
     student = students[x];
-    // check for repeat passengers
-    // ! PROBLEM CODE -- ALWAYS ADDING THE SAME USER
     for (let y = 0; y < route.stops.length; y++) {
-      console.log(student.uid + ", " + route.stops[y]);
       if (student.uid == route.stops[y]) {
-        console.log("BREAK");
         repeat = true;
         break;
       }
@@ -118,16 +115,6 @@ function formRoutes(route) {
         route.last_stop_dist +
         student.to_school
     ) {
-      // console.log(
-      //   "Calling formRoutes: " +
-      //     route.stops +
-      //     ", " +
-      //     route.max_dist +
-      //     ", " +
-      //     (route.last_stop_dist +
-      //       route.last_stop.distanceToUid(student.uid) +
-      //       student.to_school)
-      // );
       route.last_stop_dist =
         last_stop.distanceToUid(student.uid) + route.last_stop_dist;
       route.total_dist =
@@ -138,7 +125,6 @@ function formRoutes(route) {
       route.stops.push(student.uid);
       formRoutes(route);
     } else {
-      console.log("Route found: " + route.stops);
       return route;
     }
   }
@@ -152,7 +138,7 @@ function initRoutes() {
   // loop through drivers
   for (i = 0; i < drivers.length; i++) {
     driver = drivers[i];
-    max_driver_dist = driver.to_school * routeTolerance; // maximum distance for a driver
+    max_driver_dist = driver.to_school * route_dist_tolerance; // maximum distance for a driver
     // check each student per driver
     for (j = 0; j < students.length - 1; j++) {
       student = students[j];
@@ -180,10 +166,77 @@ initRoutes();
 
 // console.log(routeList);
 
+// for (i = 0; i < routeList.length; i++) {
+//   console.log(routeList[i].stops);
+// }
+
 /*
   *- Start by looping through all drivers and checking which users have a route less that adds 15% or less distance to their route to school
   * If there is, store the potential route and check if there are any other passengers along the way that can be picked up and add less than 15% of the distance
   * - Store the potential routes and return the one that picks up the most passengers (1) and has the least increase in distance for the driver (2)
   = Check to make sure code works
   - Build a system for easily viewing the route engine output
-  */
+*/
+
+// assigns the formed routes to drivers
+function storeRoutes() {
+  for (i = 0; i < routeList.length; i++) {
+    // the first step is the driver id, so the routes can be saved using that
+    users[routeList[i].driver].routes.push(routeList[i]);
+  }
+}
+
+storeRoutes();
+
+// prints out the routes for each driver
+function printRoutes() {
+  let driver;
+  // loop through each driver
+  for (i = 0; i < drivers.length; i++) {
+    driver = drivers[i];
+    console.log("----- DRIVER " + i + " -----");
+    // loop through each route
+    for (j = 0; j < driver.routes.length; j++) {
+      // print out the array the .apply and null are needed to make it print on one line
+      console.log.apply(null, driver.routes[j].stops);
+    }
+    console.log();
+  }
+}
+
+// printRoutes();
+
+function chooseBestRoutes() {
+  let driver;
+  let best_index;
+  let best_rating;
+  let dummy_rating;
+  for (i = 0; i < drivers.length; i++) {
+    driver = drivers[i];
+    best_index = 0;
+    best_rating =
+      driver.routes[0].stops.length * route_stops_weight +
+      driver.routes[0].total_dist * route_dist_weight * -1;
+    for (j = 1; j < driver.routes.legnth; j++) {
+      let dummy_rating =
+        drievr.routes[j].stops.length * route_stops_weight +
+        driver.routes[j].total_dist * route_dist_weight;
+      if (dummy_rating > best_rating) {
+        best_rating = dummy_rating;
+        best_index = j;
+      }
+    }
+    driver.best_route = driver.routes[best_index].stops;
+  }
+}
+
+chooseBestRoutes();
+
+function printBestRoutes() {
+  for (i = 0; i < drivers.length; i++) {
+    console.log("Driver " + i);
+    console.log.apply(null, drivers[i].best_route);
+  }
+}
+
+printBestRoutes();
