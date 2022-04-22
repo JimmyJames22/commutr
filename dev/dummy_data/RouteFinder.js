@@ -1,5 +1,6 @@
 const fs = require("fs");
 const { format } = require("path");
+const { stringify } = require("querystring");
 
 let student_raw = fs.readFileSync("./data/student.json");
 let driver_raw = fs.readFileSync("./data/driver.json");
@@ -44,12 +45,6 @@ class User {
     }
   }
 
-  distanceToUser(user) {
-    return Math.sqrt(
-      Math.pow(this.x - user.x, 2) + Math.pow(this.y - user.y, 2)
-    );
-  }
-
   distanceToUid(uid) {
     let map;
     for (let k = 0; k < userMap.length; k++) {
@@ -84,7 +79,7 @@ function processDistances() {
       userMap.push({
         u1: users[k].uid,
         u2: users[l].uid,
-        distance: users[k].distanceToUser(users[l]),
+        distance: users[k].distanceToUid(users[l].uid),
       });
     }
   }
@@ -164,20 +159,6 @@ function initRoutes() {
 
 initRoutes();
 
-// console.log(routeList);
-
-// for (i = 0; i < routeList.length; i++) {
-//   console.log(routeList[i].stops);
-// }
-
-/*
-  *- Start by looping through all drivers and checking which users have a route less that adds 15% or less distance to their route to school
-  * If there is, store the potential route and check if there are any other passengers along the way that can be picked up and add less than 15% of the distance
-  * - Store the potential routes and return the one that picks up the most passengers (1) and has the least increase in distance for the driver (2)
-  = Check to make sure code works
-  - Build a system for easily viewing the route engine output
-*/
-
 // assigns the formed routes to drivers
 function storeRoutes() {
   for (i = 0; i < routeList.length; i++) {
@@ -226,7 +207,7 @@ function chooseBestRoutes() {
         best_index = j;
       }
     }
-    driver.best_route = driver.routes[best_index].stops;
+    driver.best_route = driver.routes[best_index];
   }
 }
 
@@ -235,8 +216,28 @@ chooseBestRoutes();
 function printBestRoutes() {
   for (i = 0; i < drivers.length; i++) {
     console.log("Driver " + i);
-    console.log.apply(null, drivers[i].best_route);
+    console.log.apply(null, drivers[i].best_route.stops);
   }
 }
 
 printBestRoutes();
+
+function saveNewJson() {
+  let student_json = JSON.stringify(students);
+  let drivers_json = JSON.stringify(drivers);
+  fs.writeFile("./final_routes/student.json", student_json, "utf8", () => {
+    console.log("exported");
+  });
+  fs.writeFile("./final_routes/driver.json", drivers_json, "utf8", () => {
+    console.log("exported");
+  });
+}
+
+saveNewJson();
+
+//! TO-DO
+//? Make it possible to view the formed routes -- I'd like to make sure the code works
+//  Adjust route-picking algorythm so that the same user cannot be picked up by two different drivers
+//   - To do that, all the routes need to be compared at the same time, and the most efficient "net" of routes needs to be found
+//   - Maybe I could loop through all the posible routes with unique stops and maximize the total number of users picked up by drivers
+//   -
