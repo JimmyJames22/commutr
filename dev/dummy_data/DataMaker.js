@@ -34,15 +34,17 @@ let id_counter = 0;
 
 const len_names = names.length;
 
+const logArr = (arr) => {
+  for (i = 0; i < arr.length; i++) {
+    console.log(arr[i]);
+  }
+};
+
 // function for making the data
 const makeUsers = () => {
   // calls to the looper function to make users
   looper(num_drivers, 0.1, 0.5, true, driver_coords, driver_list);
   looper(num_passengers, 0.1, 0.4, false, student_coords, student_list);
-
-  // print out user lists
-  // console.log(driver_list);
-  // console.log(student_list);
 };
 
 const chooseName = () => {

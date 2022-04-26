@@ -13,7 +13,7 @@ let school_data = JSON.parse(school_raw);
 let users = [];
 let drivers = [];
 let students = [];
-let dist;
+
 let i;
 let j;
 
@@ -22,9 +22,14 @@ let route_stops_weight = 0.5;
 let route_dist_weight = 0.5;
 
 let userMap = [];
-
 let routeList = [];
+let bestRoutesList = [];
 
+const logArr = (arr) => {
+  for (i = 0; i < arr.length; i++) {
+    console.log(arr[i]);
+  }
+};
 class User {
   constructor(user) {
     this.x = user.x;
@@ -45,7 +50,15 @@ class User {
     }
   }
 
+  distanceToUser(user) {
+    // necessary to construct userMap
+    return Math.sqrt(
+      Math.pow(this.x - user.x, 2) + Math.pow(this.y - user.y, 2)
+    );
+  }
+
   distanceToUid(uid) {
+    // calls from userMap
     let map;
     for (let k = 0; k < userMap.length; k++) {
       map = userMap[k];
@@ -79,7 +92,7 @@ function processDistances() {
       userMap.push({
         u1: users[k].uid,
         u2: users[l].uid,
-        distance: users[k].distanceToUid(users[l].uid),
+        distance: users[k].distanceToUser(users[l]),
       });
     }
   }
@@ -131,6 +144,7 @@ function initRoutes() {
   let student;
   let max_driver_dist;
   // loop through drivers
+
   for (i = 0; i < drivers.length; i++) {
     driver = drivers[i];
     max_driver_dist = driver.to_school * route_dist_tolerance; // maximum distance for a driver
@@ -185,42 +199,114 @@ function printRoutes() {
   }
 }
 
-// printRoutes();
+function bestRoutes() {
+  let layer = 0;
+  let route;
 
-function chooseBestRoutes() {
-  let driver;
-  let best_index;
-  let best_rating;
-  let dummy_rating;
-  for (i = 0; i < drivers.length; i++) {
-    driver = drivers[i];
-    best_index = 0;
-    best_rating =
-      driver.routes[0].stops.length * route_stops_weight +
-      driver.routes[0].total_dist * route_dist_weight * -1;
-    for (j = 1; j < driver.routes.legnth; j++) {
-      let dummy_rating =
-        drievr.routes[j].stops.length * route_stops_weight +
-        driver.routes[j].total_dist * route_dist_weight;
-      if (dummy_rating > best_rating) {
-        best_rating = dummy_rating;
-        best_index = j;
+  for (i = 0; i < drivers[layer].routes.length; i++) {
+    route = drivers[layer].routes[i];
+    bestRoutesRecursion(
+      layer + 1,
+      [route].slice(),
+      route.max_dist - route.total_dist,
+      route.stops.slice()
+    );
+  }
+}
+
+function bestRoutesRecursion(layer, driverRoutes, efficiency, passengers) {
+  let repeat = false;
+  let route;
+
+  for (let j = 0; j < drivers[layer].routes.length; j++) {
+    route = drivers[layer].routes[j];
+
+    // check for repeat passengers
+    for (let l = 0; l < passengers.length; l++) {
+      for (let k = 0; k < route.stops.length; k++) {
+        if (passengers[l] == route.stops[k]) {
+          repeat = true;
+          break;
+        }
+      }
+      if (repeat) {
+        break;
       }
     }
-    driver.best_route = driver.routes[best_index];
+    if (repeat) {
+      repeat = false;
+      continue;
+    }
+    if (layer < drivers.length - 1) {
+      bestRoutesRecursion(
+        layer + 1,
+        driverRoutes.concat(route),
+        efficiency + (route.max_dist - route.total_dist),
+        passengers.concat(route.stops)
+      );
+    } else {
+      bestRoutesList.push({
+        routes: driverRoutes.concat(route),
+        efficiency: efficiency + (route.max_dist - route.total_dist),
+        best: false,
+      });
+    }
+  }
+}
+
+bestRoutes();
+
+function chooseBestRoutes() {
+  let bestIndex = 0;
+  let bestRating = bestRoutesList[0].efficiency;
+
+  for (i = 1; i < bestRoutesList.length; i++) {
+    if (bestRating < bestRoutesList[i].efficiency) {
+      bestRoutesList[bestIndex].best = false;
+      bestIndex = i;
+      bestRoutesList[i].best = true;
+      bestRating = bestRoutesList[i].efficiency;
+    }
   }
 }
 
 chooseBestRoutes();
 
 function printBestRoutes() {
-  for (i = 0; i < drivers.length; i++) {
-    console.log("Driver " + i);
-    console.log.apply(null, drivers[i].best_route.stops);
+  let bestIndex;
+
+  for (i = 0; i < bestRoutesList.length; i++) {
+    // printRouteArrangement(bestRoutesList[i]);
+    if (bestRoutesList[i].best) {
+      bestIndex = i;
+    }
   }
+
+  printRouteArrangement(bestRoutesList[bestIndex], bestIndex);
+  saveBestRoutes(bestRoutesList[bestIndex]);
+}
+
+function printRouteArrangement(bestRoutes, num) {
+  if (bestRoutes.best) {
+    console.log("--- ARRANGEMENT " + (num + 1) + " -- BEST ---");
+  } else {
+    console.log("--- ARRANGEMENT " + (num + 1) + " ---");
+  }
+  for (let j = 0; j < bestRoutes.routes.length; j++) {
+    route = bestRoutes.routes[j];
+    console.log("Driver " + (j + 1) + ": " + route.stops);
+  }
+  console.log("Efficiency " + bestRoutes.efficiency);
+  console.log();
 }
 
 printBestRoutes();
+
+function saveBestRoutes(bestRoutes) {
+  for (i = 0; i < drivers.length; i++) {
+    drivers[i].bestRoute = bestRoutes.routes[i];
+  }
+}
 
 function saveNewJson() {
   let student_json = JSON.stringify(students);
@@ -234,10 +320,3 @@ function saveNewJson() {
 }
 
 saveNewJson();
-
-//! TO-DO
-//? Make it possible to view the formed routes -- I'd like to make sure the code works
-//  Adjust route-picking algorythm so that the same user cannot be picked up by two different drivers
-//   - To do that, all the routes need to be compared at the same time, and the most efficient "net" of routes needs to be found
-//   - Maybe I could loop through all the posible routes with unique stops and maximize the total number of users picked up by drivers
-//   -
