@@ -115,6 +115,7 @@ const looper = (num, min, max, is_driver, arr, list) => {
       aft_mins = aft_mins.padStart(2, 0);
     }
     user.departure_time = aft_hrs + ":" + aft_mins;
+
     if (is_driver) {
       user.is_driver = true;
       user.car_capacity = Math.ceil(Math.random() * 3) + 2;
