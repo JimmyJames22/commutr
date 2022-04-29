@@ -1,3 +1,5 @@
+// ! Instead of having one list of potential routes including every stop and the driver, maybe the routes should be lists of stops that drivers are assigned to if they're able to drive it. Could potentially save a lot of computing power and/or RAM storage.
+
 const fs = require("fs");
 const { format } = require("path");
 const { stringify } = require("querystring");
@@ -17,7 +19,7 @@ let students = [];
 let i;
 let j;
 
-let route_dist_tolerance = 4; // maximum multiple of original commute time for drivers
+let route_dist_tolerance = 1.5; // maximum multiple of original commute time for drivers
 let route_stops_weight = 0.5;
 let route_dist_weight = 0.5;
 
@@ -45,7 +47,27 @@ class User {
       Math.pow(this.x - school_data.x, 2) + Math.pow(this.y - school_data.y, 2)
     );
     if (this.is_driver) {
-      this.routes = [];
+      this.routes = [
+        {
+          driver: this.uid,
+          max_dist: this.to_school * route_dist_tolerance,
+          last_stop: {
+            x: this.x,
+            y: this.y,
+            firstname: this.firstname,
+            lastname: this.lastname,
+            class_year: this.class_year,
+            email: this.email,
+            phone: this.phone,
+            uid: this.uid,
+            is_driver: true,
+            to_school: this.to_school,
+          },
+          last_stop_dist: this.to_school,
+          total_dist: this.to_school,
+          stops: [this.uid],
+        },
+      ];
       this.best_route;
     }
   }
@@ -102,10 +124,13 @@ processDistances();
 
 function formRoutes(route) {
   let repeat = false;
-  let last_stop = route.last_stop;
   let student;
+  let route_found = true;
+  let last_stop = route.last_stop;
+
   for (let x = 0; x < students.length; x++) {
     student = students[x];
+
     for (let y = 0; y < route.stops.length; y++) {
       if (student.uid == route.stops[y]) {
         repeat = true;
@@ -118,23 +143,32 @@ function formRoutes(route) {
     }
 
     if (
-      route.max_dist >
-      last_stop.distanceToUid(student.uid) +
+      route.max_dist <
+      last_stop.distanceToUid(students[x].uid) +
         route.last_stop_dist +
-        student.to_school
+        students[x].to_school
     ) {
-      route.last_stop_dist =
-        last_stop.distanceToUid(student.uid) + route.last_stop_dist;
-      route.total_dist =
+      route_found = false;
+      continue;
+    }
+
+    formRoutes({
+      driver: route.driver,
+      max_dist: route.max_dist,
+      last_stop: student,
+      last_stop_dist:
+        last_stop.distanceToUid(student.uid) + route.last_stop_dist,
+      total_dist:
         last_stop.distanceToUid(student.uid) +
         route.last_stop_dist +
-        student.to_school;
-      route.last_stop = student;
-      route.stops.push(student.uid);
-      formRoutes(route);
-    } else {
-      return route;
-    }
+        student.to_school,
+      stops: route.stops.concat([student.uid]),
+    });
+  }
+
+  if (!route_found) {
+    routeList.push(route);
+    return;
   }
 }
 
@@ -145,11 +179,12 @@ function initRoutes() {
   let max_driver_dist;
   // loop through drivers
 
-  for (i = 0; i < drivers.length; i++) {
+  for (let i = 0; i < drivers.length; i++) {
+    console.log("Forming routes for driver " + i);
     driver = drivers[i];
     max_driver_dist = driver.to_school * route_dist_tolerance; // maximum distance for a driver
     // check each student per driver
-    for (j = 0; j < students.length - 1; j++) {
+    for (let j = 0; j < students.length; j++) {
       student = students[j];
       // check if the route with the student is within the max driver dist
       if (
@@ -165,7 +200,7 @@ function initRoutes() {
           total_dist: driver.distanceToUid(student.uid) + student.to_school,
           stops: [driver.uid, student.uid],
         };
-        routeList.push(formRoutes(route)); // call recursive method
+        formRoutes(route); // call recursive method
       }
     }
   }
@@ -199,7 +234,7 @@ function printRoutes() {
   }
 }
 
-function bestRoutes() {
+function findBestRoutes() {
   let layer = 0;
   let route;
 
@@ -208,7 +243,8 @@ function bestRoutes() {
     bestRoutesRecursion(
       layer + 1,
       [route].slice(),
-      route.max_dist - route.total_dist,
+      (route.max_dist - route.total_dist) * route_dist_weight +
+        route.stops.length * route_stops_weight,
       route.stops.slice()
     );
   }
@@ -247,14 +283,17 @@ function bestRoutesRecursion(layer, driverRoutes, efficiency, passengers) {
     } else {
       bestRoutesList.push({
         routes: driverRoutes.concat(route),
-        efficiency: efficiency + (route.max_dist - route.total_dist),
+        efficiency:
+          efficiency +
+          (route.max_dist - route.total_dist) * route_dist_weight +
+          route.stops.length * route_stops_weight,
         best: false,
       });
     }
   }
 }
 
-bestRoutes();
+findBestRoutes();
 
 function chooseBestRoutes() {
   let bestIndex = 0;
@@ -262,12 +301,12 @@ function chooseBestRoutes() {
 
   for (i = 1; i < bestRoutesList.length; i++) {
     if (bestRating < bestRoutesList[i].efficiency) {
-      bestRoutesList[bestIndex].best = false;
       bestIndex = i;
-      bestRoutesList[i].best = true;
       bestRating = bestRoutesList[i].efficiency;
     }
   }
+
+  bestRoutesList[bestIndex].best = true;
 }
 
 chooseBestRoutes();
@@ -281,6 +320,8 @@ function printBestRoutes() {
       bestIndex = i;
     }
   }
+
+  console.log(bestRoutesList);
 
   printRouteArrangement(bestRoutesList[bestIndex], bestIndex);
   saveBestRoutes(bestRoutesList[bestIndex]);
@@ -303,8 +344,22 @@ function printRouteArrangement(bestRoutes, num) {
 printBestRoutes();
 
 function saveBestRoutes(bestRoutes) {
+  let new_stops;
+  let route;
+  let stop;
   for (i = 0; i < drivers.length; i++) {
+    new_stops = [];
     drivers[i].bestRoute = bestRoutes.routes[i];
+    route = drivers[i].bestRoute;
+    for (j = 0; j < route.stops.length; j++) {
+      stop = users[route.stops[j]];
+      new_stops.push({
+        x: stop.x,
+        y: stop.y,
+      });
+    }
+    console.log(new_stops);
+    route.stops = new_stops;
   }
 }
 
