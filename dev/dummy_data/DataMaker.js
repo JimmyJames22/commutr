@@ -11,6 +11,12 @@ const x = -71.06995481869149;
 const num_drivers = 5;
 const num_passengers = 20;
 
+// parameters for arrival/leaving times
+const min_mrn_hrs = 7;
+const mrn_hr_span = 3;
+const min_aft_hrs = 15;
+const aft_hr_span = 4;
+
 const milton_coords = [
   {
     x: x,
@@ -31,6 +37,11 @@ let driver_coords = [];
 let student_list = [];
 let driver_list = [];
 let id_counter = 0;
+
+let mrn_hrs;
+let mrn_mins;
+let aft_hrs;
+let aft_mins;
 
 const len_names = names.length;
 
@@ -84,9 +95,29 @@ const looper = (num, min, max, is_driver, arr, list) => {
     user.uid = id_counter;
     id_counter++;
     user.phone = Math.ceil(Math.random() * 9999999999);
+
+    // set arrival and departure times
+    mrn_hrs = String(parseInt(Math.random() * mrn_hr_span) + min_mrn_hrs);
+    mrn_mins = String(parseInt(Math.random() * 59));
+    if (mrn_hrs.length == 1) {
+      mrn_hrs = mrn_hrs.padStart(2, 0);
+    }
+    if (mrn_mins.length == 1) {
+      mrn_mins = mrn_mins.padStart(2, 0);
+    }
+    user.arrival_time = mrn_hrs + ":" + mrn_mins;
+    aft_hrs = String(parseInt(Math.random() * aft_hr_span) + min_aft_hrs);
+    aft_mins = String(parseInt(Math.random() * 59));
+    if (aft_hrs.length == 1) {
+      aft_hrs = aft_hrs.padStart(2, 0);
+    }
+    if (aft_mins.length == 1) {
+      aft_mins = aft_mins.padStart(2, 0);
+    }
+    user.departure_time = aft_hrs + ":" + aft_mins;
     if (is_driver) {
       user.is_driver = true;
-      user.car_capacity = Math.ceil(Math.random() * 4);
+      user.car_capacity = Math.ceil(Math.random() * 3) + 2;
       class_year = 2026 - Math.ceil(Math.random() * 3);
     } else {
       user.is_driver = false;
@@ -124,40 +155,3 @@ const writeData = () => {
 };
 
 writeData();
-
-// display data to ChartJS scatter plot
-// var myChart = new Chart(ctx, {
-//   type: "scatter",
-//   data: {
-//     // data to be displayed
-//     datasets: [
-//       {
-//         label: "Milton Academy",
-//         data: milton_coords,
-//         backgroundColor: "rgba(255, 122, 122, 1)",
-//       },
-//       {
-//         label: "Drivers",
-//         data: driver_coords,
-//         backgroundColor: "rgba(122, 122, 255, 1)",
-//       },
-//       {
-//         label: "Passengers",
-//         data: student_coords,
-//         backgroundColor: "rgba(122, 255, 122, 1)",
-//       },
-//     ],
-//   },
-//   options: {
-//     responsive: true,
-//     plugins: {
-//       legend: {
-//         position: "top",
-//       },
-//       title: {
-//         display: true,
-//         text: "Chart.js Scatter Chart",
-//       },
-//     },
-//   },
-// });

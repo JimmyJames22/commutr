@@ -18,7 +18,7 @@ let best_route;
 let dataset_list = [];
 
 dataset_list.push({
-  label: "Milton Academy",
+  labels: ["Milton Academy"],
   data: milton_coords,
   backgroundColor: "rgba(255, 122, 122, 1)",
   pointRadius: 5,

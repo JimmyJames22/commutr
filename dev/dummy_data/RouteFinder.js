@@ -1,8 +1,7 @@
-// ! Instead of having one list of potential routes including every stop and the driver, maybe the routes should be lists of stops that drivers are assigned to if they're able to drive it. Could potentially save a lot of computing power and/or RAM storage.
-
 const fs = require("fs");
 const { format } = require("path");
 const { stringify } = require("querystring");
+const Time = require("./Time.js");
 
 let student_raw = fs.readFileSync("./data/student.json");
 let driver_raw = fs.readFileSync("./data/driver.json");
@@ -20,8 +19,10 @@ let i;
 let j;
 
 let route_dist_tolerance = 1.5; // maximum multiple of original commute time for drivers
-let route_stops_weight = 0.5;
+
+let route_stops_weight = 4;
 let route_dist_weight = 0.5;
+let route_time_weight = 1;
 
 let userMap = [];
 let routeList = [];
@@ -46,7 +47,11 @@ class User {
     this.to_school = Math.sqrt(
       Math.pow(this.x - school_data.x, 2) + Math.pow(this.y - school_data.y, 2)
     );
+    this.arrival_time = new Time(user.arrival_time);
+    this.departure_time = new Time(user.departure_time);
+
     if (this.is_driver) {
+      this.max_passengers = user.car_capacity;
       this.routes = [
         {
           driver: this.uid,
@@ -128,45 +133,51 @@ function formRoutes(route) {
   let route_found = true;
   let last_stop = route.last_stop;
 
-  for (let x = 0; x < students.length; x++) {
-    student = students[x];
+  if (route.stops.length < route.max_stops) {
+    for (let x = 0; x < students.length; x++) {
+      student = students[x];
 
-    for (let y = 0; y < route.stops.length; y++) {
-      if (student.uid == route.stops[y]) {
-        repeat = true;
-        break;
+      for (let y = 0; y < route.stops.length; y++) {
+        if (student.uid == route.stops[y]) {
+          repeat = true;
+          break;
+        }
       }
-    }
-    if (repeat) {
-      repeat = false;
-      continue;
+      if (repeat) {
+        repeat = false;
+        continue;
+      }
+
+      if (
+        route.max_dist <
+        last_stop.distanceToUid(students[x].uid) +
+          route.last_stop_dist +
+          students[x].to_school
+      ) {
+        route_found = false;
+        continue;
+      }
+
+      formRoutes({
+        driver: route.driver,
+        max_dist: route.max_dist,
+        max_stops: route.max_stops,
+        last_stop: student,
+        last_stop_dist:
+          last_stop.distanceToUid(student.uid) + route.last_stop_dist,
+        total_dist:
+          last_stop.distanceToUid(student.uid) +
+          route.last_stop_dist +
+          student.to_school,
+        stops: route.stops.concat([student.uid]),
+      });
     }
 
-    if (
-      route.max_dist <
-      last_stop.distanceToUid(students[x].uid) +
-        route.last_stop_dist +
-        students[x].to_school
-    ) {
-      route_found = false;
-      continue;
+    if (!route_found) {
+      routeList.push(route);
+      return;
     }
-
-    formRoutes({
-      driver: route.driver,
-      max_dist: route.max_dist,
-      last_stop: student,
-      last_stop_dist:
-        last_stop.distanceToUid(student.uid) + route.last_stop_dist,
-      total_dist:
-        last_stop.distanceToUid(student.uid) +
-        route.last_stop_dist +
-        student.to_school,
-      stops: route.stops.concat([student.uid]),
-    });
-  }
-
-  if (!route_found) {
+  } else {
     routeList.push(route);
     return;
   }
@@ -194,6 +205,7 @@ function initRoutes() {
         // initialize a route object
         let route = {
           driver: driver.uid,
+          max_stops: driver.max_passengers,
           max_dist: max_driver_dist,
           last_stop: student,
           last_stop_dist: driver.distanceToUid(student.uid),
@@ -239,6 +251,7 @@ function findBestRoutes() {
   let route;
 
   for (i = 0; i < drivers[layer].routes.length; i++) {
+    console.log(drivers[layer].routes.length - i);
     route = drivers[layer].routes[i];
     bestRoutesRecursion(
       layer + 1,
@@ -277,7 +290,9 @@ function bestRoutesRecursion(layer, driverRoutes, efficiency, passengers) {
       bestRoutesRecursion(
         layer + 1,
         driverRoutes.concat(route),
-        efficiency + (route.max_dist - route.total_dist),
+        efficiency +
+          (route.max_dist - route.total_dist) * route_dist_weight +
+          route.stops.length * route_stops_weight,
         passengers.concat(route.stops)
       );
     } else {
