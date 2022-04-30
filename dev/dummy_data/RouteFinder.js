@@ -20,9 +20,11 @@ let j;
 
 let route_dist_tolerance = 1.5; // maximum multiple of original commute time for drivers
 
-let route_stops_weight = 4;
-let route_dist_weight = 0.5;
-let route_time_weight = 1;
+// weights need to be adjusted to help normalize
+let route_stops_weight = 15;
+let route_dist_weight = 20;
+let arrival_time_weight = 0.01;
+let departure_time_weight = 0.01;
 
 let userMap = [];
 let routeList = [];
@@ -67,10 +69,14 @@ class User {
             uid: this.uid,
             is_driver: true,
             to_school: this.to_school,
+            arrival_time: this.arrival_time,
+            departure_time: this.departure_time,
           },
           last_stop_dist: this.to_school,
           total_dist: this.to_school,
           stops: [this.uid],
+          arrival_time: 100,
+          departure_time: 100,
         },
       ];
       this.best_route;
@@ -125,6 +131,49 @@ function processDistances() {
   }
 }
 
+function arrivalTimeAAD(route) {
+  let time_list = [];
+  let time_ave = 0;
+  let time_aad = 0;
+
+  for (let i = 0; i < route.stops.length; i++) {
+    let time = users[route.stops[i]].arrival_time.total_mins;
+    time_list.push(time);
+    time_ave += time;
+  }
+
+  time_ave /= route.stops.length;
+
+  for (let i = 0; i < route.stops.length; i++) {
+    time_aad += Math.abs(time_list[i] - time_ave);
+  }
+
+  time_aad /= route.stops.length;
+
+  return time_aad;
+}
+
+function departureTimeAAD(route) {
+  let time_list = [];
+  let time_ave = 0;
+  let time_aad = 0;
+
+  for (let i = 0; i < route.stops.length; i++) {
+    let time = users[route.stops[i]].departure_time.total_mins;
+    time_list.push(time);
+    time_ave += time;
+  }
+
+  time_ave /= route.stops.length;
+
+  for (let i = 0; i < route.stops.length; i++) {
+    time_aad += Math.abs(time_list[i] - time_ave);
+  }
+
+  time_aad /= route.stops.length;
+  return time_aad;
+}
+
 processDistances();
 
 function formRoutes(route) {
@@ -174,10 +223,14 @@ function formRoutes(route) {
     }
 
     if (!route_found) {
+      route.arrival_time = arrivalTimeAAD(route);
+      route.departure_time = departureTimeAAD(route);
       routeList.push(route);
       return;
     }
   } else {
+    route.arrival_time = arrivalTimeAAD(route);
+    route.departure_time = departureTimeAAD(route);
     routeList.push(route);
     return;
   }
@@ -251,16 +304,27 @@ function findBestRoutes() {
   let route;
 
   for (i = 0; i < drivers[layer].routes.length; i++) {
-    console.log(drivers[layer].routes.length - i);
     route = drivers[layer].routes[i];
+    console.log(
+      "EFFFF " +
+        (route.max_dist - route.total_dist) * route_dist_weight +
+        route.stops.length * route_stops_weight +
+        route.arrival_time * arrival_time_weight +
+        route.departure_time * departure_time_weight
+    );
     bestRoutesRecursion(
       layer + 1,
       [route].slice(),
-      (route.max_dist - route.total_dist) * route_dist_weight +
-        route.stops.length * route_stops_weight,
+      parseFloat(
+        (route.max_dist - route.total_dist) * route_dist_weight +
+          route.stops.length * route_stops_weight -
+          (route.arrival_time * arrival_time_weight +
+            route.departure_time * departure_time_weight)
+      ),
       route.stops.slice()
     );
   }
+  console.log(bestRoutesList);
 }
 
 function bestRoutesRecursion(layer, driverRoutes, efficiency, passengers) {
@@ -290,18 +354,26 @@ function bestRoutesRecursion(layer, driverRoutes, efficiency, passengers) {
       bestRoutesRecursion(
         layer + 1,
         driverRoutes.concat(route),
-        efficiency +
-          (route.max_dist - route.total_dist) * route_dist_weight +
-          route.stops.length * route_stops_weight,
+        parseFloat(
+          efficiency +
+            (route.max_dist - route.total_dist) * route_dist_weight +
+            route.stops.length * route_stops_weight -
+            (route.arrival_time * arrival_time_weight +
+              route.departure_time * departure_time_weight)
+        ),
         passengers.concat(route.stops)
       );
     } else {
+      console.log("depp " + route.departure_time);
       bestRoutesList.push({
         routes: driverRoutes.concat(route),
-        efficiency:
+        efficiency: parseFloat(
           efficiency +
-          (route.max_dist - route.total_dist) * route_dist_weight +
-          route.stops.length * route_stops_weight,
+            (route.max_dist - route.total_dist) * route_dist_weight +
+            route.stops.length * route_stops_weight -
+            (route.arrival_time * arrival_time_weight +
+              route.departure_time * departure_time_weight)
+        ),
         best: false,
       });
     }
@@ -335,8 +407,6 @@ function printBestRoutes() {
       bestIndex = i;
     }
   }
-
-  console.log(bestRoutesList);
 
   printRouteArrangement(bestRoutesList[bestIndex], bestIndex);
   saveBestRoutes(bestRoutesList[bestIndex]);

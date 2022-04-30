@@ -28,10 +28,14 @@ drivers = [
           uid: 0,
           is_driver: true,
           to_school: 0.2075596638431942,
+          arrival_time: { hrs: 8, mins: 52, total_mins: 532 },
+          departure_time: { hrs: 17, mins: 42, total_mins: 1062 },
         },
         last_stop_dist: 0.2075596638431942,
         total_dist: 0.2075596638431942,
         stops: [{ x: -71.05435335786339, y: 42.05025512056817 }],
+        arrival_time: 100,
+        departure_time: 100,
       },
       {
         driver: 0,
@@ -54,6 +58,8 @@ drivers = [
         last_stop_dist: 0.1190809453991462,
         total_dist: 0.27084599250969077,
         stops: [0, 17],
+        arrival_time: 26.5,
+        departure_time: 62,
       },
     ],
     bestRoute: {
@@ -70,10 +76,14 @@ drivers = [
         uid: 0,
         is_driver: true,
         to_school: 0.2075596638431942,
+        arrival_time: { hrs: 8, mins: 52, total_mins: 532 },
+        departure_time: { hrs: 17, mins: 42, total_mins: 1062 },
       },
       last_stop_dist: 0.2075596638431942,
       total_dist: 0.2075596638431942,
       stops: [{ x: -71.05435335786339, y: 42.05025512056817 }],
+      arrival_time: 100,
+      departure_time: 100,
     },
   },
   {
@@ -105,10 +115,14 @@ drivers = [
           uid: 1,
           is_driver: true,
           to_school: 0.402739363630027,
+          arrival_time: { hrs: 7, mins: 5, total_mins: 425 },
+          departure_time: { hrs: 18, mins: 27, total_mins: 1107 },
         },
         last_stop_dist: 0.402739363630027,
         total_dist: 0.402739363630027,
         stops: [1],
+        arrival_time: 100,
+        departure_time: 100,
       },
       {
         driver: 1,
@@ -131,6 +145,8 @@ drivers = [
         last_stop_dist: 0.4575355160017177,
         total_dist: 0.5839861222702486,
         stops: [1, 6, 13],
+        arrival_time: 65.55555555555556,
+        departure_time: 65.33333333333333,
       },
       {
         driver: 1,
@@ -153,6 +169,8 @@ drivers = [
         last_stop_dist: 0.357359731949552,
         total_dist: 0.5449913958911285,
         stops: [1, 6, 15, 18],
+        arrival_time: 76.5,
+        departure_time: 66.5,
       },
       {
         driver: 1,
@@ -175,6 +193,8 @@ drivers = [
         last_stop_dist: 0.30908762897972275,
         total_dist: 0.5569669119889112,
         stops: [1, 6, 15, 22],
+        arrival_time: 60.25,
+        departure_time: 73.5,
       },
       {
         driver: 1,
@@ -197,6 +217,8 @@ drivers = [
         last_stop_dist: 0.2516472949298436,
         total_dist: 0.4422152487687032,
         stops: [1, 6, 15],
+        arrival_time: 67.77777777777779,
+        departure_time: 73.11111111111113,
       },
       {
         driver: 1,
@@ -219,6 +241,8 @@ drivers = [
         last_stop_dist: 0.4093010627927672,
         total_dist: 0.5998690166316268,
         stops: [1, 6, 18, 15],
+        arrival_time: 76.5,
+        departure_time: 66.5,
       },
       {
         driver: 1,
@@ -241,6 +265,8 @@ drivers = [
         last_stop_dist: 0.3035886257730588,
         total_dist: 0.4912202897146353,
         stops: [1, 6, 18],
+        arrival_time: 70.44444444444444,
+        departure_time: 88.66666666666667,
       },
       {
         driver: 1,
@@ -263,6 +289,8 @@ drivers = [
         last_stop_dist: 0.3580980386387771,
         total_dist: 0.5486659924776367,
         stops: [1, 6, 22, 15],
+        arrival_time: 60.25,
+        departure_time: 73.5,
       },
       {
         driver: 1,
@@ -285,6 +313,8 @@ drivers = [
         last_stop_dist: 0.30065770458889796,
         total_dist: 0.5485369875980864,
         stops: [1, 6, 22],
+        arrival_time: 56,
+        departure_time: 79.33333333333333,
       },
       {
         driver: 1,
@@ -307,6 +337,8 @@ drivers = [
         last_stop_dist: 0.22433278044395832,
         total_dist: 0.402739363630027,
         stops: [1, 6],
+        arrival_time: 79,
+        departure_time: 98,
       },
       {
         driver: 1,
@@ -329,6 +361,8 @@ drivers = [
         last_stop_dist: 0.4034518930412572,
         total_dist: 0.5940198468801169,
         stops: [1, 8, 6, 15],
+        arrival_time: 52.75,
+        departure_time: 65.625,
       },
       {
         driver: 1,
@@ -351,6 +385,8 @@ drivers = [
         last_stop_dist: 0.37613737855537194,
         total_dist: 0.5545439617414406,
         stops: [1, 8, 6],
+        arrival_time: 61.11111111111112,
+        departure_time: 87.11111111111109,
       },
       {
         driver: 1,
@@ -373,6 +409,8 @@ drivers = [
         last_stop_dist: 0.31343016482901975,
         total_dist: 0.6008164868659178,
         stops: [1, 8, 11],
+        arrival_time: 46.88888888888889,
+        departure_time: 1.3333333333333333,
       },
       {
         driver: 1,
@@ -395,6 +433,8 @@ drivers = [
         last_stop_dist: 0.4225653256807859,
         total_dist: 0.6009719088668546,
         stops: [1, 8, 15, 6],
+        arrival_time: 52.75,
+        departure_time: 65.625,
       },
       {
         driver: 1,
@@ -417,6 +457,8 @@ drivers = [
         last_stop_dist: 0.39525081119490063,
         total_dist: 0.5858187650337603,
         stops: [1, 8, 15],
+        arrival_time: 58.666666666666664,
+        departure_time: 28,
       },
       {
         driver: 1,
@@ -439,6 +481,8 @@ drivers = [
         last_stop_dist: 0.39708731272268316,
         total_dist: 0.5754938959087519,
         stops: [1, 8, 18, 6],
+        arrival_time: 69,
+        departure_time: 74.375,
       },
       {
         driver: 1,
@@ -461,6 +505,8 @@ drivers = [
         last_stop_dist: 0.3178314673935827,
         total_dist: 0.5054631313351592,
         stops: [1, 8, 18],
+        arrival_time: 52.22222222222223,
+        departure_time: 3.111111111111086,
       },
       {
         driver: 1,
@@ -483,6 +529,8 @@ drivers = [
         last_stop_dist: 0.2114001901502815,
         total_dist: 0.503001358813773,
         stops: [1, 8],
+        arrival_time: 58.5,
+        departure_time: 0,
       },
       {
         driver: 1,
@@ -505,6 +553,8 @@ drivers = [
         last_stop_dist: 0.313347895674676,
         total_dist: 0.6007342177115742,
         stops: [1, 11],
+        arrival_time: 47,
+        departure_time: 1.5,
       },
       {
         driver: 1,
@@ -527,6 +577,8 @@ drivers = [
         last_stop_dist: 0.4393272192407223,
         total_dist: 0.5657778255092532,
         stops: [1, 13],
+        arrival_time: 10.5,
+        departure_time: 49,
       },
       {
         driver: 1,
@@ -549,6 +601,8 @@ drivers = [
         last_stop_dist: 0.4758473727059991,
         total_dist: 0.60229797897453,
         stops: [1, 15, 6, 13],
+        arrival_time: 71,
+        departure_time: 57.75,
       },
       {
         driver: 1,
@@ -571,6 +625,8 @@ drivers = [
         last_stop_dist: 0.32190048247734016,
         total_dist: 0.5095321464189166,
         stops: [1, 15, 6, 18],
+        arrival_time: 76.5,
+        departure_time: 66.5,
       },
       {
         driver: 1,
@@ -593,6 +649,8 @@ drivers = [
         last_stop_dist: 0.3189695612931793,
         total_dist: 0.5668488443023678,
         stops: [1, 15, 6, 22],
+        arrival_time: 60.25,
+        departure_time: 73.5,
       },
       {
         driver: 1,
@@ -615,6 +673,8 @@ drivers = [
         last_stop_dist: 0.2426446371482397,
         total_dist: 0.42105122033430836,
         stops: [1, 15, 6],
+        arrival_time: 67.77777777777779,
+        departure_time: 73.11111111111113,
       },
       {
         driver: 1,
@@ -637,6 +697,8 @@ drivers = [
         last_stop_dist: 0.44542960531552556,
         total_dist: 0.5718802115840564,
         stops: [1, 15, 13],
+        arrival_time: 60.666666666666664,
+        departure_time: 35.77777777777775,
       },
       {
         driver: 1,
@@ -659,6 +721,8 @@ drivers = [
         last_stop_dist: 0.4002984050111632,
         total_dist: 0.5787049881972319,
         stops: [1, 15, 18, 6],
+        arrival_time: 76.5,
+        departure_time: 66.5,
       },
       {
         driver: 1,
@@ -681,6 +745,8 @@ drivers = [
         last_stop_dist: 0.3210425596820628,
         total_dist: 0.5086742236236393,
         stops: [1, 15, 18],
+        arrival_time: 65.55555555555556,
+        departure_time: 29.555555555555582,
       },
       {
         driver: 1,
@@ -703,6 +769,8 @@ drivers = [
         last_stop_dist: 0.3490953808571732,
         total_dist: 0.5275019640432419,
         stops: [1, 15, 22, 6],
+        arrival_time: 60.25,
+        departure_time: 73.5,
       },
       {
         driver: 1,
@@ -725,6 +793,8 @@ drivers = [
         last_stop_dist: 0.41079335112016,
         total_dist: 0.5984250150617365,
         stops: [1, 15, 22, 18],
+        arrival_time: 53,
+        departure_time: 57.75,
       },
       {
         driver: 1,
@@ -747,6 +817,8 @@ drivers = [
         last_stop_dist: 0.27277045671223354,
         total_dist: 0.520649739721422,
         stops: [1, 15, 22],
+        arrival_time: 51.11111111111111,
+        departure_time: 57.55555555555558,
       },
       {
         driver: 1,
@@ -769,6 +841,8 @@ drivers = [
         last_stop_dist: 0.2153301226623544,
         total_dist: 0.405898076501214,
         stops: [1, 15],
+        arrival_time: 73.5,
+        departure_time: 31.5,
       },
       {
         driver: 1,
@@ -791,6 +865,8 @@ drivers = [
         last_stop_dist: 0.3520478477718056,
         total_dist: 0.5426158016106652,
         stops: [1, 18, 6, 15],
+        arrival_time: 76.5,
+        departure_time: 66.5,
       },
       {
         driver: 1,
@@ -813,6 +889,8 @@ drivers = [
         last_stop_dist: 0.3247333332859203,
         total_dist: 0.503139916471989,
         stops: [1, 18, 6],
+        arrival_time: 70.44444444444444,
+        departure_time: 88.66666666666667,
       },
       {
         driver: 1,
@@ -835,6 +913,8 @@ drivers = [
         last_stop_dist: 0.3785044394624135,
         total_dist: 0.5569110226484821,
         stops: [1, 18, 15, 6],
+        arrival_time: 76.5,
+        departure_time: 66.5,
       },
       {
         driver: 1,
@@ -857,6 +937,8 @@ drivers = [
         last_stop_dist: 0.35118992497652823,
         total_dist: 0.5417578788153878,
         stops: [1, 18, 15],
+        arrival_time: 65.55555555555556,
+        departure_time: 29.555555555555582,
       },
       {
         driver: 1,
@@ -879,6 +961,8 @@ drivers = [
         last_stop_dist: 0.24547748795681987,
         total_dist: 0.4331091518983964,
         stops: [1, 18],
+        arrival_time: 0.5,
+        departure_time: 3.5,
       },
       {
         driver: 1,
@@ -901,6 +985,8 @@ drivers = [
         last_stop_dist: 0.4715057363859262,
         total_dist: 0.5979563426544571,
         stops: [1, 22, 6, 13],
+        arrival_time: 50.25,
+        departure_time: 64.75,
       },
       {
         driver: 1,
@@ -923,6 +1009,8 @@ drivers = [
         last_stop_dist: 0.2656175153140521,
         total_dist: 0.4561854691529117,
         stops: [1, 22, 6, 15],
+        arrival_time: 60.25,
+        departure_time: 73.5,
       },
       {
         driver: 1,
@@ -945,6 +1033,8 @@ drivers = [
         last_stop_dist: 0.31755884615726726,
         total_dist: 0.5051905100988439,
         stops: [1, 22, 6, 18],
+        arrival_time: 55.75,
+        departure_time: 91,
       },
       {
         driver: 1,
@@ -967,6 +1057,8 @@ drivers = [
         last_stop_dist: 0.2383030008281668,
         total_dist: 0.41670958401423547,
         stops: [1, 22, 6],
+        arrival_time: 56,
+        departure_time: 79.33333333333333,
       },
       {
         driver: 1,
@@ -989,6 +1081,8 @@ drivers = [
         last_stop_dist: 0.439748579647375,
         total_dist: 0.5661991859159059,
         stops: [1, 22, 13],
+        arrival_time: 23.77777777777777,
+        departure_time: 57.55555555555554,
       },
       {
         driver: 1,
@@ -1016,6 +1110,8 @@ drivers = [
           { x: -70.97564803223752, y: 42.4228246290954 },
           { x: -70.96192465949113, y: 42.399207860856215 },
         ],
+        arrival_time: 60.25,
+        departure_time: 73.5,
       },
       {
         driver: 1,
@@ -1038,6 +1134,8 @@ drivers = [
         last_stop_dist: 0.4495178933862775,
         total_dist: 0.5759684996548083,
         stops: [1, 22, 15, 13],
+        arrival_time: 47.5,
+        departure_time: 49,
       },
       {
         driver: 1,
@@ -1060,6 +1158,8 @@ drivers = [
         last_stop_dist: 0.3251308477528147,
         total_dist: 0.5127625116943912,
         stops: [1, 22, 15, 18],
+        arrival_time: 53,
+        departure_time: 57.75,
       },
       {
         driver: 1,
@@ -1082,6 +1182,8 @@ drivers = [
         last_stop_dist: 0.21941841073310633,
         total_dist: 0.40998636457196597,
         stops: [1, 22, 15],
+        arrival_time: 51.11111111111111,
+        departure_time: 57.55555555555558,
       },
       {
         driver: 1,
@@ -1104,6 +1206,8 @@ drivers = [
         last_stop_dist: 0.3792568164202541,
         total_dist: 0.5576633996063227,
         stops: [1, 22, 18, 6],
+        arrival_time: 55.75,
+        departure_time: 91,
       },
       {
         driver: 1,
@@ -1126,6 +1230,8 @@ drivers = [
         last_stop_dist: 0.40571340811086204,
         total_dist: 0.5962813619497217,
         stops: [1, 22, 18, 15],
+        arrival_time: 53,
+        departure_time: 57.75,
       },
       {
         driver: 1,
@@ -1148,6 +1254,8 @@ drivers = [
         last_stop_dist: 0.30000097109115365,
         total_dist: 0.4876326350327302,
         stops: [1, 22, 18],
+        arrival_time: 28.666666666666668,
+        departure_time: 73.11111111111109,
       },
       {
         driver: 1,
@@ -1170,6 +1278,8 @@ drivers = [
         last_stop_dist: 0.1619780766832272,
         total_dist: 0.40985735969241566,
         stops: [1, 22],
+        arrival_time: 32,
+        departure_time: 80.5,
       },
     ],
     bestRoute: {
@@ -1198,6 +1308,8 @@ drivers = [
         { x: -70.97564803223752, y: 42.4228246290954 },
         { x: -70.96192465949113, y: 42.399207860856215 },
       ],
+      arrival_time: 60.25,
+      departure_time: 73.5,
     },
   },
   {
@@ -1229,10 +1341,14 @@ drivers = [
           uid: 2,
           is_driver: true,
           to_school: 0.3269125158137801,
+          arrival_time: { hrs: 8, mins: 0, total_mins: 480 },
+          departure_time: { hrs: 15, mins: 38, total_mins: 938 },
         },
         last_stop_dist: 0.3269125158137801,
         total_dist: 0.3269125158137801,
         stops: [{ x: -70.92606655588942, y: 41.96368380586465 }],
+        arrival_time: 100,
+        departure_time: 100,
       },
       {
         driver: 2,
@@ -1255,6 +1371,8 @@ drivers = [
         last_stop_dist: 0.273535661710768,
         total_dist: 0.42530070882131255,
         stops: [2, 17],
+        arrival_time: 52.5,
+        departure_time: 0,
       },
     ],
     bestRoute: {
@@ -1271,10 +1389,14 @@ drivers = [
         uid: 2,
         is_driver: true,
         to_school: 0.3269125158137801,
+        arrival_time: { hrs: 8, mins: 0, total_mins: 480 },
+        departure_time: { hrs: 15, mins: 38, total_mins: 938 },
       },
       last_stop_dist: 0.3269125158137801,
       total_dist: 0.3269125158137801,
       stops: [{ x: -70.92606655588942, y: 41.96368380586465 }],
+      arrival_time: 100,
+      departure_time: 100,
     },
   },
   {
@@ -1306,10 +1428,14 @@ drivers = [
           uid: 3,
           is_driver: true,
           to_school: 0.16364695566653673,
+          arrival_time: { hrs: 8, mins: 42, total_mins: 522 },
+          departure_time: { hrs: 16, mins: 7, total_mins: 967 },
         },
         last_stop_dist: 0.16364695566653673,
         total_dist: 0.16364695566653673,
         stops: [3],
+        arrival_time: 100,
+        departure_time: 100,
       },
       {
         driver: 3,
@@ -1335,6 +1461,8 @@ drivers = [
           { x: -71.19885886153259, y: 42.156410571489154 },
           { x: -71.14622348096172, y: 42.12601891164974 },
         ],
+        arrival_time: 31.5,
+        departure_time: 14.5,
       },
     ],
     bestRoute: {
@@ -1361,6 +1489,8 @@ drivers = [
         { x: -71.19885886153259, y: 42.156410571489154 },
         { x: -71.14622348096172, y: 42.12601891164974 },
       ],
+      arrival_time: 31.5,
+      departure_time: 14.5,
     },
   },
   {
@@ -1392,10 +1522,14 @@ drivers = [
           uid: 4,
           is_driver: true,
           to_school: 0.11067097550647888,
+          arrival_time: { hrs: 7, mins: 36, total_mins: 456 },
+          departure_time: { hrs: 18, mins: 17, total_mins: 1097 },
         },
         last_stop_dist: 0.11067097550647888,
         total_dist: 0.11067097550647888,
         stops: [{ x: -71.1041546654713, y: 42.36248174921325 }],
+        arrival_time: 100,
+        departure_time: 100,
       },
     ],
     bestRoute: {
@@ -1412,10 +1546,14 @@ drivers = [
         uid: 4,
         is_driver: true,
         to_school: 0.11067097550647888,
+        arrival_time: { hrs: 7, mins: 36, total_mins: 456 },
+        departure_time: { hrs: 18, mins: 17, total_mins: 1097 },
       },
       last_stop_dist: 0.11067097550647888,
       total_dist: 0.11067097550647888,
       stops: [{ x: -71.1041546654713, y: 42.36248174921325 }],
+      arrival_time: 100,
+      departure_time: 100,
     },
   },
 ];
