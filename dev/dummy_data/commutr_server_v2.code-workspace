@@ -4,5 +4,7 @@
       "path": "..\\.."
     }
   ],
-  "settings": {}
+  "settings": {
+    "pros.showInstallOnStartup": false
+  }
 }
