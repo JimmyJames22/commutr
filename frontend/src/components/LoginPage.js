@@ -1,12 +1,20 @@
 import { Link } from 'react-router-dom';
 import { componentDidUpdate } from 'react';
 import GoogleLogin from 'react-google-login';
-
+import axios from 'axios';
 
 function LoginPage() {
 
     const responseSuccessGoogle = (response) => {
-        console.log(response)
+        axios({
+            method: "POST",
+            url: "http://localhost:8000/api/googlelogin",
+            data: {
+                tokenId: response.tokenId
+            }
+        }).then(response => {
+            console.log("Google login success:", response);
+        })
     }
 
     const responseErrorGoogle = (response) => {
