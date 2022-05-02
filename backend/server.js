@@ -1,29 +1,17 @@
-// dependencies
-let winston = require("winston"); // logger
-var http = require("http"); // server
-const url = require("url"); // url parser
+const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
+require('./db/connectDB');
+const app = express();
 
-// variables
-const serverPort = 8081;
+const authRoutes = require("./routes/auth");
 
-// setup logger
-const logger = winston.createLogger({
-  transports: [new winston.transports.Console()],
-});
+app.use(express.json());
+app.use(cors());
 
-// code for server
-http.createServer(function (req, res){ // request => req & response => res
-  // parse url
-  logger.info(req.url);
-  const parsedUrl = url.parse(req.url, true);
+app.use('/api', authRoutes);
 
-  // base path
-  if (parsedUrl.pathname == "/") {
-    res.write("base case");
-    res.end();
-  }
-
-  
-}).listen(serverPort); // start server on serverPort
-
-logger.info(`Server running on port ${serverPort}`)
+const port = process.env.PORT;
+app.listen(port, () => {
+  console.log(`Server is running on port: ${port}`);
+})
