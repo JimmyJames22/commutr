@@ -40,10 +40,10 @@ exports.googlelogin = (req, res) => {
                 } else {
                     if(user) {
                         const token = jwt.sign({_id:user._id}, process.env.JWT_SIGNIN_KEY, {expiresIn: '7d'});
-                        const {_id, name, email} = user;
+                        const {_id, name, email, nameFirst, nameLast,phone,address,isDriver} = user;
                         res.json({
                             token,
-                            user: {_id, name, email}
+                            user: {_id, name, email, nameFirst, nameLast,phone,address,isDriver}
                         })
                     } else {
                         let password = email+process.env.JWT_SIGNIN_KEY

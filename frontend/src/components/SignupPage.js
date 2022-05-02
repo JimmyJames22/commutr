@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import GoogleLogin from 'react-google-login';
 import axios from 'axios';
 
@@ -18,6 +18,8 @@ function SignupPage({Signup, error}) {
         Signup(details)
     }
 
+    const navigate = useNavigate();
+
     const responseSuccessGoogle = (response) => {
         console.log(response)
         // Signup(details)
@@ -34,6 +36,7 @@ function SignupPage({Signup, error}) {
             }
         }).then(response => {
             console.log("Google login success:", response);
+            navigate('/');
         })
     }
 

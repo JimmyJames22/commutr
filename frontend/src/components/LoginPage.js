@@ -1,9 +1,11 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { componentDidUpdate } from 'react';
 import GoogleLogin from 'react-google-login';
 import axios from 'axios';
 
 function LoginPage() {
+
+    const navigate = useNavigate();
 
     const responseSuccessGoogle = (response) => {
         axios({
@@ -14,7 +16,13 @@ function LoginPage() {
             }
         }).then(response => {
             console.log("Google login success:", response);
-        })
+            navigate('/');
+        }).catch(
+            function (error) {
+              alert("Account not found")
+              return Promise.reject(error)
+            }
+          )
     }
 
     const responseErrorGoogle = (response) => {
