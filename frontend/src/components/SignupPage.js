@@ -24,7 +24,14 @@ function SignupPage({Signup, error}) {
         axios({
             method: "POST",
             url: "http://localhost:8000/api/googlelogin",
-            data: {tokenId: response.tokenId}
+            data: {
+                tokenId: response.tokenId,
+                nameFirst: details.firstname,
+                nameLast: details.lastname,
+                address: details.address,
+                phone: details.phone,
+                isDriver: details.status
+            }
         }).then(response => {
             console.log("Google login success:", response);
         })

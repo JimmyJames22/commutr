@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const {OAuth2Client} = require('google-auth-library');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const e = require('express');
 
 const client = new OAuth2Client("277843423406-m30j9jo3krghef8dfae3uvfp3ujk10as.apps.googleusercontent.com")
@@ -26,10 +27,10 @@ exports.signup = (req, res) => {
 }
 
 exports.googlelogin = (req, res) => {
-    const {tokenId} = req.body;
+    const {tokenId, nameFirst, nameLast, phone, address, isDriver} = req.body;
     console.log(tokenId);
     client.verifyIdToken({idToken: tokenId, audience: "277843423406-m30j9jo3krghef8dfae3uvfp3ujk10as.apps.googleusercontent.com"}).then(response => {
-        const { email_verified, name, email} = response.payload;
+        const { email_verified, email } = response.payload;
         if(email_verified){
             User.findOne({email}).exec((err, user) =>{
                 if(err){
@@ -40,14 +41,14 @@ exports.googlelogin = (req, res) => {
                     if(user) {
                         const token = jwt.sign({_id:user._id}, process.env.JWT_SIGNIN_KEY, {expiresIn: '7d'});
                         const {_id, name, email} = user;
-
                         res.json({
                             token,
                             user: {_id, name, email}
                         })
                     } else {
                         let password = email+process.env.JWT_SIGNIN_KEY
-                        let newUser = new User({name, email, password});
+                        let newUser = new User({nameFirst, nameLast, email, password, phone, address, isDriver});
+                        console.log(nameFirst, nameLast, email, password, phone, address, isDriver)
                         newUser.save((err, data) => {
                             if(err){
                                 return res.status(400).json({
