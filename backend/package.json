@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "backend",
   "version": "1.0.0",
   "description": "",
@@ -20,4 +21,26 @@
   "devDependencies": {},
   "author": "",
   "license": "ISC"
+=======
+  "name": "commutr_server_v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "16.10.0"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chart.js": "3.7.1",
+    "http": "0.0.1-security",
+    "mongodb": "4.5.0",
+    "random-name": "0.1.2",
+    "url": "0.11.0"
+  }
+>>>>>>> 4abf880459ec3b3f3ac85fe6f869f3a23d8c1a51
 }
