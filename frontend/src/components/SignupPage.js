@@ -20,18 +20,18 @@ function SignupPage({Signup, error}) {
 
     const responseSuccessGoogle = (response) => {
         console.log(response)
-        Signup(details)
-        // axios({
-        //     method: "POST",
-        //     url: "http://localhost:8000/api/googlelogin",
-        //     data: {tokenID: response.tokenId}
-        // }).then(response => {
-        //     console.log(response);
-        // })
+        // Signup(details)
+        axios({
+            method: "POST",
+            url: "http://localhost:8000/api/googlelogin",
+            data: {tokenId: response.tokenId}
+        }).then(response => {
+            console.log("Google login success:", response);
+        })
     }
 
     const responseErrorGoogle = (response) => {
-        console.log(response)
+        console.log("Google login failure:", response)
     }
 
     return(

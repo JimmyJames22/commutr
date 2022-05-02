@@ -1,12 +1,10 @@
 {
-<<<<<<< HEAD
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start":"nodemon server.js"
+    "start": "nodemon server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -14,33 +12,13 @@
     "express": "^4.18.1",
     "express-jwt": "^7.5.2",
     "express-validator": "^6.14.0",
+    "google-auth-library": "^8.0.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.1",
     "nodemon": "^2.0.16"
   },
   "devDependencies": {},
   "author": "",
-  "license": "ISC"
-=======
-  "name": "commutr_server_v2",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
-  "engines": {
-    "node": "16.10.0"
-  },
-  "author": "",
   "license": "ISC",
-  "dependencies": {
-    "chart.js": "3.7.1",
-    "http": "0.0.1-security",
-    "mongodb": "4.5.0",
-    "random-name": "0.1.2",
-    "url": "0.11.0"
-  }
->>>>>>> 4abf880459ec3b3f3ac85fe6f869f3a23d8c1a51
+  "description": ""
 }
