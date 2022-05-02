@@ -16,6 +16,15 @@ function LoginPage() {
             }
         }).then(response => {
             console.log("Google login success:", response);
+            console.log(response.data.user.address)
+            localStorage.setItem('userData',JSON.stringify({
+                "nameFirst":response.data.user.nameFirst,
+                "nameLast":response.data.user.nameLast,
+                "email":response.data.user.email,
+                "address":response.data.user.address,
+                "phone":response.data.user.phone,
+                "isDriver":response.data.user.isDriver
+            }))
             navigate('/');
         }).catch(
             function (error) {

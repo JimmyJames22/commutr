@@ -3,7 +3,7 @@ function ProfilePage() {
     return(
         <form>
             <div className="form-inner">
-                <h2>Home</h2>
+                <h2>Profile</h2>
             </div>
         </form>
     )
