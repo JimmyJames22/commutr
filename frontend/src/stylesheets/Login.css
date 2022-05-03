@@ -46,6 +46,18 @@ input, button{
    color: #2CEAA3; 
 }
 
+.main-logo-div{
+    padding-bottom: 10px;
+}
+
+.main-logo{
+    color: #232B2B;
+    text-align: center;
+}
+.main-logo .r{
+   color: #2CEAA3; 
+}
+
 form {
     display: block;
     position: relative;
@@ -174,4 +186,15 @@ form .form-inner input[type="submit"]:hover {
 
 .login-link{
     text-decoration: none;
+}
+
+.map-wrapper-div{
+    height: 70vh;
+    width: 90vw;
+}
+@media screen and (max-width: 600px) {
+    .map-wrapper-div{
+        width:90vw;
+        height:65vh;
+    }
 }

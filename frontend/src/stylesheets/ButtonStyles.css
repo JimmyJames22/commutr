@@ -1,0 +1,23 @@
+.ride-btn{
+    width:60px;
+    height:60px;
+    background: #2CEAA3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: center;
+    border-radius: 50%;
+    color:#fff;
+    border:none;
+    font-size: 20px;
+    position:fixed;
+    left:5.7%;
+    bottom: 17%;
+    transition: 0.25s;
+    z-index: 2;
+}
+
+.ride-btn:hover{
+    background:#28965A;
+    cursor:pointer;
+}
