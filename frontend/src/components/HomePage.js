@@ -12,9 +12,9 @@ function HomePage() {
 
     console.log(localStorage.getItem('userData'));
 
-    if(localStorage.getItem('userData')== null){
-        return <Navigate to="/login" />;
-    }
+    // if(localStorage.getItem('userData')== null){
+    //     return <Navigate to="/login" />;
+    // }
 
     
     return(
