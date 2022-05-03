@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import LogoutButton from './LogoutButton';
+import Map from './Map';
 
 function HomePage() {
 
@@ -18,6 +19,7 @@ function HomePage() {
         <form>
             <div className="form-inner">
                 <h2>Hello: {data.nameFirst} {data.nameLast}</h2>
+                <Map/>
                 <LogoutButton />
             </div>
         </form>
