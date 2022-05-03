@@ -28,9 +28,19 @@ input, button{
     background-color: #e8edeb;
 }
 
+.map-wrapper-div{
+    min-height: 100vh;
+    display: flex;
+    align-items: left;
+    justify-content: center;
+    margin-left: 0;
+    background-color: #e8edeb;
+}
+
 @media screen and (max-width: 600px) {
     .App{
         min-height: -webkit-fill-available;
+        overflow: hidden;
     }
 }
 
@@ -40,20 +50,30 @@ input, button{
 
 .logo{
     color: #232B2B;
-    text-align: center;
+
 }
 .logo .r{
    color: #2CEAA3; 
 }
 
-.main-logo-div{
-    padding-bottom: 10px;
-}
 
 .main-logo{
+    width:60px;
+    height:60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: center;
+    position:fixed;
+    left:5%;
+    top: 3%;
+    text-shadow: 2px 2px 2px #888888;
+    z-index: 2;
     color: #232B2B;
     text-align: center;
+    
 }
+
 .main-logo .r{
    color: #2CEAA3; 
 }
@@ -188,13 +208,37 @@ form .form-inner input[type="submit"]:hover {
     text-decoration: none;
 }
 
-.map-wrapper-div{
-    height: 70vh;
-    width: 90vw;
+.map-div{
+    height: 100vh;
+    width: 100vw;
 }
+
 @media screen and (max-width: 600px) {
-    .map-wrapper-div{
-        width:90vw;
-        height:65vh;
+    .map-div{
+        height: 89.1vh;
+        width: 100vw;
+        overflow: hidden;
+        
+    }
+    html, body {
+        position:fixed;
+        overflow-x:hidden;
+      }
+
+      .main-logo{
+        width:60px;
+        height:60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: center;
+        border-radius: 50%;
+        border:none;
+        position:fixed;
+        left:15%;
+        top: 4%;
+        z-index: 2;
+        color: #232B2B;
+        text-align: center;
     }
 }

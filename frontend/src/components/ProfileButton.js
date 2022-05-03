@@ -1,4 +1,7 @@
+import "../stylesheets/ButtonStyles.css"
 import { useNavigate } from 'react-router-dom';
+import { FaUserCircle } from 'react-icons/fa';
+
 
 function ProfileButton() {
 
@@ -10,7 +13,7 @@ function ProfileButton() {
 
     return(
             <div className="profile-button-div">
-                <button onClick={toProfile}>profile</button>
+                <button className="prof-btn" onClick={toProfile}>< FaUserCircle /></button>
             </div>
     )
 }

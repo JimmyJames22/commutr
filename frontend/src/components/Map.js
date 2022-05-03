@@ -11,6 +11,8 @@ function Map() {
         disableDefaultUI: true
       };
 
+
+
     const MapWithAMarker = withGoogleMap(props =>
         
         <GoogleMap
@@ -30,8 +32,8 @@ function Map() {
             <div className="map-wrapper-div">
                 <>
                 <MapWithAMarker
-                    containerElement={<div style={{ height: `80%`, paddingTop:`15px` }} />}
-                    mapElement={<div style={ { height: `125%`, width: `100%` } } />}
+                    containerElement={<div style={{ height: `100%`}} />}
+                    mapElement={<div className="map-div"/>}
                 />
                 </>
             </div>
