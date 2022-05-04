@@ -38,7 +38,7 @@ input, button{
 }
 
 @media screen and (max-width: 600px) {
-    .login-app{
+    .App{
         min-height: -webkit-fill-available;
         overflow: hidden;
     }

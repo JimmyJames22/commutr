@@ -38,6 +38,7 @@ function LoginPage() {
         console.log(response)
     }
     return(
+        <div className="login-app">
         <form>
             <div className="form-inner">
             <div className='logo-div'>
@@ -63,6 +64,7 @@ function LoginPage() {
                 </div>
             </div>
         </form>
+        </div>
     )
 }
 
