@@ -19,7 +19,7 @@ class User {
     this.departure_time = new Time(user.departure_time);
 
     if (this.is_driver) {
-      this.max_passengers = user.car_capacity;
+      this.max_stops = user.car_capacity;
       this.max_dist = this.to_school * route_dist_tolerance;
       this.driver_stop_object = {
         x: this.x,
@@ -45,6 +45,7 @@ class User {
         this.best_route.stops
       );
       this.new_route;
+      this.forbidden_stops = [];
     }
   }
 
