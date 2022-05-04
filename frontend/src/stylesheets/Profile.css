@@ -1,0 +1,13 @@
+div .form-inner h2{
+    color: rgb(0, 0, 0);
+    font-size: 30px;
+    font-weight: 500;
+}
+
+div .form-inner h3{
+    color: #888;
+    font-size: 25px;
+    font-weight: 500;
+    margin-bottom: 30px;
+}
+

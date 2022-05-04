@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Login from './components/LoginPage'
 import Signup from './components/SignupPage'
 import Home from './components/HomePage'
+import Profile from './components/ProfilePage'
 
 function App() {
 
@@ -23,6 +24,8 @@ function App() {
           <Route exact path="/login" element={ <Login/> }>
           </Route>
           <Route exact path="/signup" element={ <Signup Signup = {signupReq} error={error}/> }>
+          </Route>
+          <Route exact path="/profile" element={ <Profile/> }>
           </Route>
           </Routes>
       </header>

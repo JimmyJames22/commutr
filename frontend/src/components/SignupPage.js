@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import GoogleLogin from 'react-google-login';
 import axios from 'axios';
 
@@ -18,23 +18,34 @@ function SignupPage({Signup, error}) {
         Signup(details)
     }
 
+    const navigate = useNavigate();
+
     const responseSuccessGoogle = (response) => {
         console.log(response)
-        Signup(details)
-        // axios({
-        //     method: "POST",
-        //     url: "http://localhost:8000/api/googlelogin",
-        //     data: {tokenID: response.tokenId}
-        // }).then(response => {
-        //     console.log(response);
-        // })
+        // Signup(details)
+        axios({
+            method: "POST",
+            url: "http://localhost:8000/api/googlelogin",
+            data: {
+                tokenId: response.tokenId,
+                nameFirst: details.firstname,
+                nameLast: details.lastname,
+                address: details.address,
+                phone: details.phone,
+                isDriver: details.status
+            }
+        }).then(response => {
+            console.log("Google login success:", response);
+            navigate('/');
+        })
     }
 
     const responseErrorGoogle = (response) => {
-        console.log(response)
+        console.log("Google login failure:", response)
     }
 
     return(
+        <div className="login-app">
         <form onSubmit={submitHandler}>
            
             <div className="form-inner">
@@ -83,6 +94,7 @@ function SignupPage({Signup, error}) {
                 </div>
             </div>
         </form>
+        </div>
     )
 }
 

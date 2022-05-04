@@ -86,6 +86,8 @@ const looper = (num, min, max, is_driver, arr, list) => {
     user = {};
     user.x = x + x_delta;
     user.y = y + y_delta;
+    user.dest_x = x;
+    user.dest_y = y;
     arr.push(user);
     firstname = chooseName();
     lastname = chooseName();

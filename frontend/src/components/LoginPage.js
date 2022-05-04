@@ -1,18 +1,44 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { componentDidUpdate } from 'react';
 import GoogleLogin from 'react-google-login';
-
+import axios from 'axios';
 
 function LoginPage() {
 
+    const navigate = useNavigate();
+
     const responseSuccessGoogle = (response) => {
-        console.log(response)
+        axios({
+            method: "POST",
+            url: "http://localhost:8000/api/googlelogin",
+            data: {
+                tokenId: response.tokenId
+            }
+        }).then(response => {
+            console.log("Google login success:", response);
+            console.log(response.data.user.address)
+            localStorage.setItem('userData',JSON.stringify({
+                "nameFirst":response.data.user.nameFirst,
+                "nameLast":response.data.user.nameLast,
+                "email":response.data.user.email,
+                "address":response.data.user.address,
+                "phone":response.data.user.phone,
+                "isDriver":response.data.user.isDriver
+            }))
+            navigate('/');
+        }).catch(
+            function (error) {
+              alert("Account not found")
+              return Promise.reject(error)
+            }
+          )
     }
 
     const responseErrorGoogle = (response) => {
         console.log(response)
     }
     return(
+        <div className="login-app">
         <form>
             <div className="form-inner">
             <div className='logo-div'>
@@ -38,6 +64,7 @@ function LoginPage() {
                 </div>
             </div>
         </form>
+        </div>
     )
 }
 
