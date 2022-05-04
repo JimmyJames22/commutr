@@ -1,8 +1,9 @@
 const fs = require("fs");
 const { format } = require("path");
 const { stringify } = require("querystring");
-const User = require("./User.js");
-const Time = require("./Time.js");
+const User = require("./supporters/User.js");
+const Time = require("./supporters/Time.js");
+const calcEfficiency = require("./supporters/CalcEfficiency.js");
 
 let student_raw = fs.readFileSync("./data/student.json");
 let driver_raw = fs.readFileSync("./data/driver.json");
@@ -10,37 +11,26 @@ let school_raw = fs.readFileSync("./data/school.json");
 
 let student_data = JSON.parse(student_raw);
 let driver_data = JSON.parse(driver_raw);
-let school_data = JSON.parse(school_raw);
 
 let users = [];
 let drivers = [];
 let students = [];
 
-let num_users;
-
-let i;
-let j;
-
 let route_dist_tolerance = 1.5; // maximum multiple of original commute time for drivers
-
-// weights need to be adjusted to help normalize
-let route_stops_weight = 15;
-let route_dist_weight = 20;
-let arrival_time_weight = 0.01;
-let departure_time_weight = 0.01;
 
 let userMap = [];
 let routeList = [];
 let bestRoutesList = [];
 
 const logArr = (arr) => {
-  for (i = 0; i < arr.length; i++) {
+  for (let i = 0; i < arr.length; i++) {
     console.log(arr[i]);
   }
 };
 
 fillArrays();
 processDistances();
+randomRoutes();
 
 function fillArrays() {
   for (i = 0; i < driver_data.length; i++) {
@@ -49,14 +39,11 @@ function fillArrays() {
     drivers.push(user);
   }
 
-  for (i = 0; i < student_data.length; i++) {
+  for (let i = 0; i < student_data.length; i++) {
     let user = new User(student_data[i], route_dist_tolerance);
     users.push(user);
     students.push(user);
   }
-
-  num_users = users.length;
-
   console.log("Finished fillArrays()");
 }
 
@@ -74,37 +61,38 @@ function processDistances() {
   console.log("Finished processDistances()");
 }
 
-function calcEfficiency(total_dist, stops) {
-  let num_stops = stops.length;
-
-  // calc time AADs
-  let arrival_ave = 0;
-  let departure_ave = 0;
-  for (let i = 0; i < num_stops; i++) {
-    arrival_ave += stops[i].arrival_time;
-    departure_ave += stops[i].departure_time;
+function randomRoutes() {
+  let driver;
+  let num_stops;
+  let new_route;
+  for (let i = 0; i < drivers.length; i++) {
+    driver = drivers[i];
+    num_stops = 1;
+    new_route = {
+      stops: [driver.driver_stop_object],
+      stops_by_uid: [driver.uid],
+      total_dist: 0,
+    };
+    randomStops(num_stops, new_route);
+    new_route.total_dist +=
+      users[new_route.stops_by_uid[new_route.stops.length - 1]].to_school;
+    new_route.efficiency = calcEfficiency(
+      new_route.total_dist,
+      new_route.stops
+    );
+    driver.new_route = new_route;
   }
-  arrival_ave /= num_stops;
-  departure_ave /= num_stops;
-  let arrival_aad = 0;
-  let departure_aad = 0;
-  for (let i = 0; i < num_stops; i++) {
-    arrival_aad += Math.abs(arrival_ave - stops[i].arrival_time);
-    derparture_aad += Math.abs(departure_ave - stops[i].departure_time);
-  }
-  arrival_aad /= num_stops;
-  departure_aad /= num_stops;
-
-  return (
-    num_stops * route_stops_weight +
-    total_dist * route_dist_weight -
-    Math.pow(arrival_aad, 2) * arrival_time_weight -
-    Math.pow(departure_aad, 2) * departure_time_weight
-  );
 }
 
-console.log(users);
-
-module.exports = {
-  calcEfficiency: calcEfficiency(),
-};
+function randomStops(num_stops, new_route) {
+  for (let j = 0; j < num_stops; j++) {
+    let stop_uid =
+      Math.ceil(Math.random() * students.length) + (drivers.length - 1);
+    new_route.stops_by_uid.push(stop_uid);
+    new_route.stops.push(users[stop_uid]);
+    new_route.total_dist += users[stop_uid].distanceToUid(
+      new_route.stops_by_uid[new_route.stops.length - 2],
+      userMap
+    );
+  }
+}
