@@ -1,8 +1,9 @@
 const fs = require("fs");
 const { format } = require("path");
 const { stringify } = require("querystring");
-const User = require("./User.js");
-const Time = require("./Time.js");
+const User = require("./supporters/User.js");
+const Time = require("./supporters/Time.js");
+const calcEfficiency = require("./supporters/CalcEfficiency.js");
 
 let student_raw = fs.readFileSync("./data/student.json");
 let driver_raw = fs.readFileSync("./data/driver.json");
@@ -10,54 +11,51 @@ let school_raw = fs.readFileSync("./data/school.json");
 
 let student_data = JSON.parse(student_raw);
 let driver_data = JSON.parse(driver_raw);
-let school_data = JSON.parse(school_raw);
 
 let users = [];
 let drivers = [];
 let students = [];
 
-let num_users;
-
-let i;
-let j;
-
-let route_dist_tolerance = 1.5; // maximum multiple of original commute time for drivers
-
-// weights need to be adjusted to help normalize
-let route_stops_weight = 15;
-let route_dist_weight = 20;
-let arrival_time_weight = 0.01;
-let departure_time_weight = 0.01;
+let route_dist_tolerance = 5.5; // maximum multiple of original commute time for drivers
 
 let userMap = [];
 let routeList = [];
 let bestRoutesList = [];
 
-const logArr = (arr) => {
-  for (i = 0; i < arr.length; i++) {
-    console.log(arr[i]);
-  }
-};
+let best_efficiency = 0;
 
-fillArrays();
+let effList = [];
+
+//! list of functions to run
+init();
 processDistances();
+for (let j = 0; j < 50; j++) {
+  console.log(j);
+  randomRoutes();
+  checkIfBetter();
+}
+saveNewJson();
 
-function fillArrays() {
+for (let i = 0; i < effList.length; i++) {
+  console.log("Driver " + i + ": " + effList[i][effList[i].length - 1]);
+}
+
+function init() {
   for (i = 0; i < driver_data.length; i++) {
     let user = new User(driver_data[i], route_dist_tolerance);
     users.push(user);
     drivers.push(user);
+    effList.push([user.best_route.efficiency]);
+    best_efficiency += user.best_route.efficiency;
   }
 
-  for (i = 0; i < student_data.length; i++) {
+  for (let i = 0; i < student_data.length; i++) {
     let user = new User(student_data[i], route_dist_tolerance);
     users.push(user);
     students.push(user);
   }
 
-  num_users = users.length;
-
-  console.log("Finished fillArrays()");
+  console.log("Finished init()");
 }
 
 function processDistances() {
@@ -74,37 +72,112 @@ function processDistances() {
   console.log("Finished processDistances()");
 }
 
-function calcEfficiency(total_dist, stops) {
-  let num_stops = stops.length;
+//! CODE GETTING STUCK HERE
+function randomRoutes() {
+  let driver;
+  let num_stops;
+  let new_route;
+  for (let i = 0; i < drivers.length; i++) {
+    driver = drivers[i];
 
-  // calc time AADs
-  let arrival_ave = 0;
-  let departure_ave = 0;
-  for (let i = 0; i < num_stops; i++) {
-    arrival_ave += stops[i].arrival_time;
-    departure_ave += stops[i].departure_time;
-  }
-  arrival_ave /= num_stops;
-  departure_ave /= num_stops;
-  let arrival_aad = 0;
-  let departure_aad = 0;
-  for (let i = 0; i < num_stops; i++) {
-    arrival_aad += Math.abs(arrival_ave - stops[i].arrival_time);
-    derparture_aad += Math.abs(departure_ave - stops[i].departure_time);
-  }
-  arrival_aad /= num_stops;
-  departure_aad /= num_stops;
+    console.log(i + " : " + driver.forbidden_stops);
 
-  return (
-    num_stops * route_stops_weight +
-    total_dist * route_dist_weight -
-    Math.pow(arrival_aad, 2) * arrival_time_weight -
-    Math.pow(departure_aad, 2) * departure_time_weight
-  );
+    num_stops = Math.ceil(Math.random() * driver.max_stops);
+    new_route = randomStops(num_stops, driver);
+
+    // can't be recursive or it will max out the stack size
+    while (new_route.total_dist > driver.max_dist) {
+      new_route = randomStops(num_stops, driver);
+    }
+
+    new_route.efficiency = calcEfficiency(
+      new_route.total_dist,
+      new_route.stops
+    );
+
+    driver.new_route = new_route;
+  }
 }
 
-console.log(users);
+function randomStops(num_stops, driver) {
+  let new_route = {
+    stops: [driver.driver_stop_object],
+    stops_by_uid: [driver.uid],
+    total_dist: 1,
+  };
 
-module.exports = {
-  calcEfficiency: calcEfficiency(),
-};
+  if (driver.forbidden_stops.length == students.length) {
+    new_route.total_dist = driver.to_school;
+    return new_route;
+  }
+
+  for (let j = 0; j < num_stops; j++) {
+    let stop_uid;
+    let forbidden = true;
+    let in_array = false;
+
+    while (forbidden) {
+      stop_uid =
+        Math.ceil(Math.random() * students.length) + (drivers.length - 1);
+      for (let i = 0; i < driver.forbidden_stops.length; i++) {
+        if (driver.forbidden_stops[i] == stop_uid) {
+          in_array = true;
+        }
+      }
+      if (in_array) {
+        in_array = false;
+      } else {
+        for (let i = 0; i < new_route.stops_by_uid.length; i++) {
+          if (new_route.stops_by_uid[i] == stop_uid) {
+            in_array = true;
+          }
+        }
+        if (in_array) {
+          in_array = false;
+        } else {
+          forbidden = false;
+        }
+      }
+    }
+
+    new_route.stops_by_uid.push(stop_uid);
+    new_route.stops.push(users[stop_uid]);
+    new_route.total_dist += users[stop_uid].distanceToUid(
+      new_route.stops_by_uid[new_route.stops.length - 2],
+      userMap
+    );
+    if (new_route.total_dist + users[stop_uid].to_school > driver.max_dist) {
+      if (new_route.stops.length == 2) {
+        driver.forbidden_stops.push(stop_uid);
+      }
+      break;
+    }
+  }
+
+  new_route.total_dist +=
+    users[new_route.stops_by_uid[new_route.stops.length - 1]].to_school;
+
+  return new_route;
+}
+
+function checkIfBetter() {
+  let driver;
+  for (let i = 0; i < drivers.length; i++) {
+    driver = drivers[i];
+    if (driver.new_route.efficiency > driver.best_route.efficiency) {
+      driver.best_route = driver.new_route;
+      effList[i].push(driver.new_route.efficiency);
+    }
+  }
+}
+
+function saveNewJson() {
+  let student_json = JSON.stringify(students);
+  let drivers_json = JSON.stringify(drivers);
+  fs.writeFile("./final_routes/student.json", student_json, "utf8", () => {
+    console.log("exported");
+  });
+  fs.writeFile("./final_routes/driver.json", drivers_json, "utf8", () => {
+    console.log("exported");
+  });
+}

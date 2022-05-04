@@ -1,5 +1,5 @@
 const Time = require("./Time.js");
-const RouteFinder2 = require("./RouteFinder2.js");
+const calcEfficiency = require("./CalcEfficiency");
 
 class User {
   constructor(user, route_dist_tolerance) {
@@ -19,32 +19,33 @@ class User {
     this.departure_time = new Time(user.departure_time);
 
     if (this.is_driver) {
-      this.max_passengers = user.car_capacity;
+      this.max_stops = user.car_capacity;
       this.max_dist = this.to_school * route_dist_tolerance;
-      this.route = {
-        stops: [
-          {
-            x: this.x,
-            y: this.y,
-            firstname: this.firstname,
-            lastname: this.lastname,
-            class_year: this.class_year,
-            email: this.email,
-            phone: this.phone,
-            uid: this.uid,
-            is_driver: true,
-            to_school: this.to_school,
-            arrival_time: this.arrival_time,
-            departure_time: this.departure_time,
-          },
-        ],
-        total_dist: this.to_school,
-        stops_by_id: [this.uid],
+      this.driver_stop_object = {
+        x: this.x,
+        y: this.y,
+        firstname: this.firstname,
+        lastname: this.lastname,
+        class_year: this.class_year,
+        email: this.email,
+        phone: this.phone,
+        uid: this.uid,
+        is_driver: true,
+        to_school: this.to_school,
+        arrival_time: this.arrival_time,
+        departure_time: this.departure_time,
       };
-      this.route.efficiency = RouteFinder2.calcEfficiency(
-        this.route.total_dist,
-        this.route.stops
+      this.best_route = {
+        stops: [this.driver_stop_object],
+        stops_by_id: [this.uid],
+        total_dist: this.to_school,
+      };
+      this.best_route.efficiency = calcEfficiency(
+        this.best_route.total_dist,
+        this.best_route.stops
       );
+      this.new_route;
+      this.forbidden_stops = [];
     }
   }
 
@@ -55,7 +56,7 @@ class User {
     );
   }
 
-  distanceToUid(uid) {
+  distanceToUid(uid, userMap) {
     // calls from userMap
     let map;
     for (let k = 0; k < userMap.length; k++) {

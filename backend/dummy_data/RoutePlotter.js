@@ -45,11 +45,18 @@ for (let i = 0; i < drivers.length; i++) {
   driver = drivers[i];
   route_coords = [];
   console.log(driver);
-  best_route = driver.bestRoute;
+  let best_route_stops = driver.best_route.stops;
+  best_route = [];
+  for (let j = 0; j < best_route_stops.length; j++) {
+    best_route.push({
+      x: best_route_stops[j].x,
+      y: best_route_stops[j].y,
+    });
+  }
   driver_list.push({ x: driver.x, y: driver.y });
 
   dataset_list.push({
-    data: best_route.stops.concat(milton_coords),
+    data: best_route.concat(milton_coords),
     label: "Driver " + (i + 1) + " Route",
     backgroundColor: "gray",
     pointRadius: 5,
