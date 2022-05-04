@@ -45,6 +45,7 @@ function SignupPage({Signup, error}) {
     }
 
     return(
+        <div className="login-app">
         <form onSubmit={submitHandler}>
            
             <div className="form-inner">
@@ -93,6 +94,7 @@ function SignupPage({Signup, error}) {
                 </div>
             </div>
         </form>
+        </div>
     )
 }
 

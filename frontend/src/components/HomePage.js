@@ -12,20 +12,23 @@ function HomePage() {
 
     console.log(localStorage.getItem('userData'));
 
-    if(localStorage.getItem('userData')== null){
-        return <Navigate to="/login" />;
-    }
+    // if(localStorage.getItem('userData')== null){
+    //     return <Navigate to="/login" />;
+    // }
 
     
     return(
-        <form>
+    <div className='home-wrapper'>
+       <div className='home-div'>
             <div className="form-inner">
-            <h1 className='main-logo'>Commut<text className='r'>r</text></h1>
+
                 <Map/>
+                <h1 className='main-logo' onClick={() => window.location.reload(false)}>Commut<text className='r'>r</text></h1>
                 <Profile />
             </div>
                 <Ride />
-        </form>
+    </div>
+    </div>
     )
 }
 
