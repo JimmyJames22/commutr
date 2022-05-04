@@ -23,7 +23,9 @@ function LoginPage() {
                 "email":response.data.user.email,
                 "address":response.data.user.address,
                 "phone":response.data.user.phone,
-                "isDriver":response.data.user.isDriver
+                "isDriver":response.data.user.isDriver,
+                "ridesTaken":response.data.user.ridesTaken,
+                "ridesGiven":response.data.user.ridesGiven,
             }))
             navigate('/');
         }).catch(

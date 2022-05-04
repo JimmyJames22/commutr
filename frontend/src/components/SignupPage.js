@@ -10,7 +10,7 @@ import Toggle from './ToggleSwitch';
 
 function SignupPage({Signup, error}) {
 
-    const [details, setDetails] = useState({firstname:"", lastname:"", address:"", phone:"", status:false})
+    const [details, setDetails] = useState({firstname:"", lastname:"", address:"", phone:"", status:false, carCapacity:0})
 
     const submitHandler = e => {
         e.preventDefault();
@@ -32,7 +32,8 @@ function SignupPage({Signup, error}) {
                 nameLast: details.lastname,
                 address: details.address,
                 phone: details.phone,
-                isDriver: details.status
+                isDriver: details.status,
+                carCapacity: details.carCapacity
             }
         }).then(response => {
             console.log("Google login success:", response);
@@ -42,6 +43,16 @@ function SignupPage({Signup, error}) {
 
     const responseErrorGoogle = (response) => {
         console.log("Google login failure:", response)
+    }
+    
+    function Capacity() {
+
+        if (details.status == true) {
+            return <div className="form-group">
+            <label htmlFor="capacity">Car Capacity:</label>
+            <input type="number" name="capacity" id="capacity" onChange={e => setDetails({...details, carCapacity: e.target.value})} value={details.carCapacity}/>
+            </div>;
+          }
     }
 
     return(
@@ -75,6 +86,7 @@ function SignupPage({Signup, error}) {
                     <Toggle className='toggle' onChange={e => setDetails({...details, status: e.target.checked})}/>
                     </div>
                 </div>
+                <Capacity />
                 <div className="form-group">
                 <div className='submit-container'>
                 <div className='submit-center'>

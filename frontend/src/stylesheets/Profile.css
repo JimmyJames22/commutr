@@ -6,8 +6,25 @@ div .form-inner h2{
 
 div .form-inner h3{
     color: #888;
-    font-size: 25px;
+    font-size: 20px;
     font-weight: 500;
     margin-bottom: 30px;
 }
 
+div .info-wrapper h2{
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.icon-wrapper{
+    text-align: center;
+}
+
+.name-wrapper{
+    text-align: center;
+}
+
+.user-icon{
+    font-size: 100px;
+    align-items:center;
+}

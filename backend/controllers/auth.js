@@ -27,7 +27,7 @@ exports.signup = (req, res) => {
 }
 
 exports.googlelogin = (req, res) => {
-    const {tokenId, nameFirst, nameLast, phone, address, isDriver} = req.body;
+    const {tokenId, nameFirst, nameLast, phone, address, isDriver, carCapacity} = req.body;
     console.log(tokenId);
     client.verifyIdToken({idToken: tokenId, audience: "277843423406-m30j9jo3krghef8dfae3uvfp3ujk10as.apps.googleusercontent.com"}).then(response => {
         const { email_verified, email } = response.payload;
@@ -40,14 +40,16 @@ exports.googlelogin = (req, res) => {
                 } else {
                     if(user) {
                         const token = jwt.sign({_id:user._id}, process.env.JWT_SIGNIN_KEY, {expiresIn: '7d'});
-                        const {_id, name, email, nameFirst, nameLast,phone,address,isDriver} = user;
+                        const {_id, name, email, nameFirst, nameLast,phone,address,isDriver,ridesGiven, ridesTaken, carCapacity} = user;
                         res.json({
                             token,
-                            user: {_id, name, email, nameFirst, nameLast,phone,address,isDriver}
+                            user: {_id, name, email, nameFirst, nameLast,phone,address,isDriver, ridesGiven, ridesTaken, carCapacity}
                         })
                     } else {
+                        let ridesGiven = 0;
+                        let ridesTaken = 0;
                         let password = email+process.env.JWT_SIGNIN_KEY
-                        let newUser = new User({nameFirst, nameLast, email, password, phone, address, isDriver});
+                        let newUser = new User({nameFirst, nameLast, email, password, phone, address, isDriver, carCapacity, ridesGiven, ridesTaken});
                         console.log(nameFirst, nameLast, email, password, phone, address, isDriver)
                         newUser.save((err, data) => {
                             if(err){
@@ -73,6 +75,5 @@ exports.googlelogin = (req, res) => {
     })
 
     console.log()
-
 
 }

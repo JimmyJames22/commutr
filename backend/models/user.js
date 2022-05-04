@@ -37,7 +37,19 @@ const userSchema = new mongoose.Schema({
     isDriver: {
         type: Boolean,
         required: true
-    }
+    },
+    carCapacity: {
+        type: Number,
+        required: true
+    },
+    ridesTaken: {
+        type: Number,
+        required: true
+    },
+    ridesGiven: {
+        type: Number,
+        required: true
+    },
 
 }, {timestamps: true})
 
