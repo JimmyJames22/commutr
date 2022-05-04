@@ -1,0 +1,10 @@
+{
+  "folders": [
+    {
+      "path": "..\\.."
+    }
+  ],
+  "settings": {
+    "pros.showInstallOnStartup": false
+  }
+}

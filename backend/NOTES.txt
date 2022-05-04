@@ -1,0 +1,25 @@
+ALL SOLVED 4/25/2022
+Issues with RouteFinder.js
+ - routeList contains empty "routes"
+ - routeList populated from initRoutes() which calls formRoutes()
+   - Means that formRoutes() is probably problematic
+   - NOT a problem with drivers list or students list -- they are populated
+   - one initRoutes() problem is that driver.distanceToUid(student.uid) always returns 0
+ - User.distanceToUid(uid) returns zero when it shouldn't
+  - userMap has zero as distance between all users
+  - userMap is initialized using the method distanceToUid(uid) which is dependent on userMap definitions already
+  - need to rewrite the distanceTo(User) method so that userMap can be populated
+
+ALL FINISHED 4/25/2022
+Recursively select the best routes for the drivers with no repeat passengers
+ - Loop through every driver and all the routes they have
+ - check each orientation of routes and look for the one that puts the most gap between max_dist and total_dist while having no repeat users
+   - make it recursive so that the method calls itself to find the routes and looks to minimize the loss function
+
+
+POTENTIAL IMPROVEMENTS FOR ROUTE FINDER
+ - Make non-driver-centric route storage
+ - Matching ideal arrival/leaving times if possible
+ - Max car capacity
+ - Number of rides that are taken/given
+ - Added students/drivers
