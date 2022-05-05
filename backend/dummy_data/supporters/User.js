@@ -37,15 +37,15 @@ class User {
       };
       this.best_route = {
         stops: [this.driver_stop_object],
-        stops_by_id: [this.uid],
+        stops_by_uid: [this.uid],
         total_dist: this.to_school,
       };
       this.best_route.efficiency = calcEfficiency(
-        this.best_route.total_dist,
+        this.max_dist - this.best_route.total_dist,
         this.best_route.stops
       );
-      this.new_route;
-      this.forbidden_stops = [];
+      this.new_route = {};
+      this.possible_stops = [];
     }
   }
 

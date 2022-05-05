@@ -1,10 +1,10 @@
 // weights need to be adjusted to help normalize
 let route_stops_weight = 15;
-let route_dist_weight = 20;
-let arrival_time_weight = 0.01;
-let departure_time_weight = 0.01;
+let route_dist_weight = 80;
+let arrival_time_weight = 0;
+let departure_time_weight = 0;
 
-function calcEfficiency(total_dist, stops) {
+function calcEfficiency(dist_delta, stops) {
   let num_stops = stops.length;
 
   // calc time AADs
@@ -29,7 +29,7 @@ function calcEfficiency(total_dist, stops) {
 
   return (
     num_stops * route_stops_weight +
-    total_dist * route_dist_weight -
+    dist_delta * route_dist_weight -
     Math.pow(arrival_aad, 2) * arrival_time_weight -
     Math.pow(departure_aad, 2) * departure_time_weight
   );
