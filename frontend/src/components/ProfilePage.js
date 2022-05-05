@@ -8,6 +8,7 @@ import Passengers from './PassengerList';
 
 function ProfilePage() {
 
+    //This must eventually be replaced with a "get driver/get passenger function"
     const [passengers, setPassengers] = useState([
         {
             id: 1,
