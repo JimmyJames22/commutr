@@ -17,11 +17,11 @@ function Map() {
         
         <GoogleMap
           defaultZoom={8}
-          defaultCenter={{ lat: -34.397, lng: 150.644 }}
+          defaultCenter={{ lat: 42.23959, lng: -71.08112 }}
           options={mapOptions}
         >
           <Marker
-            position={{ lat: -34.397, lng: 150.644 }}
+            position={{ lat: 42.23959, lng: -71.08112 }}
           />
         </GoogleMap>
       );

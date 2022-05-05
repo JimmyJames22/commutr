@@ -8,7 +8,7 @@ import Ride from './RideButton';
 function HomePage() {
 
     const [name, setName] = useState("");
-    const data = JSON.parse(localStorage.getItem('userData'))
+    
 
     console.log(localStorage.getItem('userData'));
 

@@ -47,6 +47,7 @@ input, button{
 
 .logo-div{
     padding-bottom: 10px;
+    
 }
 
 .logo{
@@ -72,7 +73,7 @@ input, button{
     z-index: 2;
     color: #232B2B;
     text-align: center;
-    
+    cursor: pointer;
 }
 
 .main-logo .r{

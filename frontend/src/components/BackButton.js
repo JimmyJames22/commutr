@@ -7,13 +7,15 @@ function BackButton() {
 
     const navigate = useNavigate();
 
-    const toHome =()=>{
-        navigate("/");
+    const goBack =()=>{
+        navigate(-1);
     }
 
     return(
-            <div className="back-button-div">
-                <button className="back-btn" onClick={toHome}>< FaArrowLeft /></button>
+            <div className="button-div">
+                <div className="back-btn-div">
+                <button className="back-btn" onClick={goBack}>< FaArrowLeft /></button>
+                </div>
             </div>
     )
 }
