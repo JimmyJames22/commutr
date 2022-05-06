@@ -28,8 +28,38 @@ function ProfilePage() {
         },
     ]
     )
+    //This must eventually be replaced with a "get requests function" conditionally if status = driver
+    const [requests, setRequests] = useState([
+        {
+            id: 1,
+            nameFirst: 'Calvin',
+            nameLast: 'Bonomo',
+            address: 'Milton Academy',
+            phone:'(333)-333-3333',
+            email: 'calvin_bonomo22@milton.edu',
+            timeAdded: '4'
+        },
+    ]
+    )
 
-    const data = JSON.parse(localStorage.getItem('userData'))
+    const data = 
+        {
+            id: 1,
+            nameFirst: 'Gunner',
+            nameLast: 'Peterson',
+            address: '14 Old Farm Road',
+            phone:'7814921706',
+            isDriver:true,
+            email: 'Gunnerpeterson14@gmail.com',
+            ridesGiven:0,
+            ridesTaken:0,
+        }
+
+
+    if(localStorage.getItem('userData') == null){
+        const data = JSON.parse(localStorage.getItem('userData'))
+    }
+    
 
     return(
         <div className="profile-wrapper">
@@ -52,10 +82,13 @@ function ProfilePage() {
             <br/><br/>
             <p className="info-label">Rides Taken:</p>
             <p className="info-content">{data.ridesTaken}</p>
+            <br/><br/>
+            <p className="info-label">Carbon Emissions Saved:</p>
+            <p className="info-content">100</p>
             </div>
             <br/>
             <div>
-            <Passengers passengers={passengers} status={data.isDriver} />
+            <Passengers passengers={passengers} status={data.isDriver} requests={requests}/>
             </div>
             <Logout />
             </div>
