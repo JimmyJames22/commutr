@@ -8,8 +8,8 @@ const names = require("./rand_names/names").names;
 const y = 42.257227602977615;
 const x = -71.06995481869149;
 
-const num_drivers = 5;
-const num_passengers = 20;
+const num_drivers = 15;
+const num_passengers = 60;
 
 // parameters for arrival/leaving times
 const min_mrn_hrs = 7;

@@ -1,5 +1,5 @@
 const Time = require("./Time.js");
-const calcEfficiency = require("./CalcEfficiency");
+const { calcEfficiency } = require("./CalcEfficiency");
 
 class User {
   constructor(user, route_dist_tolerance) {
@@ -46,6 +46,7 @@ class User {
       );
       this.new_route = {};
       this.possible_stops = [];
+      this.possible_route_stops = [];
     }
   }
 

@@ -3,7 +3,10 @@ const { format } = require("path");
 const { stringify } = require("querystring");
 const User = require("./supporters/User.js");
 const Time = require("./supporters/Time.js");
-const calcEfficiency = require("./supporters/CalcEfficiency.js");
+const {
+  calcEfficiency,
+  sumEfficiency,
+} = require("./supporters/CalcEfficiency.js");
 
 let student_raw = fs.readFileSync("./data/student.json");
 let driver_raw = fs.readFileSync("./data/driver.json");
@@ -16,13 +19,12 @@ let users = [];
 let drivers = [];
 let students = [];
 
-let route_dist_tolerance = 1.5; // maximum multiple of original commute time for drivers
+let route_dist_tolerance = 1.15; // maximum multiple of original commute time for drivers
 
 let userMap = [];
-let routeList = [];
-let bestRoutesList = [];
 
 let best_efficiency = 0;
+let new_efficiency = 0;
 
 let effList = [];
 
@@ -30,7 +32,7 @@ let counter = 0;
 
 //! list of functions to run
 init();
-for (let j = 0; j < 100000; j++) {
+for (let j = 0; j < 10000; j++) {
   if (j - 1000 * counter >= 0) {
     counter++;
     // console.log();
@@ -102,9 +104,14 @@ function randomRoutes() {
   let new_route;
   for (let i = 0; i < drivers.length; i++) {
     driver = drivers[i];
+    driver.possible_route_stops = driver.possible_stops.slice(0);
+  }
 
-    if (driver.possible_stops.length < driver.max_stops) {
-      num_stops = Math.ceil(Math.random() * driver.possible_stops.length);
+  for (let i = 0; i < drivers.length; i++) {
+    driver = drivers[i];
+
+    if (driver.possible_route_stops.length < driver.max_stops) {
+      num_stops = Math.ceil(Math.random() * driver.possible_route_stops.length);
     } else {
       num_stops = Math.ceil(Math.random() * driver.max_stops);
     }
@@ -115,22 +122,20 @@ function randomRoutes() {
 
     // can't be recursive or it will max out the stack size
     while (new_route.total_dist >= driver.max_dist) {
-      if (driver.possible_stops.length < driver.max_stops) {
-        num_stops = Math.ceil(Math.random() * driver.possible_stops.length);
+      if (driver.possible_route_stops.length < driver.max_stops) {
+        num_stops = Math.ceil(
+          Math.random() * driver.possible_route_stops.length
+        );
       }
 
       new_route = randomStops(num_stops, driver);
       // console.log("RandomDriv " + driver.uid);
     }
 
-    new_route.efficiency = calcEfficiency(
-      driver.max_dist - new_route.total_dist,
-      new_route.stops
-    );
-
     driver.new_route = new_route;
-    // console.log("RandomRoutes " + driver.possible_stops);
   }
+
+  new_efficiency = sumEfficiency(drivers);
 }
 
 function randomStops(num_stops, driver) {
@@ -140,7 +145,7 @@ function randomStops(num_stops, driver) {
     total_dist: 0,
   };
 
-  if (driver.possible_stops.length == 0) {
+  if (driver.possible_route_stops.length == 0) {
     new_route.total_dist = driver.to_school;
     return new_route;
   }
@@ -159,8 +164,8 @@ function randomStops(num_stops, driver) {
       //! POSSIBLE STOPS ARRAY NOT SHRINKING
       // stop_uid works
       stop_uid =
-        driver.possible_stops[
-          Math.ceil(Math.random() * driver.possible_stops.length) - 1
+        driver.possible_route_stops[
+          Math.ceil(Math.random() * driver.possible_route_stops.length) - 1
         ];
 
       // console.log("PS " + driver.possible_stops);
@@ -192,15 +197,24 @@ function randomStops(num_stops, driver) {
           for (let i = 0; i < driver.possible_stops.length; i++) {
             if (driver.possible_stops[i] == stop_uid) {
               driver.possible_stops.splice(i, 1);
+              break;
+            }
+          }
+
+          for (let i = 0; i < driver.possible_route_stops.length; i++) {
+            if (driver.possible_route_stops[i] == stop_uid) {
+              driver.possible_route_stops.splice(i, 1);
               // return if no more possible stops
-              if (driver.possible_stops.length == 0) {
+              if (driver.possible_route_stops.length == 0) {
                 return {
                   stops: [driver.driver_stop_object],
                   stops_by_uid: [driver.uid],
                   total_dist: driver.to_school,
                 };
-                // reset num_stops if impacted by reduction in driver.possible_stops size
-              } else if (driver.possible_stops.length < driver.max_stops) {
+                // reset num_stops if impacted by reduction in driver.possible_route_stops size
+              } else if (
+                driver.possible_route_stops.length < driver.max_stops
+              ) {
                 num_stops -= 1;
                 updated_stop_number = true;
               }
@@ -218,7 +232,7 @@ function randomStops(num_stops, driver) {
         stop_in_route = false;
         over_distance = false;
 
-        if (try_counter > driver.possible_stops.length * 4) {
+        if (try_counter > driver.possible_route_stops.length * 15) {
           new_route.total_dist +=
             users[new_route.stops_by_uid[new_route.stops.length - 1]].to_school;
           return new_route;
@@ -237,6 +251,16 @@ function randomStops(num_stops, driver) {
       new_route.stops_by_uid[new_route.stops_by_uid.length - 2],
       userMap
     );
+
+    for (let i = 0; i < drivers.length; i++) {
+      let poss_route_stops = drivers[i].possible_route_stops;
+      for (let l = 0; l < poss_route_stops.length; l++) {
+        if (stop_uid == poss_route_stops[l]) {
+          poss_route_stops.splice(l, 1);
+          break;
+        }
+      }
+    }
   }
 
   new_route.total_dist +=
@@ -245,13 +269,15 @@ function randomStops(num_stops, driver) {
 }
 
 function checkIfBetter() {
-  let driver;
-  for (let i = 0; i < drivers.length; i++) {
-    driver = drivers[i];
-    if (driver.new_route.efficiency > driver.best_route.efficiency) {
+  if (new_efficiency > best_efficiency) {
+    let driver;
+    for (let i = 0; i < drivers.length; i++) {
+      driver = drivers[i];
       driver.best_route = driver.new_route;
       effList[i].push(driver.new_route.efficiency);
     }
+
+    best_efficiency = new_efficiency;
   }
 }
 
