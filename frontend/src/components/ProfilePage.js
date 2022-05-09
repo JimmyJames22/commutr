@@ -1,12 +1,26 @@
 import { FaUserCircle } from 'react-icons/fa';
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import '../stylesheets/Profile.css';
 import Back from './BackButton';
 import Logout from './LogoutButton';
 import Settings from './SettingsButton';
 import Passengers from './PassengerList';
+import axios from 'axios';
 
 function ProfilePage() {
+
+    function getRoute(){
+        axios({
+            method: "POST",
+            url: "http://localhost:8000/api/getRoute",
+            data: {
+                _id: data._id,
+            }
+        }).then(response => {
+            console.log("Got passengers:", response);
+        })
+    }
 
     //This must eventually be replaced with a "get driver/get passenger function"
     const [passengers, setPassengers] = useState([
@@ -31,7 +45,7 @@ function ProfilePage() {
     //This must eventually be replaced with a "get requests function" conditionally if status = driver
     const [requests, setRequests] = useState([
         {
-            id: 1,
+            _id: "1",
             nameFirst: 'Calvin',
             nameLast: 'Bonomo',
             address: 'Milton Academy',
@@ -44,7 +58,7 @@ function ProfilePage() {
 
     const data = 
         {
-            id: 1,
+            _id: "6279117ed72496a2f1a50c09",
             nameFirst: 'Gunner',
             nameLast: 'Peterson',
             address: '14 Old Farm Road',

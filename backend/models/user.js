@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
+    //nameFirst, nameLast, email, password, phone, address, isDriver, carCapacity, ridesGiven, ridesTaken
     nameFirst: {
         type: String,
         trim: true,
         required: true,
         max: 32
-    },
+    }, 
     nameLast: {
         type: String,
         trim: true,

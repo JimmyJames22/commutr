@@ -26,6 +26,7 @@ function LoginPage() {
                 "isDriver":response.data.user.isDriver,
                 "ridesTaken":response.data.user.ridesTaken,
                 "ridesGiven":response.data.user.ridesGiven,
+                "_id":response.data.user._id,
             }))
             navigate('/');
         }).catch(
