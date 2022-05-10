@@ -19,7 +19,7 @@ async function routePush(route, stops){
         console.log("id:",id)
         await db.collection("users").find({"_id": id}).toArray().then(doc => {
             console.log({nameFirst:doc[0]["nameFirst"],nameLast:doc[0]["nameLast"],address:doc[0]["address"]})
-            route.push({nameFirst:doc[0]["nameFirst"],nameLast:doc[0]["nameLast"],address:doc[0]["address"]})
+            route.push({id:doc[0]["_id"],nameFirst:doc[0]["nameFirst"],nameLast:doc[0]["nameLast"],address:doc[0]["address"]})
         })
     }
     return await route
@@ -41,4 +41,20 @@ exports.findRoute = (req, res) => {
         })
     })
     
+}
+
+exports.deletePassenger = (req, res) => {
+    const {r_id, u_id} = req.body;
+    var route_id = mongo.ObjectId(r_id);
+    var user_id = mongo.ObjectId(u_id);
+    console.log("req-id:", route_id, "id:", user_id);
+    db.collection("pairings").updateMany(
+        {_id:route_id},
+        {$pull: {'stops':{ $in: [ user_id ] }}}
+    ).then(response => {
+        res.json({
+            result:"Deleted from route",
+            resp:response,
+        })
+    })
 }

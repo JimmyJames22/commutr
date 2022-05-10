@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import '../stylesheets/Profile.css';
 import Back from './BackButton';
 import Quit from './QuitButton';
 import Passengers from './PassengerEdit';
+import axios from'axios';
 
 function SettingsPage() {
 
@@ -21,38 +22,46 @@ function SettingsPage() {
           }
     }
 
+    const [passengers, setPassengers] = useState([])
+
+    useEffect(() => {
+        getRoute();
+    }, [passengers])
+
+    function getRoute(){
+        axios({
+            method: "POST",
+            url: "http://localhost:8000/api/findRoute",
+            data: {
+                _id: data._id,
+            }
+        }).then(response => {
+            console.log("Got passengers:", response.data.routes);
+            setPassengers([]);
+            for (const item of response.data.routes){
+                if(item["nameFirst"] != data.nameFirst && item["nameLast"] != data.nameLast){
+                    setPassengers(arr => [...arr, item]);
+                }
+            }
+            console.log("Passengers state:",passengers)
+        })
+    }
+
+
     const data = 
-        {
-            id: 1,
-            nameFirst: 'Gunner',
-            nameLast: 'Peterson',
-            address: '14 Old Farm Road',
-            phone:'7814921706',
-            isDriver:true,
-            email: 'Gunnerpeterson14@gmail.com',
-            ridesGiven:0,
-            ridesTaken:0,
-            carCapacity:2,
-        }
-        const [passengers, setPassengers] = useState([
-            {
-                id: 1,
-                nameFirst: 'James',
-                nameLast: 'Millington',
-                address: 'His House',
-                phone:'(111)-111-1111',
-                email: 'james_millington22@milton.edu'
-            },
-            {
-                id: 2,
-                nameFirst: 'Cameron',
-                nameLast: 'Edgar',
-                address: '11, Clamron Road',
-                phone:'(222)-222-2222',
-                email: 'cameron_edgar22@milton.edu'
-            },
-        ]
-        )
+    {
+        _id: "6279117ed72496a2f1a50c09",
+        nameFirst: 'Gunner',
+        nameLast: 'Peterson',
+        address: '14 Old Farm Road',
+        phone:'7814921706',
+        isDriver:true,
+        email: 'Gunnerpeterson14@gmail.com',
+        ridesGiven:0,
+        ridesTaken:0,
+        route_id: "6276bdf01c5ff58e410661bb"
+    }
+        
 
     if(localStorage.getItem('userData') != null){ 
     const data = JSON.parse(localStorage.getItem('userData'))

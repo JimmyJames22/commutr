@@ -1,5 +1,5 @@
 import { FaUserCircle } from 'react-icons/fa';
-import { useState } from 'react'
+import { useState, useEffect} from 'react'
 import { useNavigate } from 'react-router-dom';
 import '../stylesheets/Profile.css';
 import Back from './BackButton';
@@ -10,38 +10,32 @@ import axios from 'axios';
 
 function ProfilePage() {
 
+    useEffect(() => {
+        getRoute();
+    }, [])
+
+    const [passengers, setPassengers] = useState([])
+
     function getRoute(){
         axios({
             method: "POST",
-            url: "http://localhost:8000/api/getRoute",
+            url: "http://localhost:8000/api/findRoute",
             data: {
                 _id: data._id,
             }
         }).then(response => {
-            console.log("Got passengers:", response);
+            console.log("Got passengers:", response.data.routes);
+            setPassengers([]);
+            for (const item of response.data.routes){
+                setPassengers(arr => [...arr, item]);
+            }
+            console.log("Passengers state:",passengers)
         })
     }
 
     //This must eventually be replaced with a "get driver/get passenger function"
-    const [passengers, setPassengers] = useState([
-        {
-            id: 1,
-            nameFirst: 'James',
-            nameLast: 'Millington',
-            address: 'His House',
-            phone:'(111)-111-1111',
-            email: 'james_millington22@milton.edu'
-        },
-        {
-            id: 2,
-            nameFirst: 'Cameron',
-            nameLast: 'Edgar',
-            address: '11, Clamron Road',
-            phone:'(222)-222-2222',
-            email: 'cameron_edgar22@milton.edu'
-        },
-    ]
-    )
+    
+
     //This must eventually be replaced with a "get requests function" conditionally if status = driver
     const [requests, setRequests] = useState([
         {
