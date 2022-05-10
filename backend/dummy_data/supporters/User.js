@@ -15,8 +15,9 @@ class User {
     this.to_school = Math.sqrt(
       Math.pow(this.x - user.dest_x, 2) + Math.pow(this.y - user.dest_y, 2)
     );
-    this.arrival_time = new Time(user.arrival_time);
-    this.departure_time = new Time(user.departure_time);
+
+    this.arrival_times = user.arrival_times;
+    this.departure_times = user.departure_times;
 
     if (this.is_driver) {
       this.max_stops = user.car_capacity;
@@ -32,8 +33,8 @@ class User {
         uid: this.uid,
         is_driver: true,
         to_school: this.to_school,
-        arrival_time: this.arrival_time,
-        departure_time: this.departure_time,
+        arrival_times: this.arrival_times,
+        departure_times: this.departure_times,
       };
       this.best_route = {
         stops: [this.driver_stop_object],

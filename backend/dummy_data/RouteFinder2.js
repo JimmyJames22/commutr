@@ -2,7 +2,7 @@ const fs = require("fs");
 const { format } = require("path");
 const { stringify } = require("querystring");
 const User = require("./supporters/User.js");
-const Time = require("./supporters/Time.js");
+
 const {
   calcEfficiency,
   sumEfficiency,
@@ -19,7 +19,7 @@ let users = [];
 let drivers = [];
 let students = [];
 
-let route_dist_tolerance = 1.15; // maximum multiple of original commute time for drivers
+let route_dist_tolerance = 1.15; // maximum multiple of original commute distance for drivers
 
 let userMap = [];
 
@@ -97,7 +97,6 @@ function processDistances() {
   console.log("Finished processDistances()");
 }
 
-//! CODE GETTING STUCK HERE
 function randomRoutes() {
   let driver;
   let num_stops;
@@ -161,7 +160,6 @@ function randomStops(num_stops, driver) {
 
     // randomly select a new stop for the route and validate it
     while (invalid_stop) {
-      //! POSSIBLE STOPS ARRAY NOT SHRINKING
       // stop_uid works
       stop_uid =
         driver.possible_route_stops[

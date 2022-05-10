@@ -12,10 +12,10 @@ const num_drivers = 15;
 const num_passengers = 60;
 
 // parameters for arrival/leaving times
-const min_mrn_hrs = 7;
-const mrn_hr_span = 3;
-const min_aft_hrs = 15;
-const aft_hr_span = 4;
+const min_mrn_time = 420;
+const mrn_time_span = 180;
+const min_aft_time = 900;
+const aft_time_span = 240;
 
 const milton_coords = [
   {
@@ -37,11 +37,6 @@ let driver_coords = [];
 let student_list = [];
 let driver_list = [];
 let id_counter = 0;
-
-let mrn_hrs;
-let mrn_mins;
-let aft_hrs;
-let aft_mins;
 
 const len_names = names.length;
 
@@ -99,24 +94,17 @@ const looper = (num, min, max, is_driver, arr, list) => {
     user.phone = Math.ceil(Math.random() * 9999999999);
 
     // set arrival and departure times
-    mrn_hrs = String(parseInt(Math.random() * mrn_hr_span) + min_mrn_hrs);
-    mrn_mins = String(parseInt(Math.random() * 59));
-    if (mrn_hrs.length == 1) {
-      mrn_hrs = mrn_hrs.padStart(2, 0);
+    user.arrival_times = [];
+    user.departure_times = [];
+
+    for (let j = 0; j < 5; j++) {
+      storeTimes(user, j);
     }
-    if (mrn_mins.length == 1) {
-      mrn_mins = mrn_mins.padStart(2, 0);
-    }
-    user.arrival_time = mrn_hrs + ":" + mrn_mins;
-    aft_hrs = String(parseInt(Math.random() * aft_hr_span) + min_aft_hrs);
-    aft_mins = String(parseInt(Math.random() * 59));
-    if (aft_hrs.length == 1) {
-      aft_hrs = aft_hrs.padStart(2, 0);
-    }
-    if (aft_mins.length == 1) {
-      aft_mins = aft_mins.padStart(2, 0);
-    }
-    user.departure_time = aft_hrs + ":" + aft_mins;
+
+    user.arrival_times.push({ day: "saturday", time: NaN, commuting: false });
+    user.arrival_times.push({ day: "sunday", time: NaN, commuting: false });
+    user.departure_times.push({ day: "saturday", time: NaN, commuting: false });
+    user.departure_times.push({ day: "sunday", time: NaN, commuting: false });
 
     if (is_driver) {
       user.is_driver = true;
@@ -137,6 +125,86 @@ const looper = (num, min, max, is_driver, arr, list) => {
     list.push(user);
   }
 };
+
+function storeTimes(user, j) {
+  let time;
+
+  if (Math.random() > 0.9) {
+    time = -1;
+  } else {
+    time = Math.random() * mrn_time_span + min_mrn_time;
+  }
+
+  if (j == 0) {
+    user.arrival_times.push({
+      day: "monday",
+      time: time,
+      commuting: true,
+    });
+  } else if (j == 1) {
+    user.arrival_times.push({
+      day: "tuesday",
+      time: time,
+      commuting: true,
+    });
+  } else if (j == 2) {
+    user.arrival_times.push({
+      day: "wednesday",
+      time: time,
+      commuting: true,
+    });
+  } else if (j == 3) {
+    user.arrival_times.push({
+      day: "thursday",
+      time: time,
+      commuting: true,
+    });
+  } else if (j == 4) {
+    user.arrival_times.push({
+      day: "friday",
+      time: time,
+      commuting: true,
+    });
+  }
+
+  if (Math.random() > 0.9) {
+    time = -1;
+  } else {
+    time = Math.random() * aft_time_span + min_aft_time;
+  }
+
+  if (j == 0) {
+    user.departure_times.push({
+      day: "monday",
+      time: time,
+      commuting: true,
+    });
+  } else if (j == 1) {
+    user.departure_times.push({
+      day: "tuesday",
+      time: time,
+      commuting: true,
+    });
+  } else if (j == 2) {
+    user.departure_times.push({
+      day: "wednesday",
+      time: time,
+      commuting: true,
+    });
+  } else if (j == 3) {
+    user.departure_times.push({
+      day: "thursday",
+      time: time,
+      commuting: true,
+    });
+  } else if (j == 4) {
+    user.departure_times.push({
+      day: "friday",
+      time: time,
+      commuting: true,
+    });
+  }
+}
 
 // make the users
 makeUsers();
