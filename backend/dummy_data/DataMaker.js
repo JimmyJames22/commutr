@@ -1,5 +1,6 @@
 const fs = require("fs");
 const names = require("./rand_names/names").names;
+const axios = require("axios");
 
 // import canvas for ChartJS
 // const ctx = document.getElementById("myChart").getContext("2d");
@@ -70,12 +71,26 @@ const looper = (num, min, max, is_driver, arr, list) => {
   let class_year;
 
   // loop according to params
-  for (i = 0; i < num; i++) {
+  for (i = 0; i < 1; i++) {
     // save random distances and angles
     thta = Math.floor(Math.random() * 360);
     dist = Math.random() * max + min;
     y_delta = Math.sin(thta) * dist;
     x_delta = Math.cos(thta) * dist;
+
+    axios
+      .get(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${
+          y + y_delta
+        },${x + x_delta}&key=AIzaSyCiN6uQWhP-Di1Lnwn63aw8tQJKUD-amPA`
+      )
+      .then((response) => {
+        console.log(y + y_delta + ", " + (x + x_delta));
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     // update array specified in params
     user = {};
