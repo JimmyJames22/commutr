@@ -30,6 +30,12 @@ function ProfilePage() {
                 setPassengers(arr => [...arr, item]);
             }
             console.log("Passengers state:",passengers)
+            //if data doesn't have route id in it save it to localstorage.
+            if(localStorage.getItem('route') == null){
+                localStorage.setItem('route', response.data.id);
+                console.log("Saved id:", response.data.id);
+            }
+            
         })
     }
 
@@ -61,6 +67,7 @@ function ProfilePage() {
             email: 'Gunnerpeterson14@gmail.com',
             ridesGiven:0,
             ridesTaken:0,
+            carCapacity:4
         }
 
 
@@ -96,7 +103,7 @@ function ProfilePage() {
             </div>
             <br/>
             <div>
-            <Passengers passengers={passengers} status={data.isDriver} requests={requests}/>
+            <Passengers passengers={passengers} data={data} requests={requests} />
             </div>
             <Logout />
             </div>

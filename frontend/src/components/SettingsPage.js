@@ -26,7 +26,7 @@ function SettingsPage() {
 
     useEffect(() => {
         getRoute();
-    }, [passengers])
+    }, [])
 
     function getRoute(){
         axios({
@@ -36,14 +36,12 @@ function SettingsPage() {
                 _id: data._id,
             }
         }).then(response => {
-            console.log("Got passengers:", response.data.routes);
             setPassengers([]);
             for (const item of response.data.routes){
                 if(item["nameFirst"] != data.nameFirst && item["nameLast"] != data.nameLast){
                     setPassengers(arr => [...arr, item]);
                 }
             }
-            console.log("Passengers state:",passengers)
         })
     }
 
@@ -59,13 +57,13 @@ function SettingsPage() {
         email: 'Gunnerpeterson14@gmail.com',
         ridesGiven:0,
         ridesTaken:0,
-        route_id: "6276bdf01c5ff58e410661bb"
+        carCapacity:4,
     }
         
 
-    if(localStorage.getItem('userData') != null){ 
-    const data = JSON.parse(localStorage.getItem('userData'))
-    } 
+    // if(localStorage.getItem('userData') != null){ 
+    //     const data = JSON.parse(localStorage.getItem('userData'))
+    // }
 
     const [details, setDetails] = useState({firstname:data.nameLast, lastname:data.nameFirst, address:data.address, phone:data.phone, status:data.isDriver, carCapacity:data.carCapacity})
 

@@ -33,10 +33,12 @@ exports.findRoute = (req, res) => {
     db.collection("pairings").find({stops: {$in: [o_id]}}).toArray().then(response => {
         let route = []
         let stops = response[0]["stops"]
+        let routeid = response[0]["_id"]
         stops.pop();
         routePush(route, stops).then(route => {
             res.json({
-                routes: route
+                routes: route,
+                id: routeid
             })
         })
     })

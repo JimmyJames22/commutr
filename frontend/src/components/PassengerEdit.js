@@ -9,7 +9,7 @@ const PassengerEdit = ({passengers}) => {
             method: "POST",
             url: "http://localhost:8000/api/deletepassenger",
             data: {
-                r_id: "6276bdf01c5ff58e410661bb", //To be replaced with data.route_id
+                r_id: localStorage.getItem('route'), //To be replaced with data.route_id
                 u_id:pass_id
             }
         }).then(() => {

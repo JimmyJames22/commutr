@@ -1,7 +1,7 @@
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import { AiOutlineUserDelete } from 'react-icons/ai';
 
-function PassengerList({passengers, requests, status}) {
+function PassengerList({passengers, requests, data}) {
 
     const addPass =(id, name)=>{
         if (window.confirm("Add "+name+" to your carpool?")){ 
@@ -15,14 +15,14 @@ function PassengerList({passengers, requests, status}) {
         }
     }
 
-    if (status){
+    if (data.isDriver){
         return (
             <>
             <h2 className="pass-title">Passengers</h2>
             <div className="pass-wrapper">
             {passengers.map((passenger) =>(
-                <div className="pass-div">
-                <h3 key={passenger.id}>{passenger.nameFirst} {passenger.nameLast}</h3>
+                <div className="pass-div" style={{ background: passenger.id == data._id? '#98fb98': '#F8F0E3'}} >
+                <h3 key={passenger.id}>{passenger.nameFirst} {passenger.nameLast} </h3>
                 <h4 key={passenger.id}>{passenger.address}</h4>
                 </div>
             ))}
