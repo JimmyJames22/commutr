@@ -1,6 +1,6 @@
 import { FaUserCircle } from 'react-icons/fa';
 import { useState, useEffect} from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import '../stylesheets/Profile.css';
 import Back from './BackButton';
 import Logout from './LogoutButton';
@@ -39,42 +39,27 @@ function ProfilePage() {
         })
     }
 
-    //This must eventually be replaced with a "get driver/get passenger function"
-    
-
-    //This must eventually be replaced with a "get requests function" conditionally if status = driver
-    const [requests, setRequests] = useState([
-        {
-            _id: "1",
-            nameFirst: 'Calvin',
-            nameLast: 'Bonomo',
-            address: 'Milton Academy',
-            phone:'(333)-333-3333',
-            email: 'calvin_bonomo22@milton.edu',
-            timeAdded: '4'
-        },
-    ]
-    )
-
-    const data = 
-        {
-            _id: "6279117ed72496a2f1a50c09",
-            nameFirst: 'Gunner',
-            nameLast: 'Peterson',
-            address: '14 Old Farm Road',
-            phone:'7814921706',
-            isDriver:true,
-            email: 'Gunnerpeterson14@gmail.com',
-            ridesGiven:0,
-            ridesTaken:0,
-            carCapacity:4
-        }
-
-
-    if(localStorage.getItem('userData') == null){
-        const data = JSON.parse(localStorage.getItem('userData'))
+    if(localStorage.getItem('userData')== null){ //Real coode
+        return <Navigate to="/login" />;
     }
-    
+
+    const data = JSON.parse(localStorage.getItem('userData')) //Real code
+
+    //FILLER CODE
+    // const data = 
+    //     {
+    //         _id: "6279117ed72496a2f1a50c09",
+    //         nameFirst: 'Gunner',
+    //         nameLast: 'Peterson',
+    //         address: '14 Old Farm Road',
+    //         phone:'7814921706',
+    //         isDriver:true,
+    //         email: 'Gunnerpeterson14@gmail.com',
+    //         ridesGiven:0,
+    //         ridesTaken:0,
+    //         carCapacity:4
+    //     }
+
 
     return(
         <div className="profile-wrapper">
@@ -103,7 +88,7 @@ function ProfilePage() {
             </div>
             <br/>
             <div>
-            <Passengers passengers={passengers} data={data} requests={requests} />
+            <Passengers passengers={passengers} data={data}/>
             </div>
             <Logout />
             </div>

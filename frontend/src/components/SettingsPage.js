@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Navigate } from 'react-router-dom';
 import '../stylesheets/Profile.css';
 import Back from './BackButton';
 import Quit from './QuitButton';
@@ -6,6 +7,7 @@ import Passengers from './PassengerEdit';
 import axios from'axios';
 
 function SettingsPage() {
+
 
     function Capacity() {
 
@@ -21,6 +23,8 @@ function SettingsPage() {
         </div>;
           }
     }
+
+    
 
     const [passengers, setPassengers] = useState([])
 
@@ -45,20 +49,21 @@ function SettingsPage() {
         })
     }
 
+    
 
-    const data = 
-    {
-        _id: "6279117ed72496a2f1a50c09",
-        nameFirst: 'Gunner',
-        nameLast: 'Peterson',
-        address: '14 Old Farm Road',
-        phone:'7814921706',
-        isDriver:true,
-        email: 'Gunnerpeterson14@gmail.com',
-        ridesGiven:0,
-        ridesTaken:0,
-        carCapacity:4,
-    }
+    // const data = 
+    // {
+    //     _id: "6279117ed72496a2f1a50c09",
+    //     nameFirst: 'Gunner',
+    //     nameLast: 'Peterson',
+    //     address: '14 Old Farm Road',
+    //     phone:'7814921706',
+    //     isDriver:true,
+    //     email: 'Gunnerpeterson14@gmail.com',
+    //     ridesGiven:0,
+    //     ridesTaken:0,
+    //     carCapacity:4,
+    // }
     
     function changeElement(name, item, field){
         document.getElementById(name).readOnly = !document.getElementById(name).readOnly;
@@ -77,12 +82,17 @@ function SettingsPage() {
         }
     }
     
-    // if(localStorage.getItem('userData') != null){ 
-    //     const data = JSON.parse(localStorage.getItem('userData'))
-    // }
 
+    
+
+    
+    
+    const data = JSON.parse(localStorage.getItem('userData'));
     const [details, setDetails] = useState({firstname:data.nameLast, lastname:data.nameFirst, address:data.address, phone:data.phone, status:data.isDriver, carCapacity:data.carCapacity})
 
+    if(localStorage.getItem('userData')== null){
+        return <Navigate to="/login" />;
+    }
     return(
         <div className="settings-wrapper">
             <div className="form-inner">
