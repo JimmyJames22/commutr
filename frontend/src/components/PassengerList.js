@@ -15,11 +15,11 @@ function PassengerList({passengers, requests, data}) {
         }
     }
 
-    if (data.isDriver){
         return (
             <>
-            <h2 className="pass-title">Passengers</h2>
+            <h2 className="pass-title">Your Route</h2>
             <div className="pass-wrapper">
+            
             {passengers.map((passenger) =>(
                 <div className="pass-div" style={{ background: passenger.id == data._id? '#98fb98': '#F8F0E3'}} >
                 <h3 key={passenger.id}>{passenger.nameFirst} {passenger.nameLast} </h3>
@@ -27,7 +27,8 @@ function PassengerList({passengers, requests, data}) {
                 </div>
             ))}
             </div>
-            <h2 className="pass-title">Requests</h2>
+            {/* Not using requests at the moment */}
+            {/* <h2 className="pass-title">Requests</h2>
             <div className="pass-wrapper">
             {requests.map((req) =>(
                 <div className="req-div">
@@ -41,24 +42,10 @@ function PassengerList({passengers, requests, data}) {
                 </p>
                 </div>
             ))}
-            </div>
+            </div> */}
             </>
         )
-    } else {
-        return (
-            <>
-            <h2 className="pass-title">Driver</h2>
-            <div className="pass-wrapper">
-            {passengers.map((passenger) =>(
-                <div className="pass-div">
-                <h3 key={passenger.id}>{passenger.nameFirst} {passenger.nameLast}</h3>
-                <h4 key={passenger.id}>{passenger.address}</h4>
-                </div>
-            ))}
-            </div>
-            </>
-        )
-    }
+    
     
 }
 

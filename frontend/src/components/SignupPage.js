@@ -8,6 +8,7 @@ import '../stylesheets/Login.css';
 
 import LoginPage from './LoginPage';
 import Toggle from './ToggleSwitch';
+import { GiDetonator } from 'react-icons/gi';
 
 function SignupPage({Signup, error}) {
 
@@ -22,24 +23,26 @@ function SignupPage({Signup, error}) {
     const navigate = useNavigate();
 
     const responseSuccessGoogle = (response) => {
-        console.log(response)
-        // Signup(details)
-        axios({
-            method: "POST",
-            url: "http://localhost:8000/api/googlelogin",
-            data: {
-                tokenId: response.tokenId,
-                nameFirst: details.firstname,
-                nameLast: details.lastname,
-                address: details.address,
-                phone: details.phone,
-                isDriver: details.status,
-                carCapacity: details.carCapacity
-            }
-        }).then(response => {
-            console.log("Google login success:", response);
-            navigate('/');
-        })
+        if(CheckForms()){
+            console.log(response)
+            // Signup(details)
+            axios({
+                method: "POST",
+                url: "http://localhost:8000/api/googlelogin",
+                data: {
+                    tokenId: response.tokenId,
+                    nameFirst: details.firstname,
+                    nameLast: details.lastname,
+                    address: details.address,
+                    phone: details.phone,
+                    isDriver: details.status,
+                    carCapacity: details.carCapacity
+                }
+            }).then(response => {
+                console.log("Google login success:", response);
+                navigate('/');
+            })
+        }
     }
 
     const responseErrorGoogle = (response) => {
@@ -54,6 +57,28 @@ function SignupPage({Signup, error}) {
             <input type="number" name="capacity" id="capacity" onChange={e => setDetails({...details, carCapacity: e.target.value})} value={details.carCapacity}/>
             </div>;
           }
+    }
+
+    function CheckForms() {
+        if(details.firstname == "" || details.lastname == ""){
+            alert("Enter name");
+            window.location.reload(false);
+            return false;
+        } else if(details.address == ""){
+            alert("Enter address");
+            window.location.reload(false);
+            return false;
+        } else if(details.phone == ""){
+            alert("Enter valid phone number");
+            window.location.reload(false);
+            return false;
+        } else if(details.carCapacity < 1 && details.status == true){
+            alert("Car capacity cannot be less than 1");
+            window.location.reload(false);
+            return false;
+        } else{
+           return true
+        }
     }
 
     return(
@@ -95,6 +120,7 @@ function SignupPage({Signup, error}) {
                     className="google-login-button"
                     clientId="277843423406-m30j9jo3krghef8dfae3uvfp3ujk10as.apps.googleusercontent.com"
                     buttonText="Sign up with google"
+                    onRequest={CheckForms}
                     onSuccess={responseSuccessGoogle}
                     onFailure={responseErrorGoogle}
                     cookiePolicy={'single_host_origin'}

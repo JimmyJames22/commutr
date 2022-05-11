@@ -1,15 +1,14 @@
 import { GiCancel } from 'react-icons/gi';
-import { useState, forceUpdate } from 'react'
 import axios from 'axios';
 
-const PassengerEdit = ({passengers}) => {
+const PassengerEdit = ({passengers, data}) => {
 
     function deletePassenger(pass_id){
         axios({
             method: "POST",
             url: "http://localhost:8000/api/deletepassenger",
             data: {
-                r_id: localStorage.getItem('route'), //To be replaced with data.route_id
+                r_id: localStorage.getItem('route'),
                 u_id:pass_id
             }
         }).then(() => {
@@ -17,6 +16,7 @@ const PassengerEdit = ({passengers}) => {
             window.location.reload(false); //james id: 6276bc4d1c5ff58e410661b7
         })
     }
+    if(data.isDriver){
         return (
             <>
             <div className="edit-pass-wrapper">
@@ -32,6 +32,22 @@ const PassengerEdit = ({passengers}) => {
             </div>
             </>
         )
+    }else{
+        return (
+            <>
+            <div className="edit-pass-wrapper">
+                <div className="edit-pass-div" onClick={()=> {if (window.confirm("Drop your route?")){ 
+                    deletePassenger(data._id);
+                }}}>
+                <GiCancel className="delete-icon"/>
+                <h3>Drop your route</h3>
+                <h4>{data.address} to Milton Academy</h4>
+                </div>
+            </div>
+            </>
+        )
+    }
+        
     
     
 }

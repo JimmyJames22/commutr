@@ -115,9 +115,9 @@ function SettingsPage() {
                 </div>
                 <br/> <br/>
                 <div className="settings-subtitle">
-                <h3>Change {data.isDriver ? ("Passenger") : ("Driver")}</h3>
+                <h3>{data.isDriver ? ("Change Passenger") : ("Drop Route")}</h3>
                 </div>
-                <Passengers passengers={passengers} />
+                <Passengers passengers={passengers} data={data}/>
                 <br/>
             </div>
             <Quit />
