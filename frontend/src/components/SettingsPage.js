@@ -16,7 +16,7 @@ function SettingsPage() {
             </p>
             <p className="edit-wrapper">
             <input type="number" name="capacity" className="capacity_box" id="capacity_box" readOnly="true" onChange={e => setDetails({...details, carCapacity: e.target.value})} value={details.carCapacity}/>
-            <button className="edit-btn" onClick={() => {document.getElementById('capacity_box').readOnly = !document.getElementById('capacity_box').readOnly;}}>edit</button>
+            <button className="edit-btn" onClick={() => {changeElement('capacity_box', details.carCapacity, 'carCapacity')}}>edit</button>
             </p>
         </div>;
           }
@@ -59,8 +59,24 @@ function SettingsPage() {
         ridesTaken:0,
         carCapacity:4,
     }
-        
-
+    
+    function changeElement(name, item, field){
+        document.getElementById(name).readOnly = !document.getElementById(name).readOnly;
+        if(document.getElementById(name).readOnly == true){
+            axios({
+                method: "POST",
+                url: "http://localhost:8000/api/changeinfo",
+                data: {
+                    id: data._id,
+                    loc: field,
+                    info:item
+                }
+            }).then(response => {
+                console.log(response)
+            })
+        }
+    }
+    
     // if(localStorage.getItem('userData') != null){ 
     //     const data = JSON.parse(localStorage.getItem('userData'))
     // }
@@ -88,7 +104,7 @@ function SettingsPage() {
                     </p>
                     <p className="edit-wrapper">
                     <input type="text" name="address" className="address_box" id="address_box" readOnly="true" onChange={e => setDetails({...details, address: e.target.value})} value={details.address}/>
-                    <button className="edit-btn" onClick={() => document.getElementById('address_box').readOnly = !document.getElementById('address_box').readOnly}>edit</button>
+                    <button className="edit-btn" onClick={() => {changeElement('address_box', details.address, 'address')}}>edit</button>
                     </p>
                 </div>
                 <br/>
@@ -98,7 +114,7 @@ function SettingsPage() {
                     </p>
                     <p className="edit-wrapper">
                     <input type="text" name="phone" className="phone_box" id="phone_box" readOnly="true" onChange={e => setDetails({...details, phone: e.target.value})} value={details.phone}/>
-                    <button className="edit-btn" onClick={() => {document.getElementById('phone_box').readOnly = !document.getElementById('phone_box').readOnly;}}>edit</button>
+                    <button className="edit-btn" onClick={() => {changeElement('phone_box', details.phone, 'phone')}}>edit</button>
                     </p>
                 </div>
                 <br/>

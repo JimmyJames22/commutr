@@ -60,3 +60,21 @@ exports.deletePassenger = (req, res) => {
         })
     })
 }
+
+exports.changeInfo = (req, res) => {
+    const {id, loc, info} = req.body;
+    var user_id = mongo.ObjectId(id);
+    var query = {_id:user_id};
+    var setParams = {}
+    setParams[loc] = info;
+    var setval = {$set: setParams};
+    db.collection("users").updateOne(
+        query,
+        setval
+    ).then(response => {
+        res.json({
+            result: setval,
+            resp:response,
+        })
+    })
+}

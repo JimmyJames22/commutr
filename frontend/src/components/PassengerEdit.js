@@ -22,7 +22,7 @@ const PassengerEdit = ({passengers, data}) => {
             <div className="edit-pass-wrapper">
             {passengers.map((passenger) =>(
                 <div className="edit-pass-div" onClick={()=> {if (window.confirm("Delete "+passenger.nameFirst+" from your carpool?")){ 
-                    deletePassenger(passenger.id);
+                    deletePassenger(passenger.id); //Deleting selected passenger
                 }}}>
                 <GiCancel className="delete-icon"/>
                 <h3 key={passenger.id}>{passenger.nameFirst} {passenger.nameLast}</h3>
@@ -37,7 +37,7 @@ const PassengerEdit = ({passengers, data}) => {
             <>
             <div className="edit-pass-wrapper">
                 <div className="edit-pass-div" onClick={()=> {if (window.confirm("Drop your route?")){ 
-                    deletePassenger(data._id);
+                    deletePassenger(data._id); //Deleting yourself
                 }}}>
                 <GiCancel className="delete-icon"/>
                 <h3>Drop your route</h3>
