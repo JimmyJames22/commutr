@@ -22,7 +22,7 @@ function PassengerList({passengers, requests, data}) {
             
             {passengers.map((passenger) =>(
                 <div className="pass-div" style={{ background: passenger.id == data._id? '#98fb98': '#F8F0E3'}} >
-                <h3 key={passenger.id}>{passenger.nameFirst} {passenger.nameLast} </h3>
+                <h3 key={passenger.id}>{passenger.nameFirst} {passenger.nameLast} <text>{passenger.isDriver == true? '(Driver)':''}</text></h3>
                 <h4 key={passenger.id}>{passenger.address}</h4>
                 </div>
             ))}

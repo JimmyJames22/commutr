@@ -81,6 +81,11 @@ div .pass-wrapper h3{
     color:#232B2B;
 }
 
+div .pass-wrapper text{
+    margin-bottom: 0px;
+    color:#888;
+}
+
 div .pass-wrapper h4{
     margin-bottom: 0px;
     color: #888;

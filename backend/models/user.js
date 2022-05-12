@@ -35,6 +35,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    place_id: {
+        type: String,
+        required: true
+    },
+    xy: {
+        type: Array,
+        required: true
+    },
     isDriver: {
         type: Boolean,
         required: true
