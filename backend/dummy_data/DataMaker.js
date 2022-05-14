@@ -8,15 +8,18 @@ const axios = require("axios");
 // set coordinates for Milton Academy
 const y = 42.257227602977615;
 const x = -71.06995481869149;
+const dest_place_id = "ChIJ0VjiTT9844kRBLc0QGPqwrY";
 
-const num_drivers = 15;
-const num_passengers = 60;
+const num_drivers = 25;
+const num_passengers = 80;
 
 // parameters for arrival/leaving times
 const min_mrn_time = 420;
 const mrn_time_span = 180;
 const min_aft_time = 900;
 const aft_time_span = 240;
+
+let url_requests = [];
 
 const milton_coords = [
   {
@@ -27,8 +30,10 @@ const milton_coords = [
 
 const milton_list = {
   name: "Milton Academy",
-  x: x,
-  y: y,
+  place_id: dest_place_id,
+  lat: y,
+  lng: x,
+  domain: "@milton.edu",
 };
 
 // initialize other variables
@@ -61,23 +66,26 @@ const chooseName = () => {
 // looper function
 const looper = (num, min, max, is_driver, arr, list) => {
   // initialize variables to save space
+
+  // loop according to params
+  for (i = 0; i < num; i++) {
+    getPlaceID(min, max, is_driver, arr, list);
+    // update array specified in params
+  }
+};
+
+function getPlaceID(min, max, is_driver, arr, list) {
   let thta;
   let dist;
   let y_delta;
   let x_delta;
-  let user;
-  let firstname;
-  let lastname;
-  let class_year;
 
-  // loop according to params
-  for (i = 0; i < 1; i++) {
-    // save random distances and angles
-    thta = Math.floor(Math.random() * 360);
-    dist = Math.random() * max + min;
-    y_delta = Math.sin(thta) * dist;
-    x_delta = Math.cos(thta) * dist;
+  thta = Math.floor(Math.random() * 360);
+  dist = Math.random() * max + min;
+  y_delta = Math.sin(thta) * dist;
+  x_delta = Math.cos(thta) * dist;
 
+  url_requests.push(
     axios
       .get(
         `https://maps.googleapis.com/maps/api/geocode/json?latlng=${
@@ -86,60 +94,79 @@ const looper = (num, min, max, is_driver, arr, list) => {
       )
       .then((response) => {
         console.log(y + y_delta + ", " + (x + x_delta));
-        console.log(response.data);
+        console.log(response.data.results[0].formatted_address);
+        console.log(response.data.results[0].place_id);
+        makeUserObj(
+          response.data.results[0].place_id,
+          response.data.results[0].geometry.location.lng,
+          response.data.results[0].geometry.location.lat,
+          response.data.results[0].formatted_address,
+          is_driver,
+          arr,
+          list
+        );
       })
       .catch((error) => {
-        console.log(error);
-      });
+        console.error(error);
+        getPlaceID(min, max, is_driver, arr, list);
+      })
+  );
+}
 
-    // update array specified in params
-    user = {};
-    user.x = x + x_delta;
-    user.y = y + y_delta;
-    user.dest_x = x;
-    user.dest_y = y;
-    arr.push(user);
-    firstname = chooseName();
-    lastname = chooseName();
-    user.firstname = firstname;
-    user.lastname = lastname;
-    user.is_driver = is_driver;
-    user.uid = id_counter;
-    id_counter++;
-    user.phone = Math.ceil(Math.random() * 9999999999);
+function makeUserObj(place_id, lng, lat, address, is_driver, arr, list) {
+  let user;
+  let firstname = chooseName();
+  let lastname = chooseName();
+  let class_year;
+  let car_capacity;
 
-    // set arrival and departure times
-    user.arrival_times = [];
-    user.departure_times = [];
-
-    for (let j = 0; j < 5; j++) {
-      storeTimes(user, j);
-    }
-
-    user.arrival_times.push({ day: "saturday", time: NaN, commuting: false });
-    user.arrival_times.push({ day: "sunday", time: NaN, commuting: false });
-    user.departure_times.push({ day: "saturday", time: NaN, commuting: false });
-    user.departure_times.push({ day: "sunday", time: NaN, commuting: false });
-
-    if (is_driver) {
-      user.is_driver = true;
-      user.car_capacity = Math.ceil(Math.random() * 3) + 2;
-      class_year = 2026 - Math.ceil(Math.random() * 3);
-    } else {
-      user.is_driver = false;
-      user.car_capacity = -1;
-      class_year = 2026 - Math.ceil(Math.random() * 4);
-    }
-    user.class_year = class_year;
-    user.email =
-      firstname.toLowerCase() +
-      "_" +
-      lastname.toLowerCase() +
-      (class_year - 2000) +
-      "@milton.edu";
-    list.push(user);
+  if (is_driver) {
+    car_capacity = Math.ceil(Math.random() * 3) + 2;
+    class_year = 2026 - Math.ceil(Math.random() * 3);
+  } else {
+    car_capacity = -1;
+    class_year = 2026 - Math.ceil(Math.random() * 4);
   }
-};
+
+  user = {
+    firstname: firstname,
+    lastname: lastname,
+    place_id: place_id,
+    lng: lng,
+    lat: lat,
+    address: address,
+    dest_place_id: dest_place_id,
+    dest_lng: x,
+    dest_lat: y,
+    dest_address: "170 Centre Street Milton, MA 02186, USA",
+    is_driver: is_driver,
+    class_year: class_year,
+    car_capacity: car_capacity,
+    uid: id_counter,
+    phone: Math.ceil(Math.random() * 9999999999),
+    arrival_times: [],
+    departure_times: [],
+  };
+
+  id_counter++;
+
+  for (let j = 0; j < 5; j++) {
+    storeTimes(user, j);
+  }
+
+  user.arrival_times.push({ day: "saturday", time: NaN, commuting: false });
+  user.arrival_times.push({ day: "sunday", time: NaN, commuting: false });
+  user.departure_times.push({ day: "saturday", time: NaN, commuting: false });
+  user.departure_times.push({ day: "sunday", time: NaN, commuting: false });
+
+  user.email =
+    firstname.toLowerCase() +
+    "_" +
+    lastname.toLowerCase() +
+    (class_year - 2000) +
+    "@milton.edu";
+  list.push(user);
+}
 
 function storeTimes(user, j) {
   let time;
@@ -224,7 +251,7 @@ function storeTimes(user, j) {
 // make the users
 makeUsers();
 
-const writeData = () => {
+Promise.all(url_requests).then(() => {
   let student_raw = JSON.stringify(student_list);
   let driver_raw = JSON.stringify(driver_list);
   let school_raw = JSON.stringify(milton_list);
@@ -238,6 +265,4 @@ const writeData = () => {
   fs.writeFile("./data/school.json", school_raw, "utf8", () => {
     console.log("exported");
   });
-};
-
-writeData();
+});

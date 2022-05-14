@@ -1,12 +1,17 @@
 const fs = require("fs");
-const { format } = require("path");
+const { format, resolve } = require("path");
 const { stringify } = require("querystring");
 const User = require("./supporters/User.js");
+const { encode } = require("@googlemaps/polyline-codec");
+const axios = require("axios");
 
 const {
   calcEfficiency,
   sumEfficiency,
 } = require("./supporters/CalcEfficiency.js");
+const { rejects } = require("assert");
+
+const API_KEY = "AIzaSyCiN6uQWhP-Di1Lnwn63aw8tQJKUD-amPA";
 
 let student_raw = fs.readFileSync("./data/student.json");
 let driver_raw = fs.readFileSync("./data/driver.json");
@@ -19,7 +24,9 @@ let users = [];
 let drivers = [];
 let students = [];
 
-let route_dist_tolerance = 1.15; // maximum multiple of original commute distance for drivers
+let route_time_tolerance = 1.15; // maximum multiple of original commute distance for drivers
+
+let setup_map = false;
 
 let userMap = [];
 
@@ -30,23 +37,10 @@ let effList = [];
 
 let counter = 0;
 
+let init_promises = [];
+
 //! list of functions to run
 init();
-for (let j = 0; j < 10000; j++) {
-  if (j - 1000 * counter >= 0) {
-    counter++;
-    // console.log();
-    // console.log();
-    // console.log();
-    // console.log();
-    // console.log();
-    // console.log();
-    console.log(j);
-  }
-  randomRoutes();
-  checkIfBetter();
-}
-saveNewJson();
 
 for (let i = 0; i < effList.length; i++) {
   console.log("Driver " + i + ": " + effList[i][effList[i].length - 1]);
@@ -55,7 +49,7 @@ for (let i = 0; i < effList.length; i++) {
 
 function init() {
   for (i = 0; i < driver_data.length; i++) {
-    let user = new User(driver_data[i], route_dist_tolerance);
+    let user = new User(driver_data[i], route_time_tolerance);
     users.push(user);
     drivers.push(user);
     effList.push([user.best_route.efficiency]);
@@ -65,7 +59,7 @@ function init() {
   let student_ids = [];
 
   for (let i = 0; i < student_data.length; i++) {
-    let user = new User(student_data[i], route_dist_tolerance);
+    let user = new User(student_data[i], route_time_tolerance);
     student_ids.push(users.length);
     users.push(user);
     students.push(user);
@@ -83,18 +77,137 @@ function init() {
 }
 
 function processDistances() {
+  //! MORE CAN BE DONE TO OPTIMIZE THIS METHOD (make it so that multiple requests happen at once when the cumilitive number of distance calcs is less than 100)
+  //! But I don't have time
+  let dest_coords = [];
+  let dest_uids = [];
+  let dest_counter = 0;
+  let reqs_by_rate = [];
+  let current_rate = [];
+
+  let num_requests = 0;
+
   for (let k = 0; k < users.length; k++) {
+    console.log(users[k].uid);
     for (let l = k + 1; l < users.length; l++) {
-      userMap.push({
-        u1: users[k].uid,
-        u2: users[l].uid,
-        distance: users[k].distanceToUser(users[l]),
-      });
+      if (dest_counter >= 25) {
+        current_rate.push({
+          orig_param: "place_id:" + users[k].place_id,
+          dest_param: "enc:" + encode(dest_coords) + ":",
+          orig_uid: users[k].uid,
+          dest_uids: dest_uids.slice(0),
+        });
+
+        num_requests++;
+
+        reqs_by_rate.push(current_rate.slice(0));
+        dest_coords = [];
+        dest_uids = [];
+        current_rate = [];
+        dest_counter = 0;
+      }
+
+      dest_coords.push([users[l].lat, users[l].lng]);
+      dest_uids.push(users[l].uid);
+      dest_counter++;
     }
+    if (dest_coords.length > 0) {
+      current_rate.push({
+        orig_param: "place_id:" + users[k].place_id,
+        dest_param: "enc:" + encode(dest_coords) + ":",
+        orig_uid: users[k].uid,
+        dest_uids: dest_uids.slice(0),
+      });
+      dest_coords = [];
+      dest_uids = [];
+
+      num_requests++;
+    }
+    // userMap.push({
+    //   u1: users[k].uid,
+    //   u2: users[l].uid,
+    //   distance: users[k].distanceToUser(users[l]),
+    // });
+  }
+  reqs_by_rate.push(current_rate.slice(0));
+  console.log(JSON.stringify(reqs_by_rate.length));
+  console.log(num_requests);
+
+  makeUserMapReq(reqs_by_rate);
+}
+
+async function makeUserMapReq(reqs_by_rate) {
+  for (let i = 0; i < reqs_by_rate.length; i++) {
+    for (let j = 0; j < reqs_by_rate[i].length; j++) {
+      init_promises.push(
+        axios
+          .get(
+            `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${reqs_by_rate[i][j].orig_param}&destinations=${reqs_by_rate[i][j].dest_param}&key=${API_KEY}`
+          )
+          .then((response) => {
+            let dist;
+            let dur;
+
+            for (let l = 0; l < response.data.rows[0].elements.length; l++) {
+              try {
+                dist = response.data.rows[0].elements[l].distance.value;
+              } catch (err) {
+                console.log(err.message);
+                dist = -1;
+              }
+
+              try {
+                dur = response.data.rows[0].elements[l].duration.value;
+              } catch (err) {
+                dur = -1;
+              }
+              userMap.push({
+                u1: reqs_by_rate[i][j].orig_uid,
+                u2: reqs_by_rate[i][j].dest_uids[l],
+                dist: dist,
+                dur: dur,
+              });
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+      );
+    }
+    await sleep(1000);
+    console.log((i / (reqs_by_rate.length - 1)) * 100);
   }
 
-  console.log(userMap);
-  console.log("Finished processDistances()");
+  runProgram();
+}
+
+function runProgram() {
+  Promise.all(init_promises).then(() => {
+    console.log(userMap);
+    console.log("DONE");
+    fs.writeFile("./data/usermap.json", JSON.stringify(userMap), "utf8", () => {
+      console.log("exported");
+    });
+    // for (let j = 0; j < 10000; j++) {
+    //   if (j - 1000 * counter >= 0) {
+    //     counter++;
+    //     // console.log();
+    //     // console.log();
+    //     // console.log();
+    //     // console.log();
+    //     // console.log();
+    //     // console.log();
+    //     console.log(j);
+    //   }
+    //   randomRoutes();
+    //   checkIfBetter();
+    // }
+    // saveNewJson();
+  });
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function randomRoutes() {
