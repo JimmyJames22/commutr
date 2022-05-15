@@ -1,8 +1,8 @@
 // weights need to be adjusted to help normalize
-let route_stops_weight = 150;
-let route_dist_weight = 40;
-let arrival_time_weight = 0.0001;
-let departure_time_weight = 0.0001;
+let route_stops_weight = 100050;
+let route_time_weight = 100;
+let arrival_time_weight = 0;
+let departure_time_weight = 0;
 
 function sumEfficiency(drivers) {
   let efficiency_back = 0;
@@ -10,7 +10,7 @@ function sumEfficiency(drivers) {
   for (let i = 0; i < drivers.length; i++) {
     let driver = drivers[i];
     let new_eff = calcEfficiency(
-      driver.max_dist - driver.new_route.total_dist,
+      driver.max_dur - driver.new_route.total_dur,
       driver.new_route.stops
     );
     efficiency_back += new_eff;
@@ -20,7 +20,7 @@ function sumEfficiency(drivers) {
   return efficiency_back;
 }
 
-function calcEfficiency(dist_delta, stops) {
+function calcEfficiency(dur_delta, stops) {
   let num_stops = stops.length;
 
   let arrival_aad_ave = 0;
@@ -92,7 +92,7 @@ function calcEfficiency(dist_delta, stops) {
 
   return (
     num_stops * route_stops_weight +
-    dist_delta * route_dist_weight -
+    dur_delta * route_time_weight -
     Math.pow(arrival_aad_ave, 2) * arrival_time_weight -
     Math.pow(departure_aad_ave, 2) * departure_time_weight
   );

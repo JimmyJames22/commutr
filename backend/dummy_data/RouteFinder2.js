@@ -15,10 +15,11 @@ const API_KEY = "AIzaSyCiN6uQWhP-Di1Lnwn63aw8tQJKUD-amPA";
 
 let student_raw = fs.readFileSync("./data/student.json");
 let driver_raw = fs.readFileSync("./data/driver.json");
-let school_raw = fs.readFileSync("./data/school.json");
+let dest_raw = fs.readFileSync("./data/school.json");
 
 let student_data = JSON.parse(student_raw);
 let driver_data = JSON.parse(driver_raw);
+let dest_data = JSON.parse(dest_raw);
 
 let users = [];
 let drivers = [];
@@ -47,9 +48,17 @@ for (let i = 0; i < effList.length; i++) {
   console.log(drivers[i].best_route.stops_by_uid);
 }
 
+function getUser(uid) {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].uid == uid) {
+      return users[i];
+    }
+  }
+}
+
 function init() {
   for (i = 0; i < driver_data.length; i++) {
-    let user = new User(driver_data[i], route_time_tolerance);
+    let user = new User(driver_data[i], route_time_tolerance, init_promises);
     users.push(user);
     drivers.push(user);
     effList.push([user.best_route.efficiency]);
@@ -59,7 +68,7 @@ function init() {
   let student_ids = [];
 
   for (let i = 0; i < student_data.length; i++) {
-    let user = new User(student_data[i], route_time_tolerance);
+    let user = new User(student_data[i], route_time_tolerance, init_promises);
     student_ids.push(users.length);
     users.push(user);
     students.push(user);
@@ -86,6 +95,11 @@ function processDistances() {
   let current_rate = [];
 
   let num_requests = 0;
+
+  let all_user_coords = [];
+
+  let current_user_coords = [];
+  let current_user_uids = [];
 
   for (let k = 0; k < users.length; k++) {
     console.log(users[k].uid);
@@ -123,20 +137,33 @@ function processDistances() {
 
       num_requests++;
     }
-    // userMap.push({
-    //   u1: users[k].uid,
-    //   u2: users[l].uid,
-    //   distance: users[k].distanceToUser(users[l]),
-    // });
+
+    if (current_user_coords.length < 25) {
+      current_user_coords.push([users[k].lat, users[k].lng]);
+      current_user_uids.push(users[k].uid);
+    } else {
+      all_user_coords.push({
+        uids: current_user_uids.slice(0),
+        polyline: encode(current_user_coords),
+      });
+      current_user_coords = [[users[k].lat, users[k].lng]];
+      current_user_uids = [users[k].uid];
+    }
   }
+
   reqs_by_rate.push(current_rate.slice(0));
   console.log(JSON.stringify(reqs_by_rate.length));
   console.log(num_requests);
 
-  makeUserMapReq(reqs_by_rate);
+  all_user_coords.push({
+    uids: current_user_uids.slice(0),
+    polyline: encode(current_user_coords),
+  });
+
+  makeUserMapReq(reqs_by_rate, all_user_coords);
 }
 
-async function makeUserMapReq(reqs_by_rate) {
+async function makeUserMapReq(reqs_by_rate, all_user_coords) {
   for (let i = 0; i < reqs_by_rate.length; i++) {
     for (let j = 0; j < reqs_by_rate[i].length; j++) {
       init_promises.push(
@@ -159,6 +186,7 @@ async function makeUserMapReq(reqs_by_rate) {
               try {
                 dur = response.data.rows[0].elements[l].duration.value;
               } catch (err) {
+                console.log(err.message);
                 dur = -1;
               }
               userMap.push({
@@ -174,8 +202,46 @@ async function makeUserMapReq(reqs_by_rate) {
           })
       );
     }
-    await sleep(1000);
+    await sleep(5000);
     console.log((i / (reqs_by_rate.length - 1)) * 100);
+  }
+
+  for (let i = 0; i < all_user_coords.length; i++) {
+    init_promises.push(
+      axios
+        .get(
+          `https://maps.googleapis.com/maps/api/distancematrix/json?origins=place_id:${dest_data.place_id}&destinations=enc:${all_user_coords[i].polyline}:&key=${API_KEY}`
+        )
+        .then((response) => {
+          for (let l = 0; l < response.data.rows[0].elements.length; l++) {
+            let user = users[all_user_coords[i].uids[l]];
+            try {
+              user.to_school = response.data.rows[0].elements[l].duration.value;
+            } catch (err) {
+              console.log(err.message);
+              user.to_school = -1;
+            }
+
+            if (user.is_driver == true) {
+              try {
+                user.max_dur =
+                  response.data.rows[0].elements[l].duration.value *
+                  route_time_tolerance;
+              } catch (err) {
+                console.log(err.message);
+                user.max_dur = -1;
+              }
+
+              user.makeFirstRoute();
+            }
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        })
+    );
+    await sleep(5000);
+    console.log((i / (all_user_coords.length - 1)) * 100);
   }
 
   runProgram();
@@ -183,26 +249,45 @@ async function makeUserMapReq(reqs_by_rate) {
 
 function runProgram() {
   Promise.all(init_promises).then(() => {
-    console.log(userMap);
     console.log("DONE");
     fs.writeFile("./data/usermap.json", JSON.stringify(userMap), "utf8", () => {
-      console.log("exported");
+      console.log("usermap exported");
     });
-    // for (let j = 0; j < 10000; j++) {
-    //   if (j - 1000 * counter >= 0) {
-    //     counter++;
-    //     // console.log();
-    //     // console.log();
-    //     // console.log();
-    //     // console.log();
-    //     // console.log();
-    //     // console.log();
-    //     console.log(j);
-    //   }
-    //   randomRoutes();
-    //   checkIfBetter();
-    // }
-    // saveNewJson();
+    fs.writeFile(
+      "./data/users_with_gmaps.json",
+      JSON.stringify(users),
+      "utf8",
+      () => {
+        console.log("users exported");
+      }
+    );
+
+    let possible_stops = [];
+
+    for (let i = 0; i < students.length; i++) {
+      possible_stops.push(students[i].uid);
+    }
+
+    for (let i = 0; i < drivers.length; i++) {
+      drivers[i].possible_stops = possible_stops.slice(0);
+      console.log(drivers[i].possible_stops);
+    }
+
+    for (let j = 0; j < 10000; j++) {
+      if (j - 1000 * counter >= 0) {
+        counter++;
+        // console.log();
+        // console.log();
+        // console.log();
+        // console.log();
+        // console.log();
+        // console.log();
+        console.log(j);
+      }
+      randomRoutes();
+      checkIfBetter();
+    }
+    saveNewJson();
   });
 }
 
@@ -222,6 +307,11 @@ function randomRoutes() {
   for (let i = 0; i < drivers.length; i++) {
     driver = drivers[i];
 
+    if (driver.to_school == -1) {
+      driver.new_route = driver.best_route;
+      continue;
+    }
+
     if (driver.possible_route_stops.length < driver.max_stops) {
       num_stops = Math.ceil(Math.random() * driver.possible_route_stops.length);
     } else {
@@ -233,7 +323,7 @@ function randomRoutes() {
     // console.log("RandomRoutes " + driver.uid);
 
     // can't be recursive or it will max out the stack size
-    while (new_route.total_dist >= driver.max_dist) {
+    while (new_route.total_dur >= driver.max_dur) {
       if (driver.possible_route_stops.length < driver.max_stops) {
         num_stops = Math.ceil(
           Math.random() * driver.possible_route_stops.length
@@ -254,19 +344,24 @@ function randomStops(num_stops, driver) {
   let new_route = {
     stops: [driver.driver_stop_object],
     stops_by_uid: [driver.uid],
-    total_dist: 0,
+    total_dur: 0,
   };
 
   if (driver.possible_route_stops.length == 0) {
-    new_route.total_dist = driver.to_school;
+    new_route.total_dur = driver.to_school;
     return new_route;
   }
 
   for (let j = 0; j < num_stops; j++) {
     let stop_uid;
+    let stop_user;
+
     let invalid_stop = true;
+    let breakout = false;
+
     let stop_in_route = false;
-    let over_distance = false;
+    let over_duration = false;
+
     let updated_stop_number = false;
 
     let try_counter = 0;
@@ -279,6 +374,37 @@ function randomStops(num_stops, driver) {
           Math.ceil(Math.random() * driver.possible_route_stops.length) - 1
         ];
 
+      stop_user = getUser(stop_uid);
+
+      if (stop_user.to_school == -1) {
+        for (let i = 0; i < driver.possible_route_stops.length; i++) {
+          if (driver.possible_route_stops[i] == stop_uid) {
+            driver.possible_route_stops.splice(i, 1);
+            break;
+          }
+        }
+
+        for (let i = 0; i < driver.possible_stops.length; i++) {
+          if (driver.possible_stops[i] == stop_uid) {
+            driver.possible_stops.splice(i, 1);
+            break;
+          }
+        }
+
+        if (driver.possible_route_stops.length < num_stops) {
+          num_stops = driver.possible_route_stops.length;
+          if (new_route.stops.length == num_stops) {
+            breakout = true;
+          }
+        }
+
+        if (breakout) {
+          breakout = false;
+          break;
+        } else {
+          continue;
+        }
+      }
       // console.log("PS " + driver.possible_stops);
 
       // check if the stop is within the route already
@@ -290,20 +416,20 @@ function randomStops(num_stops, driver) {
       }
 
       // check if the proposed stop makes the route unreachable by the driver
-      let new_dist =
-        new_route.total_dist +
-        users[stop_uid].distanceToUid(
+      let new_dur =
+        new_route.total_dur +
+        stop_user.durationToUid(
           new_route.stops_by_uid[new_route.stops_by_uid.length - 1],
           userMap
         ) +
-        users[stop_uid].to_school;
+        stop_user.to_school;
 
-      if (new_dist > driver.max_dist) {
-        over_distance = true;
+      if (new_dur > driver.max_dur) {
+        over_duration = true;
         // check if the new stop is over distance and if so remove it from the driver's list
         if (
-          driver.distanceToUid(stop_uid, userMap) + users[stop_uid].to_school >
-          driver.max_dist
+          driver.durationToUid(stop_uid, userMap) + stop_user.to_school >
+          driver.max_dur
         ) {
           for (let i = 0; i < driver.possible_stops.length; i++) {
             if (driver.possible_stops[i] == stop_uid) {
@@ -320,7 +446,7 @@ function randomStops(num_stops, driver) {
                 return {
                   stops: [driver.driver_stop_object],
                   stops_by_uid: [driver.uid],
-                  total_dist: driver.to_school,
+                  total_dur: driver.to_school,
                 };
                 // reset num_stops if impacted by reduction in driver.possible_route_stops size
               } else if (
@@ -336,16 +462,16 @@ function randomStops(num_stops, driver) {
       }
 
       if (updated_stop_number && new_route.stops.length == num_stops) {
-        new_route.total_dist +=
-          users[new_route.stops_by_uid[new_route.stops.length - 1]].to_school;
+        new_route.total_dur +=
+          new_route.stops[new_route.stops.length - 1].to_school;
         return new_route;
-      } else if (stop_in_route || over_distance) {
+      } else if (stop_in_route || over_duration) {
         stop_in_route = false;
-        over_distance = false;
+        over_duration = false;
 
         if (try_counter > driver.possible_route_stops.length * 15) {
-          new_route.total_dist +=
-            users[new_route.stops_by_uid[new_route.stops.length - 1]].to_school;
+          new_route.total_dur +=
+            new_route.stops[new_route.stops.length - 1].to_school;
           return new_route;
         }
 
@@ -357,8 +483,8 @@ function randomStops(num_stops, driver) {
 
     // stop for route selected -- now check to make sure the stop is within the route tollerance
     new_route.stops_by_uid.push(stop_uid);
-    new_route.stops.push(users[stop_uid]);
-    new_route.total_dist += users[stop_uid].distanceToUid(
+    new_route.stops.push(stop_user);
+    new_route.total_dur += stop_user.durationToUid(
       new_route.stops_by_uid[new_route.stops_by_uid.length - 2],
       userMap
     );
@@ -374,8 +500,7 @@ function randomStops(num_stops, driver) {
     }
   }
 
-  new_route.total_dist +=
-    users[new_route.stops_by_uid[new_route.stops.length - 1]].to_school;
+  new_route.total_dur += new_route.stops[new_route.stops.length - 1].to_school;
   return new_route;
 }
 

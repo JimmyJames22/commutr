@@ -2,7 +2,7 @@ const Time = require("./Time.js");
 const { calcEfficiency } = require("./CalcEfficiency");
 
 class User {
-  constructor(user, route_time_tolerance) {
+  constructor(user) {
     this.firstname = user.firstname;
     this.lastname = user.lastname;
     this.place_id = user.place_id;
@@ -18,14 +18,14 @@ class User {
     this.email = user.email;
     this.phone = user.phone;
     this.uid = user.uid;
-    this.to_school;
+    this.to_school = 0;
 
     this.arrival_times = user.arrival_times;
     this.departure_times = user.departure_times;
 
     if (this.is_driver) {
       this.max_stops = user.car_capacity;
-      this.max_dist;
+      this.max_dur;
       this.driver_stop_object = {};
       this.best_route = {};
       this.best_route.efficiency;
@@ -35,22 +35,43 @@ class User {
     }
   }
 
-  distanceToUser(user) {
-    // necessary to construct userMap
-    return Math.sqrt(
-      Math.pow(this.x - user.x, 2) + Math.pow(this.y - user.y, 2)
+  makeFirstRoute() {
+    this.driver_stop_object = {
+      firstname: this.firstname,
+      lastname: this.lastname,
+      place_id: this.place_id,
+      lng: this.lng,
+      lat: this.lat,
+      address: this.address,
+      class_year: this.class_year,
+      email: this.email,
+      phone: this.phone,
+      uid: this.uid,
+      is_driver: true,
+      to_school: this.to_school,
+      arrival_times: this.arrival_times,
+      departure_times: this.departure_times,
+    };
+    this.best_route = {
+      stops: [this.driver_stop_object],
+      stops_by_uid: [this.uid],
+      total_dur: this.to_school,
+    };
+    this.best_route.efficiency = calcEfficiency(
+      this.max_dur - this.best_route.total_dur,
+      this.best_route.stops
     );
   }
 
-  distanceToUid(uid, userMap) {
+  durationToUid(uid, userMap) {
     // calls from userMap
     let map;
     for (let k = 0; k < userMap.length; k++) {
       map = userMap[k];
       if (map.u1 == this.uid && map.u2 == uid) {
-        return map.distance;
+        return map.dur;
       } else if (map.u1 == uid && map.u2 == this.uid) {
-        return map.distance;
+        return map.dur;
       }
     }
     return 0;

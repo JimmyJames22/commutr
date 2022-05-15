@@ -10,8 +10,8 @@ const y = 42.257227602977615;
 const x = -71.06995481869149;
 const dest_place_id = "ChIJ0VjiTT9844kRBLc0QGPqwrY";
 
-const num_drivers = 25;
-const num_passengers = 80;
+const num_drivers = 5;
+const num_passengers = 20;
 
 // parameters for arrival/leaving times
 const min_mrn_time = 420;

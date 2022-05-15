@@ -1,1 +1,860 @@
-[{"firstname":"Willabella","lastname":"Almeria","class_year":2023,"email":"willabella_almeria23@milton.edu","phone":2800755062,"uid":0,"is_driver":true,"to_school":null,"arrival_times":[{"day":"monday","time":462.23674238483414,"commuting":true},{"day":"tuesday","time":535.4948534831526,"commuting":true},{"day":"wednesday","time":505.7421874334327,"commuting":true},{"day":"thursday","time":554.7213562858249,"commuting":true},{"day":"friday","time":440.2535242779582,"commuting":true},{"day":"saturday","time":null,"commuting":false},{"day":"sunday","time":null,"commuting":false}],"departure_times":[{"day":"monday","time":-1,"commuting":true},{"day":"tuesday","time":1104.376729738004,"commuting":true},{"day":"wednesday","time":967.5691016035441,"commuting":true},{"day":"thursday","time":1088.3583003203748,"commuting":true},{"day":"friday","time":972.7136220865242,"commuting":true},{"day":"saturday","time":null,"commuting":false},{"day":"sunday","time":null,"commuting":false}],"max_stops":3,"max_dist":null,"driver_stop_object":{"firstname":"Willabella","lastname":"Almeria","class_year":2023,"email":"willabella_almeria23@milton.edu","phone":2800755062,"uid":0,"is_driver":true,"to_school":null,"arrival_times":[{"day":"monday","time":462.23674238483414,"commuting":true},{"day":"tuesday","time":535.4948534831526,"commuting":true},{"day":"wednesday","time":505.7421874334327,"commuting":true},{"day":"thursday","time":554.7213562858249,"commuting":true},{"day":"friday","time":440.2535242779582,"commuting":true},{"day":"saturday","time":null,"commuting":false},{"day":"sunday","time":null,"commuting":false}],"departure_times":[{"day":"monday","time":-1,"commuting":true},{"day":"tuesday","time":1104.376729738004,"commuting":true},{"day":"wednesday","time":967.5691016035441,"commuting":true},{"day":"thursday","time":1088.3583003203748,"commuting":true},{"day":"friday","time":972.7136220865242,"commuting":true},{"day":"saturday","time":null,"commuting":false},{"day":"sunday","time":null,"commuting":false}]},"best_route":{"stops":[{"firstname":"Willabella","lastname":"Almeria","class_year":2023,"email":"willabella_almeria23@milton.edu","phone":2800755062,"uid":0,"is_driver":true,"to_school":null,"arrival_times":[{"day":"monday","time":462.23674238483414,"commuting":true},{"day":"tuesday","time":535.4948534831526,"commuting":true},{"day":"wednesday","time":505.7421874334327,"commuting":true},{"day":"thursday","time":554.7213562858249,"commuting":true},{"day":"friday","time":440.2535242779582,"commuting":true},{"day":"saturday","time":null,"commuting":false},{"day":"sunday","time":null,"commuting":false}],"departure_times":[{"day":"monday","time":-1,"commuting":true},{"day":"tuesday","time":1104.376729738004,"commuting":true},{"day":"wednesday","time":967.5691016035441,"commuting":true},{"day":"thursday","time":1088.3583003203748,"commuting":true},{"day":"friday","time":972.7136220865242,"commuting":true},{"day":"saturday","time":null,"commuting":false},{"day":"sunday","time":null,"commuting":false}]}],"stops_by_uid":[0],"total_dist":null,"efficiency":null},"new_route":{"stops":[{"firstname":"Willabella","lastname":"Almeria","class_year":2023,"email":"willabella_almeria23@milton.edu","phone":2800755062,"uid":0,"is_driver":true,"to_school":null,"arrival_times":[{"day":"monday","time":462.23674238483414,"commuting":true},{"day":"tuesday","time":535.4948534831526,"commuting":true},{"day":"wednesday","time":505.7421874334327,"commuting":true},{"day":"thursday","time":554.7213562858249,"commuting":true},{"day":"friday","time":440.2535242779582,"commuting":true},{"day":"saturday","time":null,"commuting":false},{"day":"sunday","time":null,"commuting":false}],"departure_times":[{"day":"monday","time":-1,"commuting":true},{"day":"tuesday","time":1104.376729738004,"commuting":true},{"day":"wednesday","time":967.5691016035441,"commuting":true},{"day":"thursday","time":1088.3583003203748,"commuting":true},{"day":"friday","time":972.7136220865242,"commuting":true},{"day":"saturday","time":null,"commuting":false},{"day":"sunday","time":null,"commuting":false}]},{"firstname":"Sammy","lastname":"Dell","class_year":2022,"email":"sammy_dell22@milton.edu","phone":8451316719,"uid":0,"is_driver":false,"to_school":null,"arrival_times":[{"day":"monday","time":544.2321674001386,"commuting":true},{"day":"tuesday","time":508.0099833139348,"commuting":true},{"day":"wednesday","time":436.6320440959939,"commuting":true},{"day":"thursday","time":592.4238688307173,"commuting":true},{"day":"friday","time":458.1326237432236,"commuting":true},{"day":"saturday","time":null,"commuting":false},{"day":"sunday","time":null,"commuting":false}],"departure_times":[{"day":"monday","time":1044.9662119551224,"commuting":true},{"day":"tuesday","time":917.9800479563153,"commuting":true},{"day":"wednesday","time":969.1635724672255,"commuting":true},{"day":"thursday","time":1121.9477126963052,"commuting":true},{"day":"friday","time":986.0332527408932,"commuting":true},{"day":"saturday","time":null,"commuting":false},{"day":"sunday","time":null,"commuting":false}]}],"stops_by_uid":[0,1],"total_dist":null,"efficiency":null},"possible_stops":[1],"possible_route_stops":[]}]
+[
+  {
+    "firstname": "Bianca",
+    "lastname": "Paige",
+    "place_id": "GhIJrm1AOisLRUARkrE1trKzUcA",
+    "lng": -70.80778269999999,
+    "lat": 42.0872567,
+    "address": "35PR+WV Pembroke, MA, USA",
+    "dest_place_id": "ChIJ0VjiTT9844kRBLc0QGPqwrY",
+    "dest_lng": -71.06995481869149,
+    "dest_lat": 42.257227602977615,
+    "dest_address": "170 Centre Street Milton, MA 02186, USA",
+    "is_driver": true,
+    "class_year": 2025,
+    "email": "bianca_paige25@milton.edu",
+    "phone": 7157140913,
+    "uid": 4,
+    "to_school": 2400,
+    "arrival_times": [
+      { "day": "monday", "time": -1, "commuting": true },
+      { "day": "tuesday", "time": 476.13015562262456, "commuting": true },
+      { "day": "wednesday", "time": 550.3134595372755, "commuting": true },
+      { "day": "thursday", "time": 542.897222608294, "commuting": true },
+      { "day": "friday", "time": 467.1078318778969, "commuting": true },
+      { "day": "saturday", "time": null, "commuting": false },
+      { "day": "sunday", "time": null, "commuting": false }
+    ],
+    "departure_times": [
+      { "day": "monday", "time": 948.7801730352753, "commuting": true },
+      { "day": "tuesday", "time": 1093.7679767138193, "commuting": true },
+      { "day": "wednesday", "time": 1086.8461547259476, "commuting": true },
+      { "day": "thursday", "time": -1, "commuting": true },
+      { "day": "friday", "time": 962.5830300178168, "commuting": true },
+      { "day": "saturday", "time": null, "commuting": false },
+      { "day": "sunday", "time": null, "commuting": false }
+    ],
+    "max_stops": 3,
+    "driver_stop_object": {
+      "firstname": "Bianca",
+      "lastname": "Paige",
+      "place_id": "GhIJrm1AOisLRUARkrE1trKzUcA",
+      "lng": -70.80778269999999,
+      "lat": 42.0872567,
+      "address": "35PR+WV Pembroke, MA, USA",
+      "class_year": 2025,
+      "email": "bianca_paige25@milton.edu",
+      "phone": 7157140913,
+      "uid": 4,
+      "is_driver": true,
+      "to_school": 2400,
+      "arrival_times": [
+        { "day": "monday", "time": -1, "commuting": true },
+        { "day": "tuesday", "time": 476.13015562262456, "commuting": true },
+        { "day": "wednesday", "time": 550.3134595372755, "commuting": true },
+        { "day": "thursday", "time": 542.897222608294, "commuting": true },
+        { "day": "friday", "time": 467.1078318778969, "commuting": true },
+        { "day": "saturday", "time": null, "commuting": false },
+        { "day": "sunday", "time": null, "commuting": false }
+      ],
+      "departure_times": [
+        { "day": "monday", "time": 948.7801730352753, "commuting": true },
+        { "day": "tuesday", "time": 1093.7679767138193, "commuting": true },
+        { "day": "wednesday", "time": 1086.8461547259476, "commuting": true },
+        { "day": "thursday", "time": -1, "commuting": true },
+        { "day": "friday", "time": 962.5830300178168, "commuting": true },
+        { "day": "saturday", "time": null, "commuting": false },
+        { "day": "sunday", "time": null, "commuting": false }
+      ]
+    },
+    "best_route": {
+      "stops": [
+        {
+          "firstname": "Bianca",
+          "lastname": "Paige",
+          "place_id": "GhIJrm1AOisLRUARkrE1trKzUcA",
+          "lng": -70.80778269999999,
+          "lat": 42.0872567,
+          "address": "35PR+WV Pembroke, MA, USA",
+          "class_year": 2025,
+          "email": "bianca_paige25@milton.edu",
+          "phone": 7157140913,
+          "uid": 4,
+          "is_driver": true,
+          "to_school": 2400,
+          "arrival_times": [
+            { "day": "monday", "time": -1, "commuting": true },
+            { "day": "tuesday", "time": 476.13015562262456, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 550.3134595372755,
+              "commuting": true
+            },
+            { "day": "thursday", "time": 542.897222608294, "commuting": true },
+            { "day": "friday", "time": 467.1078318778969, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ],
+          "departure_times": [
+            { "day": "monday", "time": 948.7801730352753, "commuting": true },
+            { "day": "tuesday", "time": 1093.7679767138193, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 1086.8461547259476,
+              "commuting": true
+            },
+            { "day": "thursday", "time": -1, "commuting": true },
+            { "day": "friday", "time": 962.5830300178168, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ]
+        }
+      ],
+      "stops_by_uid": [4],
+      "total_dur": 2400,
+      "efficiency": 136050
+    },
+    "new_route": {
+      "stops": [
+        {
+          "firstname": "Bianca",
+          "lastname": "Paige",
+          "place_id": "GhIJrm1AOisLRUARkrE1trKzUcA",
+          "lng": -70.80778269999999,
+          "lat": 42.0872567,
+          "address": "35PR+WV Pembroke, MA, USA",
+          "class_year": 2025,
+          "email": "bianca_paige25@milton.edu",
+          "phone": 7157140913,
+          "uid": 4,
+          "is_driver": true,
+          "to_school": 2400,
+          "arrival_times": [
+            { "day": "monday", "time": -1, "commuting": true },
+            { "day": "tuesday", "time": 476.13015562262456, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 550.3134595372755,
+              "commuting": true
+            },
+            { "day": "thursday", "time": 542.897222608294, "commuting": true },
+            { "day": "friday", "time": 467.1078318778969, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ],
+          "departure_times": [
+            { "day": "monday", "time": 948.7801730352753, "commuting": true },
+            { "day": "tuesday", "time": 1093.7679767138193, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 1086.8461547259476,
+              "commuting": true
+            },
+            { "day": "thursday", "time": -1, "commuting": true },
+            { "day": "friday", "time": 962.5830300178168, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ]
+        }
+      ],
+      "stops_by_uid": [4],
+      "total_dur": 2400,
+      "efficiency": 136050
+    },
+    "possible_stops": [],
+    "possible_route_stops": [],
+    "max_dur": 2760
+  },
+  {
+    "firstname": "Waneta",
+    "lastname": "Diana",
+    "place_id": "ChIJid8yyBMU44kRFO_oEaOm2Hk",
+    "lng": -70.89169849999999,
+    "lat": 42.5359604,
+    "address": "1 Massey Way, Salem, MA 01970, USA",
+    "dest_place_id": "ChIJ0VjiTT9844kRBLc0QGPqwrY",
+    "dest_lng": -71.06995481869149,
+    "dest_lat": 42.257227602977615,
+    "dest_address": "170 Centre Street Milton, MA 02186, USA",
+    "is_driver": true,
+    "class_year": 2023,
+    "email": "waneta_diana23@milton.edu",
+    "phone": 3616978904,
+    "uid": 8,
+    "to_school": 1698,
+    "arrival_times": [
+      { "day": "monday", "time": 454.96004861989803, "commuting": true },
+      { "day": "tuesday", "time": 522.4409764968145, "commuting": true },
+      { "day": "wednesday", "time": 493.0088849524205, "commuting": true },
+      { "day": "thursday", "time": 466.72573726243274, "commuting": true },
+      { "day": "friday", "time": 456.82703614979357, "commuting": true },
+      { "day": "saturday", "time": null, "commuting": false },
+      { "day": "sunday", "time": null, "commuting": false }
+    ],
+    "departure_times": [
+      { "day": "monday", "time": 1056.508064150402, "commuting": true },
+      { "day": "tuesday", "time": 1056.9658303857393, "commuting": true },
+      { "day": "wednesday", "time": 968.3160154949838, "commuting": true },
+      { "day": "thursday", "time": -1, "commuting": true },
+      { "day": "friday", "time": 1044.698655185348, "commuting": true },
+      { "day": "saturday", "time": null, "commuting": false },
+      { "day": "sunday", "time": null, "commuting": false }
+    ],
+    "max_stops": 4,
+    "driver_stop_object": {
+      "firstname": "Waneta",
+      "lastname": "Diana",
+      "place_id": "ChIJid8yyBMU44kRFO_oEaOm2Hk",
+      "lng": -70.89169849999999,
+      "lat": 42.5359604,
+      "address": "1 Massey Way, Salem, MA 01970, USA",
+      "class_year": 2023,
+      "email": "waneta_diana23@milton.edu",
+      "phone": 3616978904,
+      "uid": 8,
+      "is_driver": true,
+      "to_school": 1698,
+      "arrival_times": [
+        { "day": "monday", "time": 454.96004861989803, "commuting": true },
+        { "day": "tuesday", "time": 522.4409764968145, "commuting": true },
+        { "day": "wednesday", "time": 493.0088849524205, "commuting": true },
+        { "day": "thursday", "time": 466.72573726243274, "commuting": true },
+        { "day": "friday", "time": 456.82703614979357, "commuting": true },
+        { "day": "saturday", "time": null, "commuting": false },
+        { "day": "sunday", "time": null, "commuting": false }
+      ],
+      "departure_times": [
+        { "day": "monday", "time": 1056.508064150402, "commuting": true },
+        { "day": "tuesday", "time": 1056.9658303857393, "commuting": true },
+        { "day": "wednesday", "time": 968.3160154949838, "commuting": true },
+        { "day": "thursday", "time": -1, "commuting": true },
+        { "day": "friday", "time": 1044.698655185348, "commuting": true },
+        { "day": "saturday", "time": null, "commuting": false },
+        { "day": "sunday", "time": null, "commuting": false }
+      ]
+    },
+    "best_route": {
+      "stops": [
+        {
+          "firstname": "Waneta",
+          "lastname": "Diana",
+          "place_id": "ChIJid8yyBMU44kRFO_oEaOm2Hk",
+          "lng": -70.89169849999999,
+          "lat": 42.5359604,
+          "address": "1 Massey Way, Salem, MA 01970, USA",
+          "class_year": 2023,
+          "email": "waneta_diana23@milton.edu",
+          "phone": 3616978904,
+          "uid": 8,
+          "is_driver": true,
+          "to_school": 1698,
+          "arrival_times": [
+            { "day": "monday", "time": 454.96004861989803, "commuting": true },
+            { "day": "tuesday", "time": 522.4409764968145, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 493.0088849524205,
+              "commuting": true
+            },
+            {
+              "day": "thursday",
+              "time": 466.72573726243274,
+              "commuting": true
+            },
+            { "day": "friday", "time": 456.82703614979357, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ],
+          "departure_times": [
+            { "day": "monday", "time": 1056.508064150402, "commuting": true },
+            { "day": "tuesday", "time": 1056.9658303857393, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 968.3160154949838,
+              "commuting": true
+            },
+            { "day": "thursday", "time": -1, "commuting": true },
+            { "day": "friday", "time": 1044.698655185348, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ]
+        }
+      ],
+      "stops_by_uid": [8],
+      "total_dur": 1698,
+      "efficiency": 125519.99999999999
+    },
+    "new_route": {
+      "stops": [
+        {
+          "firstname": "Waneta",
+          "lastname": "Diana",
+          "place_id": "ChIJid8yyBMU44kRFO_oEaOm2Hk",
+          "lng": -70.89169849999999,
+          "lat": 42.5359604,
+          "address": "1 Massey Way, Salem, MA 01970, USA",
+          "class_year": 2023,
+          "email": "waneta_diana23@milton.edu",
+          "phone": 3616978904,
+          "uid": 8,
+          "is_driver": true,
+          "to_school": 1698,
+          "arrival_times": [
+            { "day": "monday", "time": 454.96004861989803, "commuting": true },
+            { "day": "tuesday", "time": 522.4409764968145, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 493.0088849524205,
+              "commuting": true
+            },
+            {
+              "day": "thursday",
+              "time": 466.72573726243274,
+              "commuting": true
+            },
+            { "day": "friday", "time": 456.82703614979357, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ],
+          "departure_times": [
+            { "day": "monday", "time": 1056.508064150402, "commuting": true },
+            { "day": "tuesday", "time": 1056.9658303857393, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 968.3160154949838,
+              "commuting": true
+            },
+            { "day": "thursday", "time": -1, "commuting": true },
+            { "day": "friday", "time": 1044.698655185348, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ]
+        }
+      ],
+      "stops_by_uid": [8],
+      "total_dur": 1698,
+      "efficiency": 125519.99999999999
+    },
+    "possible_stops": [],
+    "possible_route_stops": [],
+    "max_dur": 1952.6999999999998
+  },
+  {
+    "firstname": "Eleanor",
+    "lastname": "Carlotta",
+    "place_id": "ChIJ46tE3een44kRc3gC0Sut9cU",
+    "lng": -71.2146099,
+    "lat": 42.673253,
+    "address": "5 Pepperidge Cir, Andover, MA 01810, USA",
+    "dest_place_id": "ChIJ0VjiTT9844kRBLc0QGPqwrY",
+    "dest_lng": -71.06995481869149,
+    "dest_lat": 42.257227602977615,
+    "dest_address": "170 Centre Street Milton, MA 02186, USA",
+    "is_driver": true,
+    "class_year": 2024,
+    "email": "eleanor_carlotta24@milton.edu",
+    "phone": 8697680876,
+    "uid": 9,
+    "to_school": 1700,
+    "arrival_times": [
+      { "day": "monday", "time": 484.05613544568945, "commuting": true },
+      { "day": "tuesday", "time": 559.2282044127651, "commuting": true },
+      { "day": "wednesday", "time": 574.5445267991419, "commuting": true },
+      { "day": "thursday", "time": 498.61601044002555, "commuting": true },
+      { "day": "friday", "time": 488.6748668580813, "commuting": true },
+      { "day": "saturday", "time": null, "commuting": false },
+      { "day": "sunday", "time": null, "commuting": false }
+    ],
+    "departure_times": [
+      { "day": "monday", "time": 1010.5948934466403, "commuting": true },
+      { "day": "tuesday", "time": -1, "commuting": true },
+      { "day": "wednesday", "time": 980.2298356831114, "commuting": true },
+      { "day": "thursday", "time": -1, "commuting": true },
+      { "day": "friday", "time": -1, "commuting": true },
+      { "day": "saturday", "time": null, "commuting": false },
+      { "day": "sunday", "time": null, "commuting": false }
+    ],
+    "max_stops": 3,
+    "driver_stop_object": {
+      "firstname": "Eleanor",
+      "lastname": "Carlotta",
+      "place_id": "ChIJ46tE3een44kRc3gC0Sut9cU",
+      "lng": -71.2146099,
+      "lat": 42.673253,
+      "address": "5 Pepperidge Cir, Andover, MA 01810, USA",
+      "class_year": 2024,
+      "email": "eleanor_carlotta24@milton.edu",
+      "phone": 8697680876,
+      "uid": 9,
+      "is_driver": true,
+      "to_school": 1700,
+      "arrival_times": [
+        { "day": "monday", "time": 484.05613544568945, "commuting": true },
+        { "day": "tuesday", "time": 559.2282044127651, "commuting": true },
+        { "day": "wednesday", "time": 574.5445267991419, "commuting": true },
+        { "day": "thursday", "time": 498.61601044002555, "commuting": true },
+        { "day": "friday", "time": 488.6748668580813, "commuting": true },
+        { "day": "saturday", "time": null, "commuting": false },
+        { "day": "sunday", "time": null, "commuting": false }
+      ],
+      "departure_times": [
+        { "day": "monday", "time": 1010.5948934466403, "commuting": true },
+        { "day": "tuesday", "time": -1, "commuting": true },
+        { "day": "wednesday", "time": 980.2298356831114, "commuting": true },
+        { "day": "thursday", "time": -1, "commuting": true },
+        { "day": "friday", "time": -1, "commuting": true },
+        { "day": "saturday", "time": null, "commuting": false },
+        { "day": "sunday", "time": null, "commuting": false }
+      ]
+    },
+    "best_route": {
+      "stops": [
+        {
+          "firstname": "Eleanor",
+          "lastname": "Carlotta",
+          "place_id": "ChIJ46tE3een44kRc3gC0Sut9cU",
+          "lng": -71.2146099,
+          "lat": 42.673253,
+          "address": "5 Pepperidge Cir, Andover, MA 01810, USA",
+          "class_year": 2024,
+          "email": "eleanor_carlotta24@milton.edu",
+          "phone": 8697680876,
+          "uid": 9,
+          "is_driver": true,
+          "to_school": 1700,
+          "arrival_times": [
+            { "day": "monday", "time": 484.05613544568945, "commuting": true },
+            { "day": "tuesday", "time": 559.2282044127651, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 574.5445267991419,
+              "commuting": true
+            },
+            {
+              "day": "thursday",
+              "time": 498.61601044002555,
+              "commuting": true
+            },
+            { "day": "friday", "time": 488.6748668580813, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ],
+          "departure_times": [
+            { "day": "monday", "time": 1010.5948934466403, "commuting": true },
+            { "day": "tuesday", "time": -1, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 980.2298356831114,
+              "commuting": true
+            },
+            { "day": "thursday", "time": -1, "commuting": true },
+            { "day": "friday", "time": -1, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ]
+        }
+      ],
+      "stops_by_uid": [9],
+      "total_dur": 1700,
+      "efficiency": 125549.99999999997
+    },
+    "new_route": {
+      "stops": [
+        {
+          "firstname": "Eleanor",
+          "lastname": "Carlotta",
+          "place_id": "ChIJ46tE3een44kRc3gC0Sut9cU",
+          "lng": -71.2146099,
+          "lat": 42.673253,
+          "address": "5 Pepperidge Cir, Andover, MA 01810, USA",
+          "class_year": 2024,
+          "email": "eleanor_carlotta24@milton.edu",
+          "phone": 8697680876,
+          "uid": 9,
+          "is_driver": true,
+          "to_school": 1700,
+          "arrival_times": [
+            { "day": "monday", "time": 484.05613544568945, "commuting": true },
+            { "day": "tuesday", "time": 559.2282044127651, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 574.5445267991419,
+              "commuting": true
+            },
+            {
+              "day": "thursday",
+              "time": 498.61601044002555,
+              "commuting": true
+            },
+            { "day": "friday", "time": 488.6748668580813, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ],
+          "departure_times": [
+            { "day": "monday", "time": 1010.5948934466403, "commuting": true },
+            { "day": "tuesday", "time": -1, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 980.2298356831114,
+              "commuting": true
+            },
+            { "day": "thursday", "time": -1, "commuting": true },
+            { "day": "friday", "time": -1, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ]
+        }
+      ],
+      "stops_by_uid": [9],
+      "total_dur": 1700,
+      "efficiency": 125549.99999999997
+    },
+    "possible_stops": [],
+    "possible_route_stops": [],
+    "max_dur": 1954.9999999999998
+  },
+  {
+    "firstname": "Marian",
+    "lastname": "Cornelle",
+    "place_id": "GhIJNFE6R9MARUARgz-yb122UcA",
+    "lng": -70.8494529,
+    "lat": 42.0064477,
+    "address": "2542+H6 Halifax, MA, USA",
+    "dest_place_id": "ChIJ0VjiTT9844kRBLc0QGPqwrY",
+    "dest_lng": -71.06995481869149,
+    "dest_lat": 42.257227602977615,
+    "dest_address": "170 Centre Street Milton, MA 02186, USA",
+    "is_driver": true,
+    "class_year": 2023,
+    "email": "marian_cornelle23@milton.edu",
+    "phone": 4886107653,
+    "uid": 11,
+    "to_school": -1,
+    "arrival_times": [
+      { "day": "monday", "time": 515.8781436011393, "commuting": true },
+      { "day": "tuesday", "time": -1, "commuting": true },
+      { "day": "wednesday", "time": 453.60776655004884, "commuting": true },
+      { "day": "thursday", "time": 582.562191153244, "commuting": true },
+      { "day": "friday", "time": 466.35156717933415, "commuting": true },
+      { "day": "saturday", "time": null, "commuting": false },
+      { "day": "sunday", "time": null, "commuting": false }
+    ],
+    "departure_times": [
+      { "day": "monday", "time": 1096.6689777915813, "commuting": true },
+      { "day": "tuesday", "time": 993.3279848395109, "commuting": true },
+      { "day": "wednesday", "time": 905.8772308177347, "commuting": true },
+      { "day": "thursday", "time": 1120.8320508725637, "commuting": true },
+      { "day": "friday", "time": 1134.8810248153416, "commuting": true },
+      { "day": "saturday", "time": null, "commuting": false },
+      { "day": "sunday", "time": null, "commuting": false }
+    ],
+    "max_stops": 5,
+    "driver_stop_object": {
+      "firstname": "Marian",
+      "lastname": "Cornelle",
+      "place_id": "GhIJNFE6R9MARUARgz-yb122UcA",
+      "lng": -70.8494529,
+      "lat": 42.0064477,
+      "address": "2542+H6 Halifax, MA, USA",
+      "class_year": 2023,
+      "email": "marian_cornelle23@milton.edu",
+      "phone": 4886107653,
+      "uid": 11,
+      "is_driver": true,
+      "to_school": -1,
+      "arrival_times": [
+        { "day": "monday", "time": 515.8781436011393, "commuting": true },
+        { "day": "tuesday", "time": -1, "commuting": true },
+        { "day": "wednesday", "time": 453.60776655004884, "commuting": true },
+        { "day": "thursday", "time": 582.562191153244, "commuting": true },
+        { "day": "friday", "time": 466.35156717933415, "commuting": true },
+        { "day": "saturday", "time": null, "commuting": false },
+        { "day": "sunday", "time": null, "commuting": false }
+      ],
+      "departure_times": [
+        { "day": "monday", "time": 1096.6689777915813, "commuting": true },
+        { "day": "tuesday", "time": 993.3279848395109, "commuting": true },
+        { "day": "wednesday", "time": 905.8772308177347, "commuting": true },
+        { "day": "thursday", "time": 1120.8320508725637, "commuting": true },
+        { "day": "friday", "time": 1134.8810248153416, "commuting": true },
+        { "day": "saturday", "time": null, "commuting": false },
+        { "day": "sunday", "time": null, "commuting": false }
+      ]
+    },
+    "best_route": {
+      "stops": [
+        {
+          "firstname": "Marian",
+          "lastname": "Cornelle",
+          "place_id": "GhIJNFE6R9MARUARgz-yb122UcA",
+          "lng": -70.8494529,
+          "lat": 42.0064477,
+          "address": "2542+H6 Halifax, MA, USA",
+          "class_year": 2023,
+          "email": "marian_cornelle23@milton.edu",
+          "phone": 4886107653,
+          "uid": 11,
+          "is_driver": true,
+          "to_school": -1,
+          "arrival_times": [
+            { "day": "monday", "time": 515.8781436011393, "commuting": true },
+            { "day": "tuesday", "time": -1, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 453.60776655004884,
+              "commuting": true
+            },
+            { "day": "thursday", "time": 582.562191153244, "commuting": true },
+            { "day": "friday", "time": 466.35156717933415, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ],
+          "departure_times": [
+            { "day": "monday", "time": 1096.6689777915813, "commuting": true },
+            { "day": "tuesday", "time": 993.3279848395109, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 905.8772308177347,
+              "commuting": true
+            },
+            {
+              "day": "thursday",
+              "time": 1120.8320508725637,
+              "commuting": true
+            },
+            { "day": "friday", "time": 1134.8810248153416, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ]
+        }
+      ],
+      "stops_by_uid": [11],
+      "total_dur": -1,
+      "efficiency": 100050
+    },
+    "new_route": {
+      "stops": [
+        {
+          "firstname": "Marian",
+          "lastname": "Cornelle",
+          "place_id": "GhIJNFE6R9MARUARgz-yb122UcA",
+          "lng": -70.8494529,
+          "lat": 42.0064477,
+          "address": "2542+H6 Halifax, MA, USA",
+          "class_year": 2023,
+          "email": "marian_cornelle23@milton.edu",
+          "phone": 4886107653,
+          "uid": 11,
+          "is_driver": true,
+          "to_school": -1,
+          "arrival_times": [
+            { "day": "monday", "time": 515.8781436011393, "commuting": true },
+            { "day": "tuesday", "time": -1, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 453.60776655004884,
+              "commuting": true
+            },
+            { "day": "thursday", "time": 582.562191153244, "commuting": true },
+            { "day": "friday", "time": 466.35156717933415, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ],
+          "departure_times": [
+            { "day": "monday", "time": 1096.6689777915813, "commuting": true },
+            { "day": "tuesday", "time": 993.3279848395109, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 905.8772308177347,
+              "commuting": true
+            },
+            {
+              "day": "thursday",
+              "time": 1120.8320508725637,
+              "commuting": true
+            },
+            { "day": "friday", "time": 1134.8810248153416, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ]
+        }
+      ],
+      "stops_by_uid": [11],
+      "total_dur": -1,
+      "efficiency": 100050
+    },
+    "possible_stops": [
+      0, 1, 2, 3, 5, 6, 7, 10, 12, 13, 14, 15, 16, 18, 19, 20, 21, 22, 23, 24
+    ],
+    "possible_route_stops": [
+      0, 1, 2, 3, 5, 6, 7, 10, 12, 13, 14, 15, 16, 18, 19, 20, 21, 22, 23, 24
+    ],
+    "max_dur": -1
+  },
+  {
+    "firstname": "Reggie",
+    "lastname": "Anatola",
+    "place_id": "ChIJWzd-4htU5IkRbmyzCR28Lic",
+    "lng": -71.26982,
+    "lat": 41.6940058,
+    "address": "87 Gooding Ave, Bristol, RI 02809, USA",
+    "dest_place_id": "ChIJ0VjiTT9844kRBLc0QGPqwrY",
+    "dest_lng": -71.06995481869149,
+    "dest_lat": 42.257227602977615,
+    "dest_address": "170 Centre Street Milton, MA 02186, USA",
+    "is_driver": true,
+    "class_year": 2023,
+    "email": "reggie_anatola23@milton.edu",
+    "phone": 2844222834,
+    "uid": 17,
+    "to_school": 1731,
+    "arrival_times": [
+      { "day": "monday", "time": 474.10652960699736, "commuting": true },
+      { "day": "tuesday", "time": 564.6279299189235, "commuting": true },
+      { "day": "wednesday", "time": 507.1915230052199, "commuting": true },
+      { "day": "thursday", "time": 583.8149263634821, "commuting": true },
+      { "day": "friday", "time": 426.13739201364206, "commuting": true },
+      { "day": "saturday", "time": null, "commuting": false },
+      { "day": "sunday", "time": null, "commuting": false }
+    ],
+    "departure_times": [
+      { "day": "monday", "time": 977.8928034067637, "commuting": true },
+      { "day": "tuesday", "time": 1070.5981759415629, "commuting": true },
+      { "day": "wednesday", "time": 925.4307989812958, "commuting": true },
+      { "day": "thursday", "time": 960.3143345251161, "commuting": true },
+      { "day": "friday", "time": 1097.00623353922, "commuting": true },
+      { "day": "saturday", "time": null, "commuting": false },
+      { "day": "sunday", "time": null, "commuting": false }
+    ],
+    "max_stops": 5,
+    "driver_stop_object": {
+      "firstname": "Reggie",
+      "lastname": "Anatola",
+      "place_id": "ChIJWzd-4htU5IkRbmyzCR28Lic",
+      "lng": -71.26982,
+      "lat": 41.6940058,
+      "address": "87 Gooding Ave, Bristol, RI 02809, USA",
+      "class_year": 2023,
+      "email": "reggie_anatola23@milton.edu",
+      "phone": 2844222834,
+      "uid": 17,
+      "is_driver": true,
+      "to_school": 1731,
+      "arrival_times": [
+        { "day": "monday", "time": 474.10652960699736, "commuting": true },
+        { "day": "tuesday", "time": 564.6279299189235, "commuting": true },
+        { "day": "wednesday", "time": 507.1915230052199, "commuting": true },
+        { "day": "thursday", "time": 583.8149263634821, "commuting": true },
+        { "day": "friday", "time": 426.13739201364206, "commuting": true },
+        { "day": "saturday", "time": null, "commuting": false },
+        { "day": "sunday", "time": null, "commuting": false }
+      ],
+      "departure_times": [
+        { "day": "monday", "time": 977.8928034067637, "commuting": true },
+        { "day": "tuesday", "time": 1070.5981759415629, "commuting": true },
+        { "day": "wednesday", "time": 925.4307989812958, "commuting": true },
+        { "day": "thursday", "time": 960.3143345251161, "commuting": true },
+        { "day": "friday", "time": 1097.00623353922, "commuting": true },
+        { "day": "saturday", "time": null, "commuting": false },
+        { "day": "sunday", "time": null, "commuting": false }
+      ]
+    },
+    "best_route": {
+      "stops": [
+        {
+          "firstname": "Reggie",
+          "lastname": "Anatola",
+          "place_id": "ChIJWzd-4htU5IkRbmyzCR28Lic",
+          "lng": -71.26982,
+          "lat": 41.6940058,
+          "address": "87 Gooding Ave, Bristol, RI 02809, USA",
+          "class_year": 2023,
+          "email": "reggie_anatola23@milton.edu",
+          "phone": 2844222834,
+          "uid": 17,
+          "is_driver": true,
+          "to_school": 1731,
+          "arrival_times": [
+            { "day": "monday", "time": 474.10652960699736, "commuting": true },
+            { "day": "tuesday", "time": 564.6279299189235, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 507.1915230052199,
+              "commuting": true
+            },
+            { "day": "thursday", "time": 583.8149263634821, "commuting": true },
+            { "day": "friday", "time": 426.13739201364206, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ],
+          "departure_times": [
+            { "day": "monday", "time": 977.8928034067637, "commuting": true },
+            { "day": "tuesday", "time": 1070.5981759415629, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 925.4307989812958,
+              "commuting": true
+            },
+            { "day": "thursday", "time": 960.3143345251161, "commuting": true },
+            { "day": "friday", "time": 1097.00623353922, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ]
+        }
+      ],
+      "stops_by_uid": [17],
+      "total_dur": 1731,
+      "efficiency": 126014.99999999999
+    },
+    "new_route": {
+      "stops": [
+        {
+          "firstname": "Reggie",
+          "lastname": "Anatola",
+          "place_id": "ChIJWzd-4htU5IkRbmyzCR28Lic",
+          "lng": -71.26982,
+          "lat": 41.6940058,
+          "address": "87 Gooding Ave, Bristol, RI 02809, USA",
+          "class_year": 2023,
+          "email": "reggie_anatola23@milton.edu",
+          "phone": 2844222834,
+          "uid": 17,
+          "is_driver": true,
+          "to_school": 1731,
+          "arrival_times": [
+            { "day": "monday", "time": 474.10652960699736, "commuting": true },
+            { "day": "tuesday", "time": 564.6279299189235, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 507.1915230052199,
+              "commuting": true
+            },
+            { "day": "thursday", "time": 583.8149263634821, "commuting": true },
+            { "day": "friday", "time": 426.13739201364206, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ],
+          "departure_times": [
+            { "day": "monday", "time": 977.8928034067637, "commuting": true },
+            { "day": "tuesday", "time": 1070.5981759415629, "commuting": true },
+            {
+              "day": "wednesday",
+              "time": 925.4307989812958,
+              "commuting": true
+            },
+            { "day": "thursday", "time": 960.3143345251161, "commuting": true },
+            { "day": "friday", "time": 1097.00623353922, "commuting": true },
+            { "day": "saturday", "time": null, "commuting": false },
+            { "day": "sunday", "time": null, "commuting": false }
+          ]
+        }
+      ],
+      "stops_by_uid": [17],
+      "total_dur": 1731,
+      "efficiency": 126014.99999999999
+    },
+    "possible_stops": [],
+    "possible_route_stops": [],
+    "max_dur": 1990.6499999999999
+  }
+]
