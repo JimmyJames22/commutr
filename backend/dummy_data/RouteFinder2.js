@@ -26,6 +26,9 @@ let drivers = [];
 let students = [];
 
 let route_time_tolerance = 1.15; // maximum multiple of original commute distance for drivers
+let num_epochs = 100000;
+let loading_usermap = false; // variable to indicate whether or not the new usermap is calculated each time
+// ^ if set to false, it creates a new one from the data; if set to true it loads it from ./data/usermap.json
 
 let setup_map = false;
 
@@ -62,7 +65,6 @@ function init() {
     users.push(user);
     drivers.push(user);
     effList.push([user.best_route.efficiency]);
-    best_efficiency += user.best_route.efficiency;
   }
 
   let student_ids = [];
@@ -164,46 +166,48 @@ function processDistances() {
 }
 
 async function makeUserMapReq(reqs_by_rate, all_user_coords) {
-  for (let i = 0; i < reqs_by_rate.length; i++) {
-    for (let j = 0; j < reqs_by_rate[i].length; j++) {
-      init_promises.push(
-        axios
-          .get(
-            `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${reqs_by_rate[i][j].orig_param}&destinations=${reqs_by_rate[i][j].dest_param}&key=${API_KEY}`
-          )
-          .then((response) => {
-            let dist;
-            let dur;
-
-            for (let l = 0; l < response.data.rows[0].elements.length; l++) {
-              try {
-                dist = response.data.rows[0].elements[l].distance.value;
-              } catch (err) {
-                console.log(err.message);
-                dist = -1;
-              }
-
-              try {
-                dur = response.data.rows[0].elements[l].duration.value;
-              } catch (err) {
-                console.log(err.message);
-                dur = -1;
-              }
-              userMap.push({
-                u1: reqs_by_rate[i][j].orig_uid,
-                u2: reqs_by_rate[i][j].dest_uids[l],
-                dist: dist,
-                dur: dur,
-              });
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          })
-      );
-    }
-    await sleep(5000);
-    console.log((i / (reqs_by_rate.length - 1)) * 100);
+  if (loading_usermap) {
+    userMap = JSON.parse(fs.readFileSync("./data/usermap.json"));
+  } else {
+    // for (let i = 0; i < reqs_by_rate.length; i++) {
+    //   for (let j = 0; j < reqs_by_rate[i].length; j++) {
+    //     init_promises.push(
+    //       axios
+    //         .get(
+    //           `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${reqs_by_rate[i][j].orig_param}&destinations=${reqs_by_rate[i][j].dest_param}&key=${API_KEY}`
+    //         )
+    //         .then((response) => {
+    //           let dist;
+    //           let dur;
+    //           for (let l = 0; l < response.data.rows[0].elements.length; l++) {
+    //             try {
+    //               dist = response.data.rows[0].elements[l].distance.value;
+    //             } catch (err) {
+    //               console.log(err.message);
+    //               dist = -1;
+    //             }
+    //             try {
+    //               dur = response.data.rows[0].elements[l].duration.value;
+    //             } catch (err) {
+    //               console.log(err.message);
+    //               dur = -1;
+    //             }
+    //             userMap.push({
+    //               u1: reqs_by_rate[i][j].orig_uid,
+    //               u2: reqs_by_rate[i][j].dest_uids[l],
+    //               dist: dist,
+    //               dur: dur,
+    //             });
+    //           }
+    //         })
+    //         .catch(function (error) {
+    //           console.log(error);
+    //         })
+    //     );
+    //   }
+    //   await sleep(5000);
+    //   console.log((i / (reqs_by_rate.length - 1)) * 100);
+    // }
   }
 
   for (let i = 0; i < all_user_coords.length; i++) {
@@ -233,6 +237,7 @@ async function makeUserMapReq(reqs_by_rate, all_user_coords) {
               }
 
               user.makeFirstRoute();
+              best_efficiency += user.best_route.efficiency;
             }
           }
         })
@@ -273,7 +278,7 @@ function runProgram() {
       console.log(drivers[i].possible_stops);
     }
 
-    for (let j = 0; j < 10000; j++) {
+    for (let j = 0; j < num_epochs; j++) {
       if (j - 1000 * counter >= 0) {
         counter++;
         // console.log();
@@ -506,6 +511,7 @@ function randomStops(num_stops, driver) {
 
 function checkIfBetter() {
   if (new_efficiency > best_efficiency) {
+    console.log("BETTER ROUTES");
     let driver;
     for (let i = 0; i < drivers.length; i++) {
       driver = drivers[i];

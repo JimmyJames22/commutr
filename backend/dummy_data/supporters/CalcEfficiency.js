@@ -1,6 +1,6 @@
 // weights need to be adjusted to help normalize
-let route_stops_weight = 1000000;
-let route_time_weight = 100;
+let route_stops_weight = 1000;
+let route_time_weight = 50;
 let arrival_time_weight = 0;
 let departure_time_weight = 0;
 
