@@ -16,10 +16,8 @@ Recursively select the best routes for the drivers with no repeat passengers
  - check each orientation of routes and look for the one that puts the most gap between max_dist and total_dist while having no repeat users
    - make it recursive so that the method calls itself to find the routes and looks to minimize the loss function
 
-
+ALL SOLVED 5/17/2022
 POTENTIAL IMPROVEMENTS FOR ROUTE FINDER
  - Make non-driver-centric route storage
  - Matching ideal arrival/leaving times if possible
  - Max car capacity
- - Number of rides that are taken/given
- - Added students/drivers
