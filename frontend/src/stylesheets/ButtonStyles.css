@@ -90,3 +90,24 @@
     color:#000;
     background:#fff;
 }
+
+.quit-button-div{
+    text-align: center;
+    margin-top: 30px;
+}
+
+.quit-button{
+    padding:10px ;
+    border-radius: 8px;
+    background-image: linear-gradient(to right, #FF416C 50%, #FF416C 50%, #FF4B2B);
+    background-size: 200%;
+    background-position: 0%;
+    transition: 0.4s;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.quit-button:hover{
+    background-position:100% 0%;
+}

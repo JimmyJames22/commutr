@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const app = express();
+const mongoExpressReq = require('mongo-express-req');
 
 const authRoutes = require("./routes/auth");
 const { default: mongoose } = require('mongoose');
@@ -9,12 +10,15 @@ const { default: mongoose } = require('mongoose');
 app.use(express.json());
 app.use(cors());
 
+
 const uri = process.env.ATLAS_URI;
+
 mongoose.connect(uri, { useNewUrlParser: true});
-const connection = mongoose.connection;
-connection.once('open', () => {
-  console.log("MongoDB connection established");
-})
+  const connection = mongoose.connection;
+  connection.once('open', () => {
+    console.log("MongoDB connection established");
+});
+
 
 app.use('/api', authRoutes);
 

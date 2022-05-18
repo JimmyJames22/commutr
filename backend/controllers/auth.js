@@ -26,8 +26,16 @@ exports.signup = (req, res) => {
     })
 }
 
+// tokenId: response.tokenId,
+// nameFirst: details.firstname,
+// nameLast: details.lastname,
+// address: details.address,
+// phone: details.phone,
+// isDriver: details.status,
+// carCapacity: details.carCapacity
+
 exports.googlelogin = (req, res) => {
-    const {tokenId, nameFirst, nameLast, phone, address, isDriver} = req.body;
+    const {tokenId, nameFirst, nameLast, address, place_id, xy, phone, isDriver, carCapacity} = req.body;
     console.log(tokenId);
     client.verifyIdToken({idToken: tokenId, audience: "277843423406-m30j9jo3krghef8dfae3uvfp3ujk10as.apps.googleusercontent.com"}).then(response => {
         const { email_verified, email } = response.payload;
@@ -40,28 +48,31 @@ exports.googlelogin = (req, res) => {
                 } else {
                     if(user) {
                         const token = jwt.sign({_id:user._id}, process.env.JWT_SIGNIN_KEY, {expiresIn: '7d'});
-                        const {_id, name, email, nameFirst, nameLast,phone,address,isDriver} = user;
+                        const {_id, name, email, nameFirst, nameLast,phone,address, place_id, xy, isDriver,ridesGiven, ridesTaken, carCapacity} = user;
                         res.json({
                             token,
-                            user: {_id, name, email, nameFirst, nameLast,phone,address,isDriver}
+                            user: {_id, name, email, nameFirst, nameLast,phone,address,place_id, xy, isDriver, ridesGiven, ridesTaken, carCapacity}
                         })
                     } else {
+                        let ridesGiven = 0;
+                        let ridesTaken = 0;
+                        let carCap = parseInt(carCapacity)
                         let password = email+process.env.JWT_SIGNIN_KEY
-                        let newUser = new User({nameFirst, nameLast, email, password, phone, address, isDriver});
-                        console.log(nameFirst, nameLast, email, password, phone, address, isDriver)
+                        let newUser = new User({nameFirst, nameLast, email, password, phone, address, place_id, xy, isDriver, carCapacity:carCap, ridesGiven, ridesTaken});
+                        console.log(nameFirst, nameLast, email, password, phone, address, place_id, xy, isDriver, carCap, ridesGiven, ridesTaken)
                         newUser.save((err, data) => {
                             if(err){
                                 return res.status(400).json({
-                                    error: "Something went wrong during signup"
+                                    error: "Something went wrong during signup", newUser
                                 })
                             }
 
                             const token = jwt.sign({_id:data._id}, process.env.JWT_SIGNIN_KEY, {expiresIn: '7d'});
-                            const {_id, name, email} = newUser;
+                            const {_id, nameFirst,nameLast, email, password, phone, address, place_id, xy, isDriver, carCapacity, ridesGiven, ridesTaken} = newUser;
     
                             res.json({
                                 token,
-                                user: {_id, name, email}
+                                user: {_id, nameFirst, nameLast, email, password, phone, address, place_id, xy, isDriver, carCapacity, ridesGiven, ridesTaken}
                             })
 
                         })
@@ -73,6 +84,5 @@ exports.googlelogin = (req, res) => {
     })
 
     console.log()
-
 
 }

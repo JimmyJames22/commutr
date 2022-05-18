@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
+    //nameFirst, nameLast, email, password, phone, address, isDriver, carCapacity, ridesGiven, ridesTaken
     nameFirst: {
         type: String,
         trim: true,
         required: true,
         max: 32
-    },
+    }, 
     nameLast: {
         type: String,
         trim: true,
@@ -34,10 +35,30 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    place_id: {
+        type: String,
+        required: true
+    },
+    xy: {
+        type: Array,
+        required: true
+    },
     isDriver: {
         type: Boolean,
         required: true
-    }
+    },
+    carCapacity: {
+        type: Number,
+        required: true
+    },
+    ridesTaken: {
+        type: Number,
+        required: true
+    },
+    ridesGiven: {
+        type: Number,
+        required: true
+    },
 
 }, {timestamps: true})
 

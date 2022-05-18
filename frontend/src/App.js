@@ -5,6 +5,7 @@ import Login from './components/LoginPage'
 import Signup from './components/SignupPage'
 import Home from './components/HomePage'
 import Profile from './components/ProfilePage'
+import Settings from './components/SettingsPage'
 
 function App() {
 
@@ -26,6 +27,8 @@ function App() {
           <Route exact path="/signup" element={ <Signup Signup = {signupReq} error={error}/> }>
           </Route>
           <Route exact path="/profile" element={ <Profile/> }>
+          </Route>
+          <Route exact path="/settings" element={ <Settings/> }>
           </Route>
           </Routes>
       </header>

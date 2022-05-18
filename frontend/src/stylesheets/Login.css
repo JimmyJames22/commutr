@@ -47,6 +47,7 @@ input, button{
 
 .logo-div{
     padding-bottom: 10px;
+    
 }
 
 .logo{
@@ -72,7 +73,7 @@ input, button{
     z-index: 2;
     color: #232B2B;
     text-align: center;
-    
+    cursor: pointer;
 }
 
 .main-logo .r{
@@ -95,6 +96,7 @@ form:after{
     z-index: 1;
     background-image: linear-gradient(to bottom right, #28965A, #7CFEF0);
     border-radius: 10px;
+    
 }
 
 form .form-inner{
@@ -245,3 +247,48 @@ form .form-inner input[type="submit"]:hover {
         text-align: center;
     }
 }
+
+/* combobox styles */
+:root {
+    --reach-combobox: 1;
+  }
+  
+  [data-reach-combobox-popover] {
+    border: solid 1px hsla(0, 0%, 0%, 0.25);
+    background: hsla(0, 100%, 100%, 0.99);
+    font-size: 85%;
+    z-index: 5;
+    border-radius: 10px;
+    box-shadow: 0px 0px 3px #28965A;
+    border:none;
+  }
+  
+  [data-reach-combobox-list] {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+  }
+  
+  [data-reach-combobox-option] {
+    cursor: pointer;
+    margin: 0;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  [data-reach-combobox-option][aria-selected="true"] {
+    background: hsl(211, 10%, 95%);
+  }
+  
+  [data-reach-combobox-option]:hover {
+    background: hsl(211, 10%, 92%);
+  }
+  
+  [data-reach-combobox-option][aria-selected="true"]:hover {
+    background: hsl(211, 10%, 90%);
+  }
+  
+  [data-suggested-value] {
+    font-weight: bold;
+  }
+  

@@ -5,24 +5,41 @@ import {
     Marker,
   } from "react-google-maps";
 
-function Map() {
+function Map(props) {
 
     const mapOptions = {
         disableDefaultUI: true
       };
 
+    console.log("Props:", props)
+    console.log("Found this things:", props.passengers)
 
 
-    const MapWithAMarker = withGoogleMap(props =>
+
+    const MapWithAMarker = withGoogleMap(p =>
         
+        
+
         <GoogleMap
-          defaultZoom={8}
-          defaultCenter={{ lat: -34.397, lng: 150.644 }}
+          defaultZoom={10}
+          defaultCenter={{ lat: props.pos[0], lng: props.pos[1]}}
           options={mapOptions}
         >
           <Marker
-            position={{ lat: -34.397, lng: 150.644 }}
+            position={{ lat: props.pos[0], lng: props.pos[1] }}
           />
+          
+          {props.passengers.length > 1 ? (
+            <>{props.passengers.map((passenger) =>(
+            <Marker
+            key={passenger.place_id}
+            position={{ lat: passenger.xy[0], lng: passenger.xy[1] }}
+            />
+            ))}</>
+          ) : (
+          <></>
+          )}
+          
         </GoogleMap>
       );
       
