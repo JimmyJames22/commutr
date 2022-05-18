@@ -17,9 +17,18 @@ Recursively select the best routes for the drivers with no repeat passengers
    - make it recursive so that the method calls itself to find the routes and looks to minimize the loss function
 
 
+ALL FINISHED 5/6/2022
 POTENTIAL IMPROVEMENTS FOR ROUTE FINDER
  - Make non-driver-centric route storage
  - Matching ideal arrival/leaving times if possible
  - Max car capacity
  - Number of rides that are taken/given
- - Added students/drivers
+
+ARRIVAL AND DEPARTURE TIME UPDATES
+ - Make M-F route arrival and dismissal times
+ - Make the option to say "I don't care when I leave or arrive"
+
+
+
+THE TIMES MUST BE ORGANIZED IN AN OBJECT WHERE THERE'S AN ARRIVAL AND DEPATRUE TIME FOR EACH DAY
+
