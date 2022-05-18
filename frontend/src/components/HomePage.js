@@ -8,9 +8,15 @@ import axios from 'axios';
 
 function HomePage() {
 
+    
+
     useEffect(() => {
-        getRoute();
+        if(localStorage.getItem('userData')!= null){
+            getRoute();
+        }
     }, [])
+
+    
 
     const [passengers, setPassengers] = useState([])
 
@@ -36,8 +42,6 @@ function HomePage() {
             
         })
     }
-
-    console.log(localStorage.getItem('userData'));
 
     if(localStorage.getItem('userData')== null){
         return <Navigate to="/login" />;
