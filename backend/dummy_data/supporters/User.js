@@ -14,7 +14,6 @@ class User {
     this.dest_lat = user.dest_lat;
     this.dest_address = user.dest_address;
     this.is_driver = user.is_driver;
-    this.class_year = user.class_year;
     this.email = user.email;
     this.phone = user.phone;
     this.uid = user.uid;

@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const app = express();
-const mongoExpressReq = require('mongo-express-req');
 
 const authRoutes = require("./routes/auth");
 const { default: mongoose } = require('mongoose');

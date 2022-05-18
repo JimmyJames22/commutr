@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    //nameFirst, nameLast, email, password, phone, address, isDriver, carCapacity, ridesGiven, ridesTaken
     nameFirst: {
         type: String,
         trim: true,
@@ -21,15 +20,25 @@ const userSchema = new mongoose.Schema({
         unique: true,
         lowercase: true
     },
-    password: {
+    destination_id: {
         type: String,
-        required: true,
+        required: true
     },
     phone: {
         type: String,
         trim: true,
         required: true,
         max: 16
+    },
+    arrivalTimes: {
+        type: Array,
+        trim: false,
+        required: true,
+    },
+    departureTimes: {
+        type: Array,
+        trim: false,
+        required: true,
     },
     address: {
         type: String,
@@ -39,7 +48,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    xy: {
+    lng_lat: {
         type: Array,
         required: true
     },

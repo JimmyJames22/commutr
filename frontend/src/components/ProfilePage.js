@@ -8,36 +8,7 @@ import Settings from './SettingsButton';
 import Passengers from './PassengerList';
 import axios from 'axios';
 
-function ProfilePage() {
-
-    useEffect(() => {
-        getRoute();
-    }, [])
-
-    const [passengers, setPassengers] = useState([])
-
-    function getRoute(){
-        axios({
-            method: "POST",
-            url: "http://localhost:8000/api/findRoute",
-            data: {
-                _id: data._id,
-            }
-        }).then(response => {
-            console.log("Got passengers:", response.data.routes);
-            setPassengers([]);
-            for (const item of response.data.routes){
-                setPassengers(arr => [...arr, item]);
-            }
-            console.log("Passengers state:",passengers)
-            //if data doesn't have route id in it save it to localstorage.
-            if(localStorage.getItem('route') == null){
-                localStorage.setItem('route', response.data.id);
-                console.log("Saved id:", response.data.id);
-            }
-            
-        })
-    }
+function ProfilePage(passengers) {
 
     if(localStorage.getItem('userData')== null){ //Real coode
         return <Navigate to="/login" />;

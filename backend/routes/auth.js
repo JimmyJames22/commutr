@@ -5,6 +5,7 @@ const {signup, googlelogin} = require("../controllers/auth");
 
 const { findRoute, deletePassenger, changeInfo } = require("../controllers/queries")
 
+const { makeUsers } = require("../dummy_data_mongo/DataMaker")
 
 router.post('/signup', signup);
 
@@ -15,6 +16,8 @@ router.post('/findroute', findRoute)
 router.post('/deletepassenger', deletePassenger)
 
 router.post('/changeinfo', changeInfo)
+
+router.get('/dummyinput', makeUsers)
 
 
 

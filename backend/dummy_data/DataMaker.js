@@ -2,6 +2,8 @@ const fs = require("fs");
 const names = require("./rand_names/names").names;
 const axios = require("axios");
 
+//Establish Mongodb connection
+
 // import canvas for ChartJS
 // const ctx = document.getElementById("myChart").getContext("2d");
 
@@ -10,8 +12,8 @@ const y = 42.257227602977615;
 const x = -71.06995481869149;
 const dest_place_id = "ChIJ0VjiTT9844kRBLc0QGPqwrY";
 
-const num_drivers = 5;
-const num_passengers = 20;
+const num_drivers = 1;
+const num_passengers = 1;
 
 // parameters for arrival/leaving times
 const min_mrn_time = 420;
@@ -29,12 +31,15 @@ const milton_coords = [
 ];
 
 const milton_list = {
-  name: "Milton Academy",
-  place_id: dest_place_id,
-  lat: y,
-  lng: x,
+  _id: "6276c1571c5ff58e410661c2",
+  address: "170 Centre Street",
+  name: "Milton Academy" ,
   domain: "@milton.edu",
+  lat_lng: [y,x],
+  place_id: dest_place_id,
 };
+
+const dest_oid = mongo.ObjectId(milton_list._id);
 
 // initialize other variables
 let i;
@@ -129,23 +134,23 @@ function makeUserObj(place_id, lng, lat, address, is_driver, arr, list) {
   }
 
   user = {
-    firstname: firstname,
-    lastname: lastname,
+    nameFirst: firstname,
+    nameLast: lastname,
     place_id: place_id,
-    lng: lng,
-    lat: lat,
+    lng_lat: [lng,lat],
     address: address,
-    dest_place_id: dest_place_id,
-    dest_lng: x,
-    dest_lat: y,
-    dest_address: "170 Centre Street Milton, MA 02186, USA",
-    is_driver: is_driver,
-    class_year: class_year,
-    car_capacity: car_capacity,
-    uid: id_counter,
+    destination_id: dest_oid,
+    // dest_place_id: dest_place_id,
+    // dest_lng_lat: [x,y],
+    // dest_address: "170 Centre Street Milton, MA 02186, USA",
+    isDriver: is_driver,
+    carCapacity: car_capacity,
+    // uid: id_counter,
     phone: Math.ceil(Math.random() * 9999999999),
-    arrival_times: [],
-    departure_times: [],
+    arrivalTimes: [],
+    departureTimes: [],
+    ridesGiven: 0,
+    ridesTaken: 0
   };
 
   id_counter++;
@@ -154,10 +159,10 @@ function makeUserObj(place_id, lng, lat, address, is_driver, arr, list) {
     storeTimes(user, j);
   }
 
-  user.arrival_times.push({ day: "saturday", time: NaN, commuting: false });
-  user.arrival_times.push({ day: "sunday", time: NaN, commuting: false });
-  user.departure_times.push({ day: "saturday", time: NaN, commuting: false });
-  user.departure_times.push({ day: "sunday", time: NaN, commuting: false });
+  user.arrivalTimes.push({ day: "saturday", time: NaN, commuting: false });
+  user.arrivalTimes.push({ day: "sunday", time: NaN, commuting: false });
+  user.departureTimes.push({ day: "saturday", time: NaN, commuting: false });
+  user.departureTimes.push({ day: "sunday", time: NaN, commuting: false });
 
   user.email =
     firstname.toLowerCase() +
@@ -178,31 +183,31 @@ function storeTimes(user, j) {
   }
 
   if (j == 0) {
-    user.arrival_times.push({
+    user.arrivalTimes.push({
       day: "monday",
       time: time,
       commuting: true,
     });
   } else if (j == 1) {
-    user.arrival_times.push({
+    user.arrivalTimes.push({
       day: "tuesday",
       time: time,
       commuting: true,
     });
   } else if (j == 2) {
-    user.arrival_times.push({
+    user.arrivalTimes.push({
       day: "wednesday",
       time: time,
       commuting: true,
     });
   } else if (j == 3) {
-    user.arrival_times.push({
+    user.arrivalTimes.push({
       day: "thursday",
       time: time,
       commuting: true,
     });
   } else if (j == 4) {
-    user.arrival_times.push({
+    user.arrivalTimes.push({
       day: "friday",
       time: time,
       commuting: true,
@@ -216,31 +221,31 @@ function storeTimes(user, j) {
   }
 
   if (j == 0) {
-    user.departure_times.push({
+    user.departureTimes.push({
       day: "monday",
       time: time,
       commuting: true,
     });
   } else if (j == 1) {
-    user.departure_times.push({
+    user.departureTimes.push({
       day: "tuesday",
       time: time,
       commuting: true,
     });
   } else if (j == 2) {
-    user.departure_times.push({
+    user.departureTimes.push({
       day: "wednesday",
       time: time,
       commuting: true,
     });
   } else if (j == 3) {
-    user.departure_times.push({
+    user.departureTimes.push({
       day: "thursday",
       time: time,
       commuting: true,
     });
   } else if (j == 4) {
-    user.departure_times.push({
+    user.departureTimes.push({
       day: "friday",
       time: time,
       commuting: true,

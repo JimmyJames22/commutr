@@ -19,7 +19,7 @@ async function routePush(route, stops){
         console.log("id:",id)
         await db.collection("users").find({"_id": id}).toArray().then(doc => {
             console.log({nameFirst:doc[0]["nameFirst"],nameLast:doc[0]["nameLast"],address:doc[0]["address"]})
-            route.push({id:doc[0]["_id"],nameFirst:doc[0]["nameFirst"],nameLast:doc[0]["nameLast"],address:doc[0]["address"],xy:doc[0]["xy"],place_id:doc[0]["place_id"],isDriver:doc[0]["isDriver"]})
+            route.push({id:doc[0]["_id"],nameFirst:doc[0]["nameFirst"],nameLast:doc[0]["nameLast"],address:doc[0]["address"],lng_lat:doc[0]["lng_lat"],place_id:doc[0]["place_id"],isDriver:doc[0]["isDriver"]})
         })
     }
     return await route
