@@ -27,6 +27,8 @@ function LoginPage() {
                 "ridesTaken":response.data.user.ridesTaken,
                 "ridesGiven":response.data.user.ridesGiven,
                 "_id":response.data.user._id,
+                "xy":response.data.user.xy,
+                "place_id":response.data.user.place_id
             }))
             navigate('/');
         }).catch(
