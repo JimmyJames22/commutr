@@ -3,19 +3,10 @@ const { calcEfficiency } = require("./CalcEfficiency");
 
 class User {
   constructor(user) {
-    this.firstname = user.firstname;
-    this.lastname = user.lastname;
     this.place_id = user.place_id;
     this.lng = user.lng;
     this.lat = user.lat;
-    this.address = user.address;
-    this.dest_place_id = user.dest_place_id;
-    this.dest_lng = user.dest_lng;
-    this.dest_lat = user.dest_lat;
-    this.dest_address = user.dest_address;
     this.is_driver = user.is_driver;
-    this.email = user.email;
-    this.phone = user.phone;
     this.uid = user.uid;
     this.to_school = 0;
 
@@ -24,7 +15,7 @@ class User {
 
     if (this.is_driver) {
       this.max_stops = user.car_capacity;
-      this.max_dur;
+      this.max_dur = user.max_dur;
       this.driver_stop_object = {};
       this.best_route = {};
       this.best_route.efficiency;
@@ -36,15 +27,9 @@ class User {
 
   makeFirstRoute() {
     this.driver_stop_object = {
-      firstname: this.firstname,
-      lastname: this.lastname,
       place_id: this.place_id,
       lng: this.lng,
       lat: this.lat,
-      address: this.address,
-      class_year: this.class_year,
-      email: this.email,
-      phone: this.phone,
       uid: this.uid,
       is_driver: true,
       to_school: this.to_school,
