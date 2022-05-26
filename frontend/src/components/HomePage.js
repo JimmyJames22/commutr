@@ -8,20 +8,21 @@ import axios from 'axios';
 
 function HomePage() {
 
-    
+    const [passengers, setPassengers] = useState([])
 
     useEffect(() => {
         if(localStorage.getItem('userData')!= null){
             getRoute();
         }
-    }, [])
+    }, [passengers])
 
 
 
-    const [passengers, setPassengers] = useState([])
+    
     const [destination, setDestination] = useState([])
 
     function getRoute(){
+        
         axios({
             method: "POST",
             url: "http://localhost:8000/api/findRoute",
@@ -30,6 +31,7 @@ function HomePage() {
             }
         }).then(response => {
             console.log("Got passengers:", response.data.routes);
+            if(passengers.length != response.data.routes.length){
             setPassengers([]);
             setDestination([]);
             for (const item of response.data.routes){
@@ -42,10 +44,12 @@ function HomePage() {
             console.log("destination state:", destination);
             console.log("Passengers state:",passengers)
             //if data doesn't have route id in it save it to localstorage.
-            if(localStorage.getItem('route') == null){
-                localStorage.setItem('route', response.data.id);
-                console.log("Saved id:", response.data.id);
+            if(localStorage.getItem('passengers') == null){
+                localStorage.setItem('passengers', passengers);
+                console.log("Saved passengers:", passengers);
             }
+        }
+
             
         })
     }
