@@ -18,11 +18,19 @@ import {
 import '../stylesheets/Login.css';
 
 import Toggle from './ToggleSwitch';
+import Modal from './ScheduleModal';
 
 
 function SignupPage({Signup, error}) {
 
-    const [details, setDetails] = useState({firstname:"", lastname:"", address:"", place_id:"", xy:[], phone:"", status:false, carCapacity:0})
+    const [details, setDetails] = useState({firstname:"", lastname:"", address:"", place_id:"", xy:[], phone:"", arrivalTimes:[{day:"monday", time:NaN, commuting:false}, {day:"tuesday", time:NaN, commuting:false}, {day:"wednesday", time:NaN, commuting:false},{day:"thursday", time:NaN, commuting:false},{day:"friday", time:NaN, commuting:false},{day:"saturday", time:NaN, commuting:false},{day:"sunday", time:NaN, commuting:false}], departureTimes:[{day:"monday", time:NaN, commuting:false}, {day:"tuesday", time:NaN, commuting:false}, {day:"wednesday", time:NaN, commuting:false},{day:"thursday", time:NaN, commuting:false},{day:"friday", time:NaN, commuting:false},{day:"saturday", time:NaN, commuting:false},{day:"sunday", time:NaN, commuting:false}], status:false, carCapacity:0})
+    const [schedule, setSchedule] = useState(true)
+    const [showModal, setShowModal] = useState(false)
+
+    const openModal = () =>{
+        setShowModal(prev => !prev)
+        console.log(showModal)
+    }
     // const [place_id, setPlace_id] = useState("")
     // const [xy, setXY] = useState([])
 
@@ -51,7 +59,7 @@ function SignupPage({Signup, error}) {
                     nameLast: details.lastname,
                     address: details.address,
                     place_id: details.place_id,
-                    xy: details.xy,
+                    lat_lng: details.xy,
                     phone: details.phone,
                     isDriver: details.status,
                     carCapacity: details.carCapacity
@@ -148,7 +156,7 @@ function SignupPage({Signup, error}) {
             // window.location.reload(false);
             return false;
         } else{
-           return true
+           openModal();
         }
     }
 
@@ -239,19 +247,20 @@ function SignupPage({Signup, error}) {
                 <div className="form-group">
                 <div className='submit-container'>
                 <div className='submit-center'>
-                <GoogleLogin
-                    className="google-login-button"
-                    clientId="277843423406-m30j9jo3krghef8dfae3uvfp3ujk10as.apps.googleusercontent.com"
-                    buttonText="Sign up with google"
-                    onRequest={CheckForms}
-                    onSuccess={responseSuccessGoogle}
-                    onFailure={responseErrorGoogle}
-                    cookiePolicy={'single_host_origin'}
-                />
+                
+                {/* {schedule == true?
+                 <button className="modal-button" onClick={openModal}>Add Schedule</button>: 
+                <><button className="disabled-modal-button" onClick={() => alert("Fill out rest of form")}>Add Schedule</button></>} */}
+
+                <button className="modal-button" onClick={()=>{CheckForms()}}>Add Schedule</button>
+                <div className="modal-wrapper"><Modal showModal={showModal} setShowModal={setShowModal} details={details} setDetails={setDetails}/></div>
+                
                 </div>
                 </div>
                 </div>
                 <div className="form-group">
+                
+
                 <label htmlFor="signup-label">Already have an account? <Link className = "login-link" to="/login">Log in!</Link></label> 
                 </div>
             </div>

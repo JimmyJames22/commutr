@@ -14,15 +14,19 @@ async function main() {
 main();
 const db = client.db()
 
-async function routePush(route, stops){
+async function routePush(route, destination, stops, dest){
     for (const id of stops){  //Go back and get names from IDS
         console.log("id:",id)
         await db.collection("users").find({"_id": id}).toArray().then(doc => {
             console.log({nameFirst:doc[0]["nameFirst"],nameLast:doc[0]["nameLast"],address:doc[0]["address"]})
-            route.push({id:doc[0]["_id"],nameFirst:doc[0]["nameFirst"],nameLast:doc[0]["nameLast"],address:doc[0]["address"],lng_lat:doc[0]["lng_lat"],place_id:doc[0]["place_id"],isDriver:doc[0]["isDriver"]})
+            route.push({id:doc[0]["_id"],nameFirst:doc[0]["nameFirst"],nameLast:doc[0]["nameLast"],address:doc[0]["address"],lat_lng:doc[0]["lat_lng"],place_id:doc[0]["place_id"],isDriver:doc[0]["isDriver"]})
+        })
+        await db.collection("destinations").find({"_id": dest}).toArray().then(doc => {
+            console.log({name:doc[0]["name"],address:doc[0]["address"],lat_lng:doc[0]["lat_lng"]})
+            destination.push({id:doc[0]["_id"],name:doc[0]["name"],address:doc[0]["address"],lat_lng:doc[0]["lat_lng"], place_id:doc[0]["place_id"]})
         })
     }
-    return await route
+    return await [route,destination]
 }
 
 exports.findRoute = (req, res) => {
@@ -32,12 +36,16 @@ exports.findRoute = (req, res) => {
     console.log(o_id)
     db.collection("pairings").find({stops: {$in: [o_id]}}).toArray().then(response => {
         let route = []
+        let destination = []
         let stops = response[0]["stops"]
         let routeid = response[0]["_id"]
+        let dest = response[0]["stops"][response[0]["stops"].length-1]
         stops.pop();
-        routePush(route, stops).then(route => {
+        routePush(route, destination, stops, dest).then(route => {
+            console.log("routes:", route[0], "dest:", route[1])
             res.json({
-                routes: route,
+                routes: route[0],
+                dest: route[1],
                 id: routeid
             })
         })

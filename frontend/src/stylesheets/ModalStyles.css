@@ -1,3 +1,5 @@
+/* copy of prof */
+
 :root {
     --color-1:#2A6041;
     --color-2:#28965A;
@@ -13,12 +15,6 @@
     font-family: montserrat, sans-serif;
 }
 
-input, button{
-    appearance: none;
-    background: none;
-    border: none;
-    outline: none;
-}
 
 .App{
     min-height: 100vh;
@@ -26,15 +22,8 @@ input, button{
     align-items: center;
     justify-content: center;
     background-color: #e8edeb;
-}
-
-.map-wrapper-div{
-    min-height: 100vh;
-    display: flex;
-    align-items: left;
-    justify-content: center;
-    margin-left: 0;
-    background-color: #e8edeb;
+    overflow: hidden;
+    overflow-y: scroll;
 }
 
 
@@ -53,8 +42,8 @@ input, button{
 
 .logo{
     color: #232B2B;
-
 }
+
 .logo .r{
    color: #2CEAA3; 
 }
@@ -122,7 +111,34 @@ form .form-inner .form-group{
     margin-bottom: 15px;
 }
 
-.form-inner .form-group label{
+.modal-app{
+    position:fixed;
+    left:-60%;
+    bottom:-2340%;
+}
+
+.close-modal{
+    color: red;
+    font-size: 20px;
+    position: fixed; 
+    top:-1430%;
+    left:-57%;
+}
+
+.close-modal:hover{
+    color: rgb(107, 4, 4);
+    cursor: pointer;
+}
+
+.modal-app .form-inner .form-group label{
+    display:block;
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 5px;
+    transition: 0.4s;
+}
+
+.modal-app .form-inner .form-group .sub-label{
     display:block;
     color: #666;
     font-size: 12px;
@@ -130,13 +146,15 @@ form .form-inner .form-group{
     transition: 0.4s;
 }
 
-.form-inner .form-group label{
+.modal-app .form-inner .form-group .pref-label{
     display:block;
     color: #666;
     font-size: 12px;
     margin-bottom: 5px;
+    margin-top:10px;
     transition: 0.4s;
 }
+
 
 
 .form-inner .form-group:focus-within label{
@@ -149,12 +167,6 @@ form .form-inner .form-group{
     position: relative;
 }
 
-.toggle{
-    vertical-align: middle;
-    position: relative;
-    align-items: center;
-}
-
 form .form-inner .form-group input{
     display: block;
     width: 100%;
@@ -164,14 +176,91 @@ form .form-inner .form-group input{
     transition: 0.4s;
 }
 
+/* checkbox styles */
+
+form .form-inner .form-group input[type="checkbox"]{
+    height:1px;
+    width:1px;
+    cursor:pointer;
+    position:relative;
+    transition: .10s;
+    float: right;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    word-wrap: break-word;
+    box-shadow: 0px 0px 3px #28965A;
+}
+
+form .form-inner .form-group .pref-wrapper input[type="checkbox"]{
+    padding-left: 5px;
+    padding-bottom: 5px;
+    margin-right: 10px;
+    cursor: pointer;
+    position:relative;
+    transition: .10s;
+    float: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    word-wrap: break-word;
+    box-shadow: 0px 0px 3px #75cf9d;
+}
+
+form .form-inner .form-group .pref-wrapper input[type="checkbox"]:disabled{
+    padding-left: 5px;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+
+form .form-inner .form-group .pref-wrapper input[type="checkbox"]:before, input[type="checkbox"]:checked:before {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    line-height:1.2em;
+    text-align:center;
+    color:white;
+    }
+
+
+
+input[type='checkbox'] {
+    display: block;
+    width: 30px;
+  }
+
+form .form-inner .form-group input[type="checkbox"]:checked {
+    background-color:#28965A;
+}
+
+form .form-inner .form-group input[type="checkbox"]:before, input[type="checkbox"]:checked:before {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    line-height:1.5em;
+    text-align:center;
+    color:white;
+    }
+
+form .form-inner .form-group input[type="checkbox"]:checked:before {
+    content: '✔';
+}
+/* end of checkbox styles */
+
 form .form-inner .form-group input:focus{
    box-shadow: 0px 0px 3px #28965A;
 }
 
-.modal-button {
+form .form-inner input[type="submit"] {
     display: inline-block;
-    margin-left: 25px;
-    padding: 12px 18px;
+    padding: 10px 15px;
     border-radius: 8px;
     background-image: linear-gradient(to right, #28965A, #7CFEF0);
     background-size: 200%;
@@ -180,19 +269,6 @@ form .form-inner .form-group input:focus{
     color: #FFF;
     font-weight: 700;
     cursor: pointer;
-}
-
-.disabled-modal-button {
-    margin-left: 25px;
-    display: inline-block;
-    padding: 12px 18px;
-    border-radius: 8px;
-    background-color: #888 ;
-    background-size: 200%;
-    background-position: 0%;
-    transition: 0.4s;
-    color: rgb(213, 213, 213);
-    font-weight: 700;
 }
 
 form .form-inner .submit-container{
@@ -208,30 +284,18 @@ form .form-inner .submit-center{
     transform: translateY(-50%); 
 }
 
-.disabled-modal-button:hover {
-    cursor: default;
-}
 
-.modal-button:hover {
+
+form .form-inner input[type="submit"]:hover {
     background-position: 100% 0%;
 }
 
-.driver-label{
-    color: #44C4E1;
+.pref-wrapper{
+    
+    padding-bottom: 10px;
 }
 
-.passenger-label{
-    color: #28965A;
-}
 
-.login-link{
-    text-decoration: none;
-}
-
-.map-div{
-    height: 100vh;
-    width: 100vw;
-}
 
 @media screen and (max-width: 600px) {
     .map-div{
@@ -265,46 +329,5 @@ form .form-inner .submit-center{
     }
 }
 
-/* combobox styles */
-:root {
-    --reach-combobox: 1;
-  }
+
   
-  [data-reach-combobox-popover] {
-    border: solid 1px hsla(0, 0%, 0%, 0.25);
-    background: hsla(0, 100%, 100%, 0.99);
-    font-size: 85%;
-    z-index: 5;
-    border-radius: 10px;
-    box-shadow: 0px 0px 3px #28965A;
-    border:none;
-  }
-  
-  [data-reach-combobox-list] {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    user-select: none;
-  }
-  
-  [data-reach-combobox-option] {
-    cursor: pointer;
-    margin: 0;
-    padding: 0.25rem 0.5rem;
-  }
-  
-  [data-reach-combobox-option][aria-selected="true"] {
-    background: hsl(211, 10%, 95%);
-  }
-  
-  [data-reach-combobox-option]:hover {
-    background: hsl(211, 10%, 92%);
-  }
-  
-  [data-reach-combobox-option][aria-selected="true"]:hover {
-    background: hsl(211, 10%, 90%);
-  }
-  
-  [data-suggested-value] {
-    font-weight: bold;
-  }

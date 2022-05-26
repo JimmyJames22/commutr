@@ -33,7 +33,7 @@ function Map(props) {
             <>{props.passengers.map((passenger) =>(
             <Marker
             key={passenger.place_id}
-            position={{ lat: passenger.xy[0], lng: passenger.xy[1] }}
+            position={{ lat: passenger.lat_lng[0], lng: passenger.lat_lng[1] }}
             />
             ))}</>
           ) : (

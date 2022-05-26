@@ -16,9 +16,10 @@ function HomePage() {
         }
     }, [])
 
-    
+
 
     const [passengers, setPassengers] = useState([])
+    const [destination, setDestination] = useState([])
 
     function getRoute(){
         axios({
@@ -30,9 +31,15 @@ function HomePage() {
         }).then(response => {
             console.log("Got passengers:", response.data.routes);
             setPassengers([]);
+            setDestination([]);
             for (const item of response.data.routes){
                 setPassengers(arr => [...arr, item]);
             }
+            for (const item of response.data.dest){
+                setDestination(arr => [...arr, item]);
+            }
+           
+            console.log("destination state:", destination);
             console.log("Passengers state:",passengers)
             //if data doesn't have route id in it save it to localstorage.
             if(localStorage.getItem('route') == null){
@@ -48,16 +55,17 @@ function HomePage() {
     }
 
     const data = JSON.parse(localStorage.getItem('userData'))
+    console.log(data)
     
     return(
     <div className='home-wrapper'>
        <div className='home-div'>
             <div className="form-inner">
-                <Map pos={data.xy} passengers = {passengers}/>
+                <Map pos={data.lat_lng} passengers = {passengers} destination = {destination}/>
                 <h1 className='main-logo' onClick={() => {window.location.reload(false)}}>Commut<text className='r'>r</text></h1>
                 <Profile passengers = {passengers}/>
             </div>
-                <Ride />
+                <Ride pos = {data.lat_lng} passengers = {passengers} destination = {destination}/>
     </div>
     </div>
     )
