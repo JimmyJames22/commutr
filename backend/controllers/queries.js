@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const e = require('express');
 const {MongoClient} = require('mongodb');
 const mongo = require('mongodb')
+const authclient = new OAuth2Client("277843423406-m30j9jo3krghef8dfae3uvfp3ujk10as.apps.googleusercontent.com")
 
 const client = new MongoClient(process.env.ATLAS_URI);
 async function main() {
@@ -13,6 +14,8 @@ async function main() {
 
 main();
 const db = client.db()
+
+
 
 async function routePush(route, destination, stops, dest){
     for (const id of stops){  //Go back and get names from IDS
@@ -86,3 +89,51 @@ exports.changeInfo = (req, res) => {
         })
     })
 }
+
+exports.getDrivers = (req, res) => {
+    db.collection("users").find({"isDriver": true}).sort( { ridesGiven: -1 } ).toArray().then(response => {
+        var driverList = []
+        for(var i =0; i<response.length; i++){
+            let name = response[i].nameFirst+' '+response[i].nameLast;
+            let ridesGiven = response[i].ridesGiven;
+            let email = response[i].email;
+            driverList.push({name:name, ridesGiven:ridesGiven, email:email})
+        }
+        
+        res.json({
+            drivers:driverList
+        })
+    })
+}
+
+exports.adminSignup = (req, res) => {
+    const {tokenId} = req.body;
+    console.log(tokenId);
+    authclient.verifyIdToken({idToken: tokenId, audience: "277843423406-m30j9jo3krghef8dfae3uvfp3ujk10as.apps.googleusercontent.com"}).then(response => {
+        const { email_verified, email } = response.payload;
+        if(email_verified){
+            db.collection("admins").findOne({email}).then(user =>{
+               
+                    if(user) {
+                        const token = jwt.sign({_id:user._id}, process.env.JWT_SIGNIN_KEY, {expiresIn: '7d'});
+                        //what to get under here
+                        const {_id, nameFirst, nameLast, email, phone, org_id, hasPaired, org_name} = user;
+                        res.json({
+                            token,
+                            user: {_id, nameFirst, nameLast, email, phone, org_id, hasPaired, org_name}
+                        })
+                    } else {
+                        res.json({
+                            token,
+                            user: "NA"
+                        })
+                    }
+                
+            })
+        }
+        console.log(response.payload);
+    })
+    
+}
+
+// 

@@ -41,6 +41,7 @@ exports.googlelogin = (req, res) => {
     client.verifyIdToken({idToken: tokenId, audience: "277843423406-m30j9jo3krghef8dfae3uvfp3ujk10as.apps.googleusercontent.com"}).then(response => {
         const { email_verified, email } = response.payload;
         if(email_verified){
+            
             User.findOne({email}).exec((err, user) =>{
                 if(err){
                     return res.status(400).json({
@@ -49,29 +50,27 @@ exports.googlelogin = (req, res) => {
                 } else {
                     if(user) {
                         const token = jwt.sign({_id:user._id}, process.env.JWT_SIGNIN_KEY, {expiresIn: '7d'});
-                        const {_id, name, email, destination_id, nameFirst, nameLast,phone, arrivalTimes, departureTimes, address, place_id, lat_lng, isDriver,ridesGiven, ridesTaken, carCapacity} = user;
+                        const {_id, name, email, destination_id, nameFirst, nameLast, phone, arrivalTimes, departureTimes, address, place_id, lat_lng, isDriver, ridesGiven, ridesTaken, carCapacity} = user;
                         res.json({
                             token,
-                            user: {_id, name, email, destination_id, nameFirst, nameLast,phone, arrivalTimes, departureTimes, address,place_id, lat_lng, isDriver, ridesGiven, ridesTaken, carCapacity}
+                            user: {_id, name, email, destination_id, nameFirst, nameLast, phone, arrivalTimes, departureTimes, address,place_id, lat_lng, isDriver, ridesGiven, ridesTaken, carCapacity}
                         })
                     } else {
                         let ridesGiven = 0;
                         let ridesTaken = 0;
                         let carCap = parseInt(carCapacity)
                         var destid = mongo.ObjectId(destination_id);
-                   
-                  
 
                         let newUser = new User({
                             nameFirst, 
                             nameLast, 
                             email,
-                            destination_id: destid, 
+                            destination_id: destid,
                             phone,
                             arrivalTimes,
                             departureTimes,
                             address, 
-                            place_id, 
+                            place_id,
                             lat_lng, 
                             isDriver, 
                             carCapacity:carCap, 
@@ -88,7 +87,7 @@ exports.googlelogin = (req, res) => {
                             }
 
                             const token = jwt.sign({_id:data._id}, process.env.JWT_SIGNIN_KEY, {expiresIn: '7d'});
-                            const {_id, nameFirst,nameLast, email, destination_id, phone, arrivalTimes, departureTimes, address, place_id, lat_lng, isDriver, carCapacity, ridesGiven, ridesTaken} = newUser;
+                            const {_id, nameFirst, nameLast, email, destination_id, phone, arrivalTimes, departureTimes, address, place_id, lat_lng, isDriver, carCapacity, ridesGiven, ridesTaken} = newUser;
     
                             res.json({
                                 token,
@@ -102,7 +101,5 @@ exports.googlelogin = (req, res) => {
         }
         console.log(response.payload);
     })
-
-    console.log()
 
 }

@@ -1,11 +1,20 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { componentDidUpdate } from 'react';
+import { useState } from 'react';
 import GoogleLogin from 'react-google-login';
 import axios from 'axios';
+import AdminModal from './AdminSignup';
+import '../stylesheets/AdminStyles.css'
 
 function LoginPage() {
 
     const navigate = useNavigate();
+
+    const [showModal, setShowModal] = useState(false)
+
+    const openModal = (e) => {
+        e.preventDefault();
+        setShowModal(prev => !prev);
+    }
 
     const responseSuccessGoogle = (response) => {
         axios({
@@ -65,7 +74,9 @@ function LoginPage() {
                 </div>
                 </div>
                 <div className="form-group">
-                <label htmlFor="signup-label">Don't have an account? <Link className = "login-link" to="/signup" >Sign up!</Link> </label> 
+                <label htmlFor="signup-label">Don't have an account? <Link className = "login-link" to="/signup" >Sign up!</Link> </label>
+                <button className="admin-button" onClick={openModal}>For Administrators</button>
+                <div className="admin-wrapper"><AdminModal showModal={showModal} setShowModal={(e) => {setShowModal(e)}}/></div> 
                 </div>
             </div>
         </form>

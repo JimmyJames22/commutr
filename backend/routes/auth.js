@@ -3,7 +3,7 @@ const router = express.Router();
 
 const {signup, googlelogin} = require("../controllers/auth");
 
-const { findRoute, deletePassenger, changeInfo } = require("../controllers/queries")
+const { findRoute, deletePassenger, changeInfo, getDrivers, adminSignup } = require("../controllers/queries")
 
 const { makeUsers } = require("../dummy_data_mongo/DataMaker")
 
@@ -17,9 +17,11 @@ router.post('/deletepassenger', deletePassenger)
 
 router.post('/changeinfo', changeInfo)
 
+router.get('/getdrivers', getDrivers)
+
 router.get('/dummyinput', makeUsers)
 
-
+router.post('/googleloginadmin', adminSignup)
 
 module.exports = router;
 

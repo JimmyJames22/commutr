@@ -6,6 +6,7 @@ import Back from './BackButton';
 import Logout from './LogoutButton';
 import Settings from './SettingsButton';
 import Passengers from './PassengerList';
+
 import axios from 'axios';
 
 function ProfilePage() {
@@ -18,12 +19,18 @@ function ProfilePage() {
 
     const [passengers, setPassengers] = useState([])
 
+    const data = JSON.parse(localStorage.getItem('userData')) //Real code
+
     if(localStorage.getItem('userData')== null){ //Real coode
         return <Navigate to="/login" />;
     }
 
+    if(data.org_id!= null){
+        return <Navigate to="/admin" />;
+    }
 
-    const data = JSON.parse(localStorage.getItem('userData')) //Real code
+
+    
     
     function getRoute(){
         axios({

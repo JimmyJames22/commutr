@@ -53,13 +53,18 @@ function HomePage() {
             
         })
     }
+    const data = JSON.parse(localStorage.getItem('userData'))
+    console.log(data)
 
     if(localStorage.getItem('userData')== null){
         return <Navigate to="/login" />;
     }
 
-    const data = JSON.parse(localStorage.getItem('userData'))
-    console.log(data)
+    if(data.org_id!= null){
+        return <Navigate to="/admin" />;
+    }
+
+    
     
     return(
     <div className='home-wrapper'>

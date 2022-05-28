@@ -93,6 +93,10 @@ function SettingsPage() {
     if(localStorage.getItem('userData')== null){
         return <Navigate to="/login" />;
     }
+    if(data.org_id!= null){
+        return <Navigate to="/admin" />;
+    }
+
     return(
         <div className="settings-wrapper">
             <div className="form-inner">
