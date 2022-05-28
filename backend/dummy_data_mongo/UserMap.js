@@ -28,6 +28,7 @@ getUserData();
 async function getUserData() {
   try {
     await client.connect();
+    console.log("Mongo connected");
     let cursor = await client.db("dummyData").collection("users").find({
       destination_id: dest_data._id,
     });
@@ -38,15 +39,14 @@ async function getUserData() {
       users.push({
         _id: result._id.toString(),
         place_id: result.place_id,
-        lng: result.lng_lat[0],
-        lat: result.lng_lat[1],
+        lng: result.lat_lng[1],
+        lat: result.lat_lng[0],
         is_driver: result.isDriver,
       });
     });
 
     console.log(users);
     processDistances();
-    saveUsermap();
   } catch (e) {
     console.error(e);
   }
@@ -74,6 +74,7 @@ function processDistances() {
   for (let k = 0; k < users.length; k++) {
     console.log(users[k]._id);
     for (let l = k + 1; l < users.length; l++) {
+      console.log(l);
       if (dest_counter >= 25) {
         // check if over the limit for the current rate
         // append current rate to reqs_by_rate
@@ -205,52 +206,43 @@ async function makeUserMapReq(reqs_by_rate, all_user_coords) {
           `https://maps.googleapis.com/maps/api/distancematrix/json?origins=place_id:${dest_data.place_id}&destinations=enc:${all_user_coords[i].polyline}:&key=${API_KEY}`
         )
         .then((response) => {
-          init_promises.push(
-            new Promise(async (resolve, reject) => {
-              console.log("TOSCHOOL");
-              console.log(
-                `https://maps.googleapis.com/maps/api/distancematrix/json?origins=place_id:${dest_data.place_id}&destinations=enc:${all_user_coords[i].polyline}:&key=${API_KEY}`
-              );
-              // init environment vars
-              let user;
+          console.log("TOSCHOOL");
+          // init environment vars
+          let user;
 
-              // loop through all users in the response
-              for (let l = 0; l < response.data.rows[0].elements.length; l++) {
-                // store user var
-                for (let maybe_user of users) {
-                  if (maybe_user._id == all_user_coords[i]._ids[l]) {
-                    user = maybe_user;
-                  }
-                }
-
-                console.log(user);
-                let dur;
-                // try to update user.to_school
-                try {
-                  dur = response.data.rows[0].elements[l].duration.value;
-                } catch (err) {
-                  console.log(err.message);
-                  dur = -1;
-                }
-
-                await updateUserDur(user, dur);
-
-                // check if user is driver
-                if (user.is_driver == true) {
-                  let max_dur;
-                  // if so update max_dur
-                  if (dur == -1) {
-                    max_dur = -1;
-                  } else {
-                    max_dur = dur * route_time_tolerance;
-                  }
-
-                  await updateUserMaxDur(user, max_dur);
-                }
+          // loop through all users in the response
+          for (let l = 0; l < response.data.rows[0].elements.length; l++) {
+            // store user var
+            for (let maybe_user of users) {
+              if (maybe_user._id == all_user_coords[i]._ids[l]) {
+                user = maybe_user;
               }
-              resolve();
-            })
-          );
+            }
+
+            let dur;
+            // try to update user.to_school
+            try {
+              dur = response.data.rows[0].elements[l].duration.value;
+            } catch (err) {
+              console.log(err.message);
+              dur = -1;
+            }
+
+            updateUserDur(user, dur);
+
+            // check if user is driver
+            if (user.is_driver == true) {
+              let max_dur;
+              // if so update max_dur
+              if (dur == -1) {
+                max_dur = -1;
+              } else {
+                max_dur = dur * route_time_tolerance;
+              }
+
+              updateUserMaxDur(user, max_dur);
+            }
+          }
         })
         // catch any errors
         .catch(function (error) {
@@ -262,43 +254,47 @@ async function makeUserMapReq(reqs_by_rate, all_user_coords) {
     // log rough percent of requests made -- DEV TOOL SHOULD BE REMOVED
     console.log((i / (all_user_coords.length - 1)) * 100);
   }
-  await sleep(5000);
+  saveUsermap();
 }
 
-async function updateUserMaxDur(user, max_dur) {
-  await client
-    .db("dummyData")
-    .collection("users")
-    .updateOne(
-      {
-        _id: ObjectId(user._id),
-      },
-      {
-        $set: {
-          max_dur: max_dur,
+function updateUserDur(user, dur) {
+  init_promises.push(
+    client
+      .db("dummyData")
+      .collection("users")
+      .updateOne(
+        {
+          _id: ObjectId(user._id),
         },
-      },
-      false,
-      true
-    );
+        {
+          $set: {
+            to_school: dur,
+          },
+        },
+        false,
+        true
+      )
+  );
 }
 
-async function updateUserDur(user, dur) {
-  await client
-    .db("dummyData")
-    .collection("users")
-    .updateOne(
-      {
-        _id: ObjectId(user._id),
-      },
-      {
-        $set: {
-          to_school: dur,
+function updateUserMaxDur(user, max_dur) {
+  init_promises.push(
+    client
+      .db("dummyData")
+      .collection("users")
+      .updateOne(
+        {
+          _id: ObjectId(user._id),
         },
-      },
-      false,
-      true
-    );
+        {
+          $set: {
+            max_dur: max_dur,
+          },
+        },
+        false,
+        true
+      )
+  );
 }
 
 function sleep(ms) {
@@ -314,7 +310,7 @@ async function saveUsermap() {
     } catch (e) {
       console.error(e);
     } finally {
-      // await client.close();
+      await client.close();
     }
   });
 }

@@ -47,6 +47,7 @@ let effList = [];
 let counter = 0;
 
 let init_promises = [];
+let route_promises = [];
 
 // begin program
 
@@ -65,28 +66,35 @@ async function init() {
   let student_ids = [];
   try {
     await client.connect();
+    console.log("Mongo connected");
     let cursor = await client.db("dummyData").collection("users").find({
       destination_id: dest_data._id,
     });
 
     let results = await cursor.toArray();
+    console.log("RESULTS");
+    console.log(results);
 
-    results.forEach((result, i) => {
+    for (let i = 0; i < results.length; i++) {
+      let result = results[i];
+      console.log(result);
       let user;
       let user_obj = {
         place_id: result.place_id,
-        lng: result.lng_lat[0],
-        lat: result.lng_lat[1],
+        lng: result.lat_lng[0],
+        lat: result.lat_lng[1],
         is_driver: result.isDriver,
-        uid: result._id,
+        uid: result._id.toString(),
         to_school: result.to_school,
         arrival_times: result.arrivalTimes,
-        departure_times: result.departure_times,
+        departure_times: result.departureTimes,
       };
       if (result.isDriver) {
         user_obj.max_stops = result.carCapacity;
         user_obj.max_dur = result.max_dur;
         user = new User(user_obj);
+        console.log("Driver");
+        console.log(user);
         users.push(user);
         drivers.push(user);
         user.makeFirstRoute();
@@ -97,7 +105,7 @@ async function init() {
         students.push(user);
         student_ids.push(user.uid);
       }
-    });
+    }
   } catch (e) {
     console.error(e);
   }
@@ -108,6 +116,8 @@ async function init() {
 
   console.log(student_ids);
   console.log("Finished init()");
+  console.log(users);
+  runProgram();
 }
 // NEED TO COMMENT EVERYTHING BELOW THIS COMMENT
 
@@ -148,8 +158,11 @@ function runProgram() {
         // console.log();
         console.log(j);
       }
+      route_promises = [];
       randomRoutes();
-      checkIfBetter();
+      Promise.all(route_promises).then(() => {
+        checkIfBetter();
+      });
     }
     saveNewJson();
   });
@@ -169,42 +182,49 @@ function randomRoutes() {
   }
 
   for (let i = 0; i < drivers.length; i++) {
-    driver = drivers[i];
+    route_promises.push(
+      new Promise(async (resolve, reject) => {
+        driver = drivers[i];
 
-    if (driver.to_school == -1) {
-      driver.new_route = driver.best_route;
-      continue;
-    }
+        if (driver.to_school == -1) {
+          driver.new_route = driver.best_route;
+          resolve("driver " + i + ": no possible routes");
+        } else {
+          if (driver.possible_route_stops.length < driver.max_stops) {
+            num_stops = Math.ceil(
+              Math.random() * driver.possible_route_stops.length
+            );
+          } else {
+            num_stops = Math.ceil(Math.random() * driver.max_stops);
+          }
 
-    if (driver.possible_route_stops.length < driver.max_stops) {
-      num_stops = Math.ceil(Math.random() * driver.possible_route_stops.length);
-    } else {
-      num_stops = Math.ceil(Math.random() * driver.max_stops);
-    }
+          new_route = await randomStops(num_stops, driver);
 
-    new_route = randomStops(num_stops, driver);
+          // console.log("RandomRoutes " + driver.uid);
 
-    // console.log("RandomRoutes " + driver.uid);
+          // can't be recursive or it will max out the stack size
+          while (new_route.total_dur >= driver.max_dur) {
+            if (driver.possible_route_stops.length < driver.max_stops) {
+              num_stops = Math.ceil(
+                Math.random() * driver.possible_route_stops.length
+              );
+            }
 
-    // can't be recursive or it will max out the stack size
-    while (new_route.total_dur >= driver.max_dur) {
-      if (driver.possible_route_stops.length < driver.max_stops) {
-        num_stops = Math.ceil(
-          Math.random() * driver.possible_route_stops.length
-        );
-      }
+            new_route = await randomStops(num_stops, driver);
+            // console.log("RandomDriv " + driver.uid);
+          }
 
-      new_route = randomStops(num_stops, driver);
-      // console.log("RandomDriv " + driver.uid);
-    }
-
-    driver.new_route = new_route;
+          driver.new_route = new_route;
+          resolve("driver " + i + ": new route created");
+        }
+      })
+    );
   }
 
   new_efficiency = sumEfficiency(drivers);
 }
 
-function randomStops(num_stops, driver) {
+async function randomStops(num_stops, driver) {
   let new_route = {
     stops: [driver.driver_stop_object],
     stops_by_uid: [driver.uid],
@@ -279,20 +299,22 @@ function randomStops(num_stops, driver) {
         }
       }
 
+      stop_user.duration;
+
       // check if the proposed stop makes the route unreachable by the driver
       let new_dur =
         new_route.total_dur +
-        stop_user.durationToUid(
+        (await stop_user.durationToUid(
           new_route.stops_by_uid[new_route.stops_by_uid.length - 1],
-          userMap
-        ) +
+          client
+        )) +
         stop_user.to_school;
 
       if (new_dur > driver.max_dur) {
         over_duration = true;
         // check if the new stop is over distance and if so remove it from the driver's list
         if (
-          driver.durationToUid(stop_uid, userMap) + stop_user.to_school >
+          (await driver.durationToUid(stop_uid, client)) + stop_user.to_school >
           driver.max_dur
         ) {
           for (let i = 0; i < driver.possible_stops.length; i++) {
@@ -348,9 +370,9 @@ function randomStops(num_stops, driver) {
     // stop for route selected -- now check to make sure the stop is within the route tollerance
     new_route.stops_by_uid.push(stop_uid);
     new_route.stops.push(stop_user);
-    new_route.total_dur += stop_user.durationToUid(
+    new_route.total_dur += await stop_user.durationToUid(
       new_route.stops_by_uid[new_route.stops_by_uid.length - 2],
-      userMap
+      client
     );
 
     for (let i = 0; i < drivers.length; i++) {

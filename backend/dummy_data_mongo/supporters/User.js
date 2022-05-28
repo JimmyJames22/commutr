@@ -1,5 +1,6 @@
 const Time = require("./Time.js");
 const { calcEfficiency } = require("./CalcEfficiency");
+const { ObjectId } = require("mongodb");
 
 class User {
   constructor(user) {
@@ -8,13 +9,13 @@ class User {
     this.lat = user.lat;
     this.is_driver = user.is_driver;
     this.uid = user.uid;
-    this.to_school = 0;
+    this.to_school = user.to_school;
 
     this.arrival_times = user.arrival_times;
     this.departure_times = user.departure_times;
 
     if (this.is_driver) {
-      this.max_stops = user.car_capacity;
+      this.max_stops = user.max_stops;
       this.max_dur = user.max_dur;
       this.driver_stop_object = {};
       this.best_route = {};
@@ -47,18 +48,48 @@ class User {
     );
   }
 
-  durationToUid(uid, userMap) {
-    // calls from userMap
-    let map;
-    for (let k = 0; k < userMap.length; k++) {
-      map = userMap[k];
-      if (map.u1 == this.uid && map.u2 == uid) {
-        return map.dur;
-      } else if (map.u1 == uid && map.u2 == this.uid) {
-        return map.dur;
+  async durationToUid(uid, client) {
+    let cursor = await client
+      .db("dummy_data")
+      .collection("users")
+      .find({
+        u1: ObjectId(this, uid),
+        u2: ObjectId(uid),
+      });
+
+    let results = await cursor.toArray();
+
+    if (results.length == 0) {
+      let cursor_2 = await client
+        .db("dummy_data")
+        .collection("users")
+        .find({
+          u1: ObjectId(uid),
+          u2: ObjectId(this, uid),
+        });
+
+      let results_2 = await cursor_2.toArray();
+
+      if (results_2.length == 0) {
+        return "No match";
+      } else {
+        return results_2;
       }
+    } else {
+      return results;
     }
-    return 0;
+
+    // // calls from userMap
+    // let map;
+    // for (let k = 0; k < userMap.length; k++) {
+    //   map = userMap[k];
+    //   if (map.u1 == this.uid && map.u2 == uid) {
+    //     return map.dur;
+    //   } else if (map.u1 == uid && map.u2 == this.uid) {
+    //     return map.dur;
+    //   }
+    // }
+    // return 0;
   }
 }
 

@@ -4,16 +4,16 @@ const fs = require("fs");
 const names = require("../dummy_data/rand_names/names").names;
 const axios = require("axios");
 const mongo = require("mongodb");
-const User = require('../models/user');
-const e = require('express')
+const User = require("../models/user");
+const e = require("express");
 
 // set coordinates for Milton Academy
 const y = 42.257227602977615;
 const x = -71.06995481869149;
 const dest_place_id = "ChIJ0VjiTT9844kRBLc0QGPqwrY";
 
-const num_drivers = 20; //Change these values
-const num_passengers = 5;
+const num_drivers = 5; //Change these values
+const num_passengers = 20;
 
 // parameters for arrival/leaving times
 const min_mrn_time = 420;
@@ -21,7 +21,6 @@ const mrn_time_span = 180;
 const min_aft_time = 900;
 const aft_time_span = 240;
 const len_names = names.length;
-
 
 let i;
 let student_coords = [];
@@ -43,7 +42,6 @@ const milton_list = {
 
 const dest_oid = mongo.ObjectId(milton_list._id);
 
-
 // const mongoose = require("mongoose");
 // const { MongoClient } = require("mongodb");
 
@@ -54,16 +52,16 @@ const dest_oid = mongo.ObjectId(milton_list._id);
 
 // main();
 // const db = client.db();
-  
+
 exports.makeUsers = async (req, res) => {
   looper(num_drivers, 0.1, 0.5, true, driver_coords, driver_list);
   looper(num_passengers, 0.1, 0.4, false, student_coords, student_list);
-  
+
   Promise.all(url_requests).then(() => {
     res.json({
-      message: "complete"
-    })
-  })
+      message: "complete",
+    });
+  });
 };
 
 const looper = (num, min, max, is_driver, arr, list) => {
@@ -76,9 +74,9 @@ const looper = (num, min, max, is_driver, arr, list) => {
   }
 };
 
-function chooseName(){
+function chooseName() {
   return names[Math.floor(Math.random() * len_names)];
-};
+}
 
 function getPlaceID(min, max, is_driver, arr, list) {
   let thta;
@@ -135,7 +133,7 @@ function makeUserObj(place_id, lng, lat, address, is_driver, arr, list) {
 
   let nameFirst = firstname;
   let nameLast = lastname;
-  let lng_lat = [lng, lat];
+  let lat_lng = [lat, lng];
   let destination_id = dest_oid;
   // dest_place_id = dest_place_id,
   // dest_lng_lat = [x,y],
@@ -177,7 +175,7 @@ function makeUserObj(place_id, lng, lat, address, is_driver, arr, list) {
     departureTimes,
     address,
     place_id,
-    lng_lat,
+    lat_lng,
     isDriver,
     carCapacity,
     ridesTaken,
@@ -185,13 +183,13 @@ function makeUserObj(place_id, lng, lat, address, is_driver, arr, list) {
   });
 
   userDBObject.save((err, data) => {
-    if(err){
+    if (err) {
       return res.status(400).json({
-        error: "Something went wrong during signup", newUser
-      })
+        error: "Something went wrong during signup",
+        newUser,
+      });
     }
-    
-  })
+  });
 }
 
 function storeTimes(arrivalTimes, departureTimes, j) {
@@ -273,6 +271,3 @@ function storeTimes(arrivalTimes, departureTimes, j) {
     });
   }
 }
-
-
-
