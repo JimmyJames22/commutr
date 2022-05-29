@@ -8,10 +8,11 @@ const axios = require("axios");
 const { MongoClient } = require("mongodb");
 const ObjectId = require("mongodb").ObjectID;
 
-// const {
-//   calcEfficiency,
-//   sumEfficiency,
-// } = require("./supporters/CalcEfficiency.js");
+const {
+  calcEfficiency,
+  sumEfficiency,
+} = require("./supporters/CalcEfficiency.js");
+
 const { rejects } = require("assert");
 
 // init global environment
@@ -31,7 +32,7 @@ let drivers = [];
 let students = [];
 
 let route_time_tolerance = 1.15; // maximum multiple of original commute distance for drivers
-let num_epochs = 100000;
+let num_epochs = 100;
 let loading_usermap = false; // variable to indicate whether or not the new usermap is calculated each time
 // ^ if set to false, it creates a new one from the data; if set to true it loads it from ./data/usermap.json
 
@@ -65,6 +66,7 @@ init();
 async function init() {
   let student_ids = [];
   try {
+    console.log("Attempting to connect");
     await client.connect();
     console.log("Mongo connected");
     let cursor = await client.db("dummyData").collection("users").find({
@@ -72,12 +74,9 @@ async function init() {
     });
 
     let results = await cursor.toArray();
-    console.log("RESULTS");
-    console.log(results);
 
     for (let i = 0; i < results.length; i++) {
       let result = results[i];
-      console.log(result);
       let user;
       let user_obj = {
         place_id: result.place_id,
@@ -93,8 +92,6 @@ async function init() {
         user_obj.max_stops = result.carCapacity;
         user_obj.max_dur = result.max_dur;
         user = new User(user_obj);
-        console.log("Driver");
-        console.log(user);
         users.push(user);
         drivers.push(user);
         user.makeFirstRoute();
@@ -114,9 +111,6 @@ async function init() {
     drivers[i].possible_stops = student_ids.slice(0);
   }
 
-  console.log(student_ids);
-  console.log("Finished init()");
-  console.log(users);
   runProgram();
 }
 // NEED TO COMMENT EVERYTHING BELOW THIS COMMENT
@@ -124,18 +118,6 @@ async function init() {
 function runProgram() {
   Promise.all(init_promises).then(() => {
     console.log("DONE");
-    fs.writeFile("./data/usermap.json", JSON.stringify(userMap), "utf8", () => {
-      console.log("usermap exported");
-    });
-    fs.writeFile(
-      "./data/users_with_gmaps.json",
-      JSON.stringify(users),
-      "utf8",
-      () => {
-        console.log("users exported");
-      }
-    );
-
     let possible_stops = [];
 
     for (let i = 0; i < students.length; i++) {
@@ -144,23 +126,23 @@ function runProgram() {
 
     for (let i = 0; i < drivers.length; i++) {
       drivers[i].possible_stops = possible_stops.slice(0);
-      console.log(drivers[i].possible_stops);
     }
 
     for (let j = 0; j < num_epochs; j++) {
-      if (j - 1000 * counter >= 0) {
-        counter++;
-        // console.log();
-        // console.log();
-        // console.log();
-        // console.log();
-        // console.log();
-        // console.log();
-        console.log(j);
-      }
+      //   if (j - 1000 * counter >= 0) {
+      //     counter++;
+      // console.log();
+      // console.log();
+      // console.log();
+      // console.log();
+      // console.log();
+      // console.log();
+      console.log(j);
+      // }
       route_promises = [];
       randomRoutes();
       Promise.all(route_promises).then(() => {
+        new_efficiency = sumEfficiency(drivers);
         checkIfBetter();
       });
     }
@@ -199,9 +181,6 @@ function randomRoutes() {
           }
 
           new_route = await randomStops(num_stops, driver);
-
-          // console.log("RandomRoutes " + driver.uid);
-
           // can't be recursive or it will max out the stack size
           while (new_route.total_dur >= driver.max_dur) {
             if (driver.possible_route_stops.length < driver.max_stops) {
@@ -220,8 +199,6 @@ function randomRoutes() {
       })
     );
   }
-
-  new_efficiency = sumEfficiency(drivers);
 }
 
 async function randomStops(num_stops, driver) {
