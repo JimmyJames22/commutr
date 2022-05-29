@@ -1,16 +1,13 @@
 // weights need to be adjusted to help normalize
 let route_stops_weight = 1000;
-let route_time_weight = 0;
-let arrival_time_weight = 0;
-let departure_time_weight = 0;
+let route_time_weight = 100;
+let arrival_time_weight = 30;
+let departure_time_weight = 30;
 
 function sumEfficiency(drivers) {
   let efficiency_back = 0;
-  console.log(drivers);
   for (let i = 0; i < drivers.length; i++) {
     let driver = drivers[i];
-    console.log(driver);
-    console.log(driver.new_route);
     let new_eff = calcEfficiency(
       driver.max_dur - driver.new_route.total_dur,
       driver.new_route.stops

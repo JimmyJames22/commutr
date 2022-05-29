@@ -49,47 +49,49 @@ class User {
   }
 
   async durationToUid(uid, client) {
-    let cursor = await client
-      .db("dummy_data")
-      .collection("users")
-      .find({
-        u1: ObjectId(this.uid),
-        u2: ObjectId(uid),
-      });
-
-    let results = await cursor.toArray();
-
-    if (results.length == 0) {
-      let cursor_2 = await client
+    return new Promise(async (resolve, reject) => {
+      let cursor = await client
         .db("dummy_data")
         .collection("users")
         .find({
-          u1: ObjectId(uid),
-          u2: ObjectId(this.uid),
+          u1: ObjectId(this.uid),
+          u2: ObjectId(uid),
         });
 
-      let results_2 = await cursor_2.toArray();
+      let results = await cursor.toArray();
 
-      if (results_2.length == 0) {
-        return 0;
+      if (results.length == 0) {
+        let cursor_2 = await client
+          .db("dummy_data")
+          .collection("users")
+          .find({
+            u1: ObjectId(uid),
+            u2: ObjectId(this.uid),
+          });
+
+        let results_2 = await cursor_2.toArray();
+
+        if (results_2.length == 0) {
+          resolve(0);
+        } else {
+          resolve(results_2);
+        }
       } else {
-        return results_2;
+        resolve(results);
       }
-    } else {
-      return results;
-    }
 
-    // // calls from userMap
-    // let map;
-    // for (let k = 0; k < userMap.length; k++) {
-    //   map = userMap[k];
-    //   if (map.u1 == this.uid && map.u2 == uid) {
-    //     return map.dur;
-    //   } else if (map.u1 == uid && map.u2 == this.uid) {
-    //     return map.dur;
-    //   }
-    // }
-    // return 0;
+      // // calls from userMap
+      // let map;
+      // for (let k = 0; k < userMap.length; k++) {
+      //   map = userMap[k];
+      //   if (map.u1 == this.uid && map.u2 == uid) {
+      //     return map.dur;
+      //   } else if (map.u1 == uid && map.u2 == this.uid) {
+      //     return map.dur;
+      //   }
+      // }
+      // return 0;
+    });
   }
 }
 
