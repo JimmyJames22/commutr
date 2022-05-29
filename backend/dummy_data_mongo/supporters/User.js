@@ -53,7 +53,7 @@ class User {
       .db("dummy_data")
       .collection("users")
       .find({
-        u1: ObjectId(this, uid),
+        u1: ObjectId(this.uid),
         u2: ObjectId(uid),
       });
 
@@ -65,13 +65,13 @@ class User {
         .collection("users")
         .find({
           u1: ObjectId(uid),
-          u2: ObjectId(this, uid),
+          u2: ObjectId(this.uid),
         });
 
       let results_2 = await cursor_2.toArray();
 
       if (results_2.length == 0) {
-        return "No match";
+        return 0;
       } else {
         return results_2;
       }

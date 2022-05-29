@@ -116,7 +116,7 @@ async function init() {
 // NEED TO COMMENT EVERYTHING BELOW THIS COMMENT
 
 function runProgram() {
-  Promise.all(init_promises).then(() => {
+  Promise.all(init_promises).then(async () => {
     console.log("DONE");
     let possible_stops = [];
 
@@ -141,17 +141,13 @@ function runProgram() {
       // }
       route_promises = [];
       randomRoutes();
-      Promise.all(route_promises).then(() => {
+      await Promise.all(route_promises).then(() => {
         new_efficiency = sumEfficiency(drivers);
         checkIfBetter();
       });
     }
     saveNewJson();
   });
-}
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function randomRoutes() {
@@ -182,7 +178,7 @@ function randomRoutes() {
 
           new_route = await randomStops(num_stops, driver);
           // can't be recursive or it will max out the stack size
-          while (new_route.total_dur >= driver.max_dur) {
+          while (new_route.total_dur > driver.max_dur) {
             if (driver.possible_route_stops.length < driver.max_stops) {
               num_stops = Math.ceil(
                 Math.random() * driver.possible_route_stops.length
@@ -194,7 +190,7 @@ function randomRoutes() {
           }
 
           driver.new_route = new_route;
-          resolve("driver " + i + ": new route created");
+          resolve();
         }
       })
     );
@@ -202,6 +198,7 @@ function randomRoutes() {
 }
 
 async function randomStops(num_stops, driver) {
+  console.log("start randomStops");
   let new_route = {
     stops: [driver.driver_stop_object],
     stops_by_uid: [driver.uid],
@@ -279,21 +276,17 @@ async function randomStops(num_stops, driver) {
       stop_user.duration;
 
       // check if the proposed stop makes the route unreachable by the driver
-      let new_dur =
-        new_route.total_dur +
-        (await stop_user.durationToUid(
-          new_route.stops_by_uid[new_route.stops_by_uid.length - 1],
-          client
-        )) +
-        stop_user.to_school;
+      let stop_to_stop = await stop_user.durationToUid(
+        new_route.stops_by_uid[new_route.stops_by_uid.length - 1],
+        client
+      );
+      let new_dur = new_route.total_dur + stop_to_stop + stop_user.to_school;
 
       if (new_dur > driver.max_dur) {
         over_duration = true;
         // check if the new stop is over distance and if so remove it from the driver's list
-        if (
-          (await driver.durationToUid(stop_uid, client)) + stop_user.to_school >
-          driver.max_dur
-        ) {
+        let driver_to_stop = await driver.durationToUid(stop_uid, client);
+        if (driver_to_stop + stop_user.to_school > driver.max_dur) {
           for (let i = 0; i < driver.possible_stops.length; i++) {
             if (driver.possible_stops[i] == stop_uid) {
               driver.possible_stops.splice(i, 1);
@@ -347,10 +340,11 @@ async function randomStops(num_stops, driver) {
     // stop for route selected -- now check to make sure the stop is within the route tollerance
     new_route.stops_by_uid.push(stop_uid);
     new_route.stops.push(stop_user);
-    new_route.total_dur += await stop_user.durationToUid(
+    let stop_to_stop = await stop_user.durationToUid(
       new_route.stops_by_uid[new_route.stops_by_uid.length - 2],
       client
     );
+    new_route.total_dur += stop_to_stop;
 
     for (let i = 0; i < drivers.length; i++) {
       let poss_route_stops = drivers[i].possible_route_stops;
@@ -382,12 +376,18 @@ function checkIfBetter() {
 }
 
 function saveNewJson() {
-  let student_json = JSON.stringify(students);
-  let drivers_json = JSON.stringify(drivers);
-  fs.writeFile("./final_routes/student.json", student_json, "utf8", () => {
-    console.log("exported");
-  });
-  fs.writeFile("./final_routes/driver.json", drivers_json, "utf8", () => {
-    console.log("exported");
-  });
+  // console.log(drivers);
+  for (i = 0; i < drivers.length; i++) {
+    console.log("Driver " + i + ":");
+    console.log(drivers[i].best_route.stops_by_uid);
+    console.log(drivers[i].best_route.efficiency);
+  }
+  // let student_json = JSON.stringify(students);
+  // let drivers_json = JSON.stringify(drivers);
+  // fs.writeFile("./final_routes/student.json", student_json, "utf8", () => {
+  //   console.log("exported");
+  // });
+  // fs.writeFile("./final_routes/driver.json", drivers_json, "utf8", () => {
+  //   console.log("exported");
+  // });
 }
