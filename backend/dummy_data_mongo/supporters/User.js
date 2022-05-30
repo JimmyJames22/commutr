@@ -46,38 +46,34 @@ class User {
       this.max_dur - this.best_route.total_dur,
       this.best_route.stops
     );
+
+    return this.best_route.efficiency;
   }
 
   async durationToUid(uid, client) {
     return new Promise(async (resolve, reject) => {
-      let cursor = await client
-        .db("dummy_data")
-        .collection("users")
-        .find({
-          u1: ObjectId(this.uid),
-          u2: ObjectId(uid),
-        });
+      let cursor = await client.db("dummyData").collection("userMap").find({
+        u1: this.uid,
+        u2: uid,
+      });
 
       let results = await cursor.toArray();
 
       if (results.length == 0) {
-        let cursor_2 = await client
-          .db("dummy_data")
-          .collection("users")
-          .find({
-            u1: ObjectId(uid),
-            u2: ObjectId(this.uid),
-          });
+        let cursor_2 = await client.db("dummyData").collection("userMap").find({
+          u1: uid,
+          u2: this.uid,
+        });
 
         let results_2 = await cursor_2.toArray();
 
         if (results_2.length == 0) {
-          resolve(0);
+          resolve(NaN);
         } else {
-          resolve(results_2);
+          resolve(results_2[0].dur);
         }
       } else {
-        resolve(results);
+        resolve(results[0].dur);
       }
 
       // // calls from userMap

@@ -14,6 +14,7 @@ const {
 } = require("./supporters/CalcEfficiency.js");
 
 const { rejects } = require("assert");
+const { ObjectID } = require("mongodb");
 
 // init global environment
 const API_KEY = "AIzaSyCiN6uQWhP-Di1Lnwn63aw8tQJKUD-amPA";
@@ -32,7 +33,7 @@ let drivers = [];
 let students = [];
 
 let route_time_tolerance = 1.15; // maximum multiple of original commute distance for drivers
-let num_epochs = 100;
+let num_epochs = 5;
 let loading_usermap = false; // variable to indicate whether or not the new usermap is calculated each time
 // ^ if set to false, it creates a new one from the data; if set to true it loads it from ./data/usermap.json
 
@@ -86,7 +87,7 @@ async function init() {
         user = new User(user_obj);
         users.push(user);
         drivers.push(user);
-        user.makeFirstRoute();
+        best_efficiency += user.makeFirstRoute();
       } else {
         user = new User(user_obj);
         users.push(user);
@@ -124,11 +125,11 @@ async function runProgram() {
       // counter++;
       console.log(j);
       // }
+      console.log("BE " + best_efficiency);
+      console.log("NE " + new_efficiency);
       route_promises = [];
       await randomRoutes();
       new_efficiency = sumEfficiency(drivers);
-      console.log("BE: " + best_efficiency);
-      console.log("NE: " + new_efficiency);
       checkIfBetter();
     }
     saveNewJson();
@@ -180,6 +181,7 @@ function randomRoutes() {
 }
 
 async function randomStops(num_stops, driver) {
+  console.log("randomStops");
   return new Promise(async (resolve, reject) => {
     let new_route = {
       stops: [driver.driver_stop_object],
@@ -211,7 +213,7 @@ async function randomStops(num_stops, driver) {
         // stop_uid works
         stop_uid =
           driver.possible_route_stops[
-            Math.ceil(Math.random() * driver.possible_route_stops.length) - 1
+            Math.ceil(Math.random() * (driver.possible_route_stops.length - 1))
           ];
 
         for (let i = 0; i < users.length; i++) {
@@ -362,12 +364,36 @@ function checkIfBetter() {
   }
 }
 
-function saveNewJson() {
-  // console.log(drivers);
+async function saveNewJson() {
   for (i = 0; i < drivers.length; i++) {
+    let driver = drivers[i];
     console.log("Driver " + i + ":");
     console.log(drivers[i].best_route.stops_by_uid);
     console.log(drivers[i].best_route.efficiency);
+    for (j = 0; j < driver.best_route.stops_by_uid.length; j++) {
+      let stop_uid = driver.best_route.stops_by_uid[j];
+      driver.best_route.stops_by_uid[j] = ObjectID(stop_uid);
+    }
+    const result = await client
+      .db("dummyData")
+      .collection("pairings")
+      .updateOne(
+        {
+          driver_id: ObjectID(driver.uid),
+          stops: driver.best_route.stops_by_uid,
+        },
+        {
+          $set: {
+            driver_id: ObjectID(driver.uid),
+            stops: driver.best_route.stops_by_uid,
+          },
+        },
+        {
+          upsert: true,
+        }
+      );
+
+    console.log("Posted route for driver: " + i);
   }
   // let student_json = JSON.stringify(students);
   // let drivers_json = JSON.stringify(drivers);
@@ -377,4 +403,5 @@ function saveNewJson() {
   // fs.writeFile("./final_routes/driver.json", drivers_json, "utf8", () => {
   //   console.log("exported");
   // });
+  await client.close();
 }
