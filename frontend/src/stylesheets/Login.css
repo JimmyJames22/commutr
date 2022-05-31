@@ -37,15 +37,6 @@ input, button{
     background-color: #e8edeb;
 }
 
-
-@media screen and (max-width: 600px) {
-    .App{
-        min-height: -webkit-fill-available;
-        overflow: hidden;
-    }
-    
-}
-
 .logo-div{
     padding-bottom: 10px;
     
@@ -263,6 +254,8 @@ form .form-inner .submit-center{
         color: #232B2B;
         text-align: center;
     }
+
+    
 }
 
 /* combobox styles */

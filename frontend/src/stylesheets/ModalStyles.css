@@ -26,11 +26,15 @@
     overflow-y: scroll;
 }
 
-
 @media screen and (max-width: 600px) {
     .App{
-        min-height: -webkit-fill-available;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #e8edeb;
         overflow: hidden;
+        overflow-y: scroll;
     }
     
 }
@@ -304,6 +308,27 @@ form .form-inner input[type="submit"]:hover {
         overflow: hidden;
         
     }
+   
+    .modal-app{
+        position:fixed;
+        left:-80%;
+        bottom:-400%;
+        width: 110vw;
+        overflow-y: auto;
+        height:2000%;
+        padding-bottom: 60px;
+    }
+
+    
+
+    .close-modal{
+        color: red;
+        font-size: 25px;
+        position: fixed; 
+        top:-1470%;
+        left:-73%;
+    }
+    
    .home-wrapper{
         top: 0%;
         left: 0%;

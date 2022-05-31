@@ -102,9 +102,9 @@ function ScheduleModal({showModal, setShowModal, details, setDetails}) {
 
     function changeElement(name1, name2, index){
         let chkid = name1+'-chk'
-        document.getElementById(name1).readOnly = !document.getElementById(name1).readOnly;
+        document.getElementById(name1).disabled = !document.getElementById(name1).disabled;
         document.getElementById(name1).value = '--:--';
-        document.getElementById(name2).readOnly = !document.getElementById(name2).readOnly;
+        document.getElementById(name2).disabled = !document.getElementById(name2).disabled;
         document.getElementById(name2).value = '--:--';
         document.getElementById(chkid).disabled = !document.getElementById(chkid).disabled;
         details.arrivalTimes[index].commuting = !details.arrivalTimes[index].commuting
@@ -117,8 +117,8 @@ function ScheduleModal({showModal, setShowModal, details, setDetails}) {
 
 function changePref(name1, name2, index){
 
-        document.getElementById(name1).readOnly = !document.getElementById(name1).readOnly;
-        document.getElementById(name2).readOnly = !document.getElementById(name2).readOnly;
+        document.getElementById(name1).disabled = !document.getElementById(name1).disabled;
+        document.getElementById(name2).disabled = !document.getElementById(name2).disabled;
     
         document.getElementById(name1).value = '--:--'
         document.getElementById(name2).value = '--:--'
@@ -130,6 +130,7 @@ function changePref(name1, name2, index){
         <>
 
             {showModal ? 
+            <div className="modal-container">
             <div className="modal-app">
             <form>
             
@@ -146,9 +147,9 @@ function changePref(name1, name2, index){
 
                 <label className="sub-label" htmlFor="mon">Arrival:</label>
                 
-                <input type="time" id="mon-arr-time" readOnly onChange={e => {details.arrivalTimes[0].time = convTime(e.target.value)}}></input>
+                <input type="time" id="mon-arr-time" disabled onChange={e => {details.arrivalTimes[0].time = convTime(e.target.value)}}></input>
                 <label className="sub-label" htmlFor="mon">Departure:</label>
-                <input type="time" id="mon-dep-time" readOnly onChange={e => {details.departureTimes[0].time = convTime(e.target.value)}} ></input>
+                <input type="time" id="mon-dep-time" disabled onChange={e => {details.departureTimes[0].time = convTime(e.target.value)}} ></input>
 
                 <div className="pref-wrapper">
                 <input type="checkbox" className="pref-check" id="mon-arr-time-chk" name="pref-check" value="PrefCheck" onChange={()=>{changePref("mon-arr-time","mon-dep-time",0)}} disabled/>
@@ -163,9 +164,9 @@ function changePref(name1, name2, index){
                 <label htmlFor="tue">Tuesday:</label>
 
                 <label className="sub-label" htmlFor="mon">Arrival:</label>
-                <input type="time" id="tue-arr-time" readOnly onChange={e => {details.arrivalTimes[1].time = convTime(e.target.value)}}></input>
+                <input type="time" id="tue-arr-time" disabled onChange={e => {details.arrivalTimes[1].time = convTime(e.target.value)}}></input>
                 <label className="sub-label" htmlFor="mon" >Departure:</label>
-                <input type="time" id="tue-dep-time" readOnly onChange={e => {details.departureTimes[1].time = convTime(e.target.value)}}></input>
+                <input type="time" id="tue-dep-time" disabled onChange={e => {details.departureTimes[1].time = convTime(e.target.value)}}></input>
 
                 <div className="pref-wrapper">
                 <input type="checkbox" className="pref-check" id="tue-arr-time-chk" name="pref-check" value="PrefCheck" onChange={()=>{changePref("tue-arr-time","tue-dep-time",1)}} disabled/>
@@ -179,9 +180,9 @@ function changePref(name1, name2, index){
                     <label htmlFor="wed">Wednesday:</label>  
 
                     <label className="sub-label" htmlFor="mon">Arrival:</label>
-                    <input type="time" id="wed-arr-time" readOnly onChange={e => {details.arrivalTimes[2].time = convTime(e.target.value)}}></input>
+                    <input type="time" id="wed-arr-time" disabled onChange={e => {details.arrivalTimes[2].time = convTime(e.target.value)}}></input>
                     <label className="sub-label" htmlFor="mon" >Departure:</label>
-                    <input type="time" id="wed-dep-time" readOnly onChange={e => {details.departureTimes[2].time = convTime(e.target.value)}}></input>
+                    <input type="time" id="wed-dep-time" disabled onChange={e => {details.departureTimes[2].time = convTime(e.target.value)}}></input>
 
                     <div className="pref-wrapper">
                     <input type="checkbox" className="pref-check" id="wed-arr-time-chk" name="pref-check" value="PrefCheck" onChange={()=>{changePref("wed-arr-time","wed-dep-time",2)}} disabled/>
@@ -195,9 +196,9 @@ function changePref(name1, name2, index){
                     <label htmlFor="thu">Thursday:</label>
 
                     <label className="sub-label" htmlFor="mon">Arrival:</label>
-                    <input type="time" id="thu-arr-time" readOnly onChange={e => {details.arrivalTimes[3].time = convTime(e.target.value)}}></input>
+                    <input type="time" id="thu-arr-time" disabled onChange={e => {details.arrivalTimes[3].time = convTime(e.target.value)}}></input>
                     <label className="sub-label" htmlFor="mon" >Departure:</label>
-                    <input type="time" id="thu-dep-time" readOnly onChange={e => {details.departureTimes[3].time = convTime(e.target.value)}}></input>
+                    <input type="time" id="thu-dep-time" disabled onChange={e => {details.departureTimes[3].time = convTime(e.target.value)}}></input>
 
                     <div className="pref-wrapper">
                     <input type="checkbox" className="pref-check" id="thu-arr-time-chk" name="pref-check" value="PrefCheck" onChange={()=>{changePref("thu-arr-time","thu-dep-time",3)}} disabled/>
@@ -211,9 +212,9 @@ function changePref(name1, name2, index){
                     <label htmlFor="fri">Friday:</label>
 
                     <label className="sub-label" htmlFor="mon">Arrival:</label>
-                    <input type="time" id="fri-arr-time" readOnly onChange={e => {details.arrivalTimes[4].time = convTime(e.target.value)}}></input>
+                    <input type="time" id="fri-arr-time" disabled onChange={e => {details.arrivalTimes[4].time = convTime(e.target.value)}}></input>
                     <label className="sub-label" htmlFor="mon" >Departure:</label>
-                    <input type="time" id="fri-dep-time" readOnly onChange={e => {details.departureTimes[4].time = convTime(e.target.value)}}></input>
+                    <input type="time" id="fri-dep-time" disabled onChange={e => {details.departureTimes[4].time = convTime(e.target.value)}}></input>
 
                     <div className="pref-wrapper">
                     <input type="checkbox" className="pref-check" id="fri-arr-time-chk" name="pref-check" value="PrefCheck" onChange={()=>{changePref("fri-arr-time","fri-dep-time",4)}} disabled/>
@@ -227,9 +228,9 @@ function changePref(name1, name2, index){
                     <label htmlFor="fri">Saturday:</label>
 
                     <label className="sub-label" htmlFor="mon">Arrival:</label>
-                    <input type="time" id="sat-arr-time" readOnly onChange={e => {details.arrivalTimes[5].time = convTime(e.target.value)}}></input>
+                    <input type="time" id="sat-arr-time" disabled onChange={e => {details.arrivalTimes[5].time = convTime(e.target.value)}}></input>
                     <label className="sub-label" htmlFor="mon">Departure:</label>
-                    <input type="time" id="sat-dep-time" readOnly onChange={e => {details.departureTimes[5].time = convTime(e.target.value)}}></input>
+                    <input type="time" id="sat-dep-time" disabled onChange={e => {details.departureTimes[5].time = convTime(e.target.value)}}></input>
 
                     <div className="pref-wrapper">
                     <input type="checkbox" className="pref-check" id="sat-arr-time-chk" name="pref-check" value="PrefCheck" onChange={()=>{changePref("sat-arr-time","sat-dep-time",5)}} disabled/>
@@ -243,9 +244,9 @@ function changePref(name1, name2, index){
                     <label htmlFor="fri">Sunday:</label>
 
                     <label className="sub-label" htmlFor="mon">Arrival:</label>
-                    <input type="time" id="sun-arr-time" readOnly onChange={e => {details.arrivalTimes[6].time = convTime(e.target.value)}}></input>
+                    <input type="time" id="sun-arr-time" disabled onChange={e => {details.arrivalTimes[6].time = convTime(e.target.value)}}></input>
                     <label className="sub-label" htmlFor="mon">Departure:</label>
-                    <input type="time" id="sun-dep-time" readOnly onChange={e => {details.departureTimes[6].time = convTime(e.target.value)}}></input>
+                    <input type="time" id="sun-dep-time" disabled onChange={e => {details.departureTimes[6].time = convTime(e.target.value)}}></input>
 
                     <div className="pref-wrapper">
                     <input type="checkbox" className="pref-check" id="sun-arr-time-chk" name="pref-check" value="PrefCheck" onChange={()=>{changePref("sun-arr-time","sun-dep-time",6)}} disabled/>
@@ -273,7 +274,7 @@ function changePref(name1, name2, index){
             </div>
             
         </form>
-        </div>:null}
+        </div></div>:null}
         </>
     )
 }
