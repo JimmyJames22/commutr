@@ -2,6 +2,7 @@ const { MongoClient } = require("mongodb");
 const ObjectId = require("mongodb").ObjectID;
 const { encode } = require("@googlemaps/polyline-codec");
 const axios = require("axios");
+const { ObjectID } = require("mongodb");
 
 const API_KEY = "AIzaSyCiN6uQWhP-Di1Lnwn63aw8tQJKUD-amPA";
 const mongo_uri =
@@ -181,6 +182,7 @@ async function makeUserMapReq(reqs_by_rate, all_user_coords) {
                 u1: reqs_by_rate[i][j].orig__id,
                 u2: reqs_by_rate[i][j].dest__ids[l],
                 dur: dur,
+                dest: ObjectID(dest_data._id),
               });
             }
           })
@@ -324,13 +326,13 @@ async function writeUserMap(client) {
         {
           u1: userMapEntry.u1,
           u2: userMapEntry.u2,
-          dur: userMapEntry.dur,
         },
         {
           $set: {
             u1: userMapEntry.u1,
             u2: userMapEntry.u2,
             dur: userMapEntry.dur,
+            dest: userMapEntry.dest,
           },
         },
         {

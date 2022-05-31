@@ -1,25 +1,30 @@
 const express = require("express");
 const router = express.Router();
 
-const {signup, googlelogin} = require("../controllers/auth");
+const { signup, googlelogin } = require("../controllers/auth");
 
-const { findRoute, deletePassenger, changeInfo } = require("../controllers/queries")
+const {
+  findRoute,
+  deletePassenger,
+  changeInfo,
+} = require("../controllers/queries");
 
-const { makeUsers } = require("../dummy_data_mongo/DataMaker")
+const { makeUsers } = require("../dummy_data_mongo/DataMaker");
 
-router.post('/signup', signup);
+const { addUser } = require("../dummy_data_mongo/AddUser");
 
-router.post('/googlelogin', googlelogin);
+router.post("/signup", signup);
 
-router.post('/findroute', findRoute)
+router.post("/googlelogin", googlelogin);
 
-router.post('/deletepassenger', deletePassenger)
+router.post("/findroute", findRoute);
 
-router.post('/changeinfo', changeInfo)
+router.post("/deletepassenger", deletePassenger);
 
-router.get('/dummyinput', makeUsers)
+router.post("/changeinfo", changeInfo);
 
+router.get("/dummyinput", makeUsers);
 
+router.post("/addpassenger", addUser);
 
 module.exports = router;
-

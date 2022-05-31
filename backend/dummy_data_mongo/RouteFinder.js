@@ -33,7 +33,7 @@ let drivers = [];
 let students = [];
 
 let route_time_tolerance = 1.15; // maximum multiple of original commute distance for drivers
-let num_epochs = 5;
+let num_epochs = 5000;
 let loading_usermap = false; // variable to indicate whether or not the new usermap is calculated each time
 // ^ if set to false, it creates a new one from the data; if set to true it loads it from ./data/usermap.json
 
@@ -121,12 +121,10 @@ async function runProgram() {
     }
 
     for (let j = 0; j < num_epochs; j++) {
-      // if (j - 1000 * counter >= 0) {
-      // counter++;
-      console.log(j);
-      // }
-      console.log("BE " + best_efficiency);
-      console.log("NE " + new_efficiency);
+      if (j / 10 >= counter) {
+        counter++;
+        console.log(j);
+      }
       route_promises = [];
       await randomRoutes();
       new_efficiency = sumEfficiency(drivers);
@@ -181,7 +179,6 @@ function randomRoutes() {
 }
 
 async function randomStops(num_stops, driver) {
-  console.log("randomStops");
   return new Promise(async (resolve, reject) => {
     let new_route = {
       stops: [driver.driver_stop_object],
@@ -192,89 +189,45 @@ async function randomStops(num_stops, driver) {
     if (driver.possible_route_stops.length == 0) {
       new_route.total_dur = driver.to_school;
       resolve(new_route);
-    }
+    } else {
+      for (let j = 0; j < num_stops; j++) {
+        let stop_uid;
+        let stop_user;
 
-    for (let j = 0; j < num_stops; j++) {
-      let stop_uid;
-      let stop_user;
+        let invalid_stop = true;
+        let breakout = false;
 
-      let invalid_stop = true;
-      let breakout = false;
+        let stop_in_route = false;
+        let over_duration = false;
 
-      let stop_in_route = false;
-      let over_duration = false;
+        let updated_stop_number = false;
 
-      let updated_stop_number = false;
+        let try_counter = 0;
 
-      let try_counter = 0;
+        // randomly select a new stop for the route and validate it
+        while (invalid_stop) {
+          // stop_uid works
+          stop_uid =
+            driver.possible_route_stops[
+              Math.ceil(
+                Math.random() * (driver.possible_route_stops.length - 1)
+              )
+            ];
 
-      // randomly select a new stop for the route and validate it
-      while (invalid_stop) {
-        // stop_uid works
-        stop_uid =
-          driver.possible_route_stops[
-            Math.ceil(Math.random() * (driver.possible_route_stops.length - 1))
-          ];
-
-        for (let i = 0; i < users.length; i++) {
-          if (users[i].uid === stop_uid) {
-            stop_user = users[i];
-          }
-        }
-
-        if (stop_user.to_school == -1) {
-          for (let i = 0; i < driver.possible_route_stops.length; i++) {
-            if (driver.possible_route_stops[i] == stop_uid) {
-              driver.possible_route_stops.splice(i, 1);
-              break;
+          for (let i = 0; i < users.length; i++) {
+            if (users[i].uid === stop_uid) {
+              stop_user = users[i];
             }
           }
 
-          for (let i = 0; i < driver.possible_stops.length; i++) {
-            if (driver.possible_stops[i] == stop_uid) {
-              driver.possible_stops.splice(i, 1);
-              break;
+          if (stop_user.to_school == -1) {
+            for (let i = 0; i < driver.possible_route_stops.length; i++) {
+              if (driver.possible_route_stops[i] == stop_uid) {
+                driver.possible_route_stops.splice(i, 1);
+                break;
+              }
             }
-          }
 
-          if (driver.possible_route_stops.length < num_stops) {
-            num_stops = driver.possible_route_stops.length;
-            if (new_route.stops.length == num_stops) {
-              breakout = true;
-            }
-          }
-
-          if (breakout) {
-            breakout = false;
-            break;
-          } else {
-            continue;
-          }
-        }
-        // console.log("PS " + driver.possible_stops);
-
-        // check if the stop is within the route already
-        for (let i = 0; i < new_route.stops_by_uid.length; i++) {
-          if (new_route.stops_by_uid[i] == stop_uid) {
-            stop_in_route = true;
-            break;
-          }
-        }
-
-        stop_user.duration;
-
-        // check if the proposed stop makes the route unreachable by the driver
-        let stop_to_stop = await stop_user.durationToUid(
-          new_route.stops_by_uid[new_route.stops_by_uid.length - 1],
-          client
-        );
-        let new_dur = new_route.total_dur + stop_to_stop + stop_user.to_school;
-
-        if (new_dur > driver.max_dur) {
-          over_duration = true;
-          // check if the new stop is over distance and if so remove it from the driver's list
-          let driver_to_stop = await driver.durationToUid(stop_uid, client);
-          if (driver_to_stop + stop_user.to_school > driver.max_dur) {
             for (let i = 0; i < driver.possible_stops.length; i++) {
               if (driver.possible_stops[i] == stop_uid) {
                 driver.possible_stops.splice(i, 1);
@@ -282,78 +235,124 @@ async function randomStops(num_stops, driver) {
               }
             }
 
-            for (let i = 0; i < driver.possible_route_stops.length; i++) {
-              if (driver.possible_route_stops[i] == stop_uid) {
-                driver.possible_route_stops.splice(i, 1);
-                // return if no more possible stops
-                if (driver.possible_route_stops.length == 0) {
-                  resolve({
-                    stops: [driver.driver_stop_object],
-                    stops_by_uid: [driver.uid],
-                    total_dur: driver.to_school,
-                  });
-                  // reset num_stops if impacted by reduction in driver.possible_route_stops size
-                } else if (
-                  driver.possible_route_stops.length < driver.max_stops
-                ) {
-                  num_stops -= 1;
-                  updated_stop_number = true;
+            if (driver.possible_route_stops.length < num_stops) {
+              num_stops = driver.possible_route_stops.length;
+              if (new_route.stops.length == num_stops) {
+                breakout = true;
+              }
+            }
+
+            if (breakout) {
+              breakout = false;
+              break;
+            } else {
+              continue;
+            }
+          }
+          // console.log("PS " + driver.possible_stops);
+
+          // check if the stop is within the route already
+          for (let i = 0; i < new_route.stops_by_uid.length; i++) {
+            if (new_route.stops_by_uid[i] == stop_uid) {
+              stop_in_route = true;
+              break;
+            }
+          }
+
+          stop_user.duration;
+
+          // check if the proposed stop makes the route unreachable by the driver
+          let stop_to_stop = await stop_user.durationToUid(
+            new_route.stops_by_uid[new_route.stops_by_uid.length - 1],
+            client
+          );
+          let new_dur =
+            new_route.total_dur + stop_to_stop + stop_user.to_school;
+
+          if (new_dur > driver.max_dur) {
+            over_duration = true;
+            // check if the new stop is over distance and if so remove it from the driver's list
+            let driver_to_stop = await driver.durationToUid(stop_uid, client);
+            if (driver_to_stop + stop_user.to_school > driver.max_dur) {
+              for (let i = 0; i < driver.possible_stops.length; i++) {
+                if (driver.possible_stops[i] == stop_uid) {
+                  driver.possible_stops.splice(i, 1);
+                  break;
                 }
-                break;
+              }
+
+              for (let i = 0; i < driver.possible_route_stops.length; i++) {
+                if (driver.possible_route_stops[i] == stop_uid) {
+                  driver.possible_route_stops.splice(i, 1);
+                  // return if no more possible stops
+                  if (driver.possible_route_stops.length == 0) {
+                    resolve({
+                      stops: [driver.driver_stop_object],
+                      stops_by_uid: [driver.uid],
+                      total_dur: driver.to_school,
+                    });
+                    // reset num_stops if impacted by reduction in driver.possible_route_stops size
+                  } else if (
+                    driver.possible_route_stops.length < driver.max_stops
+                  ) {
+                    num_stops -= 1;
+                    updated_stop_number = true;
+                  }
+                  break;
+                }
               }
             }
           }
-        }
 
-        if (updated_stop_number && new_route.stops.length == num_stops) {
-          new_route.total_dur +=
-            new_route.stops[new_route.stops.length - 1].to_school;
-          resolve(new_route);
-        } else if (stop_in_route || over_duration) {
-          stop_in_route = false;
-          over_duration = false;
-
-          if (try_counter > driver.possible_route_stops.length * 15) {
+          if (updated_stop_number && new_route.stops.length == num_stops) {
             new_route.total_dur +=
               new_route.stops[new_route.stops.length - 1].to_school;
             resolve(new_route);
-          }
+          } else if (stop_in_route || over_duration) {
+            stop_in_route = false;
+            over_duration = false;
 
-          try_counter++;
-        } else {
-          invalid_stop = false;
+            if (try_counter > driver.possible_route_stops.length * 15) {
+              new_route.total_dur +=
+                new_route.stops[new_route.stops.length - 1].to_school;
+              resolve(new_route);
+            }
+
+            try_counter++;
+          } else {
+            invalid_stop = false;
+          }
+        }
+
+        // stop for route selected -- now check to make sure the stop is within the route tollerance
+        new_route.stops_by_uid.push(stop_uid);
+        new_route.stops.push(stop_user);
+        let stop_to_stop = await stop_user.durationToUid(
+          new_route.stops_by_uid[new_route.stops_by_uid.length - 2],
+          client
+        );
+        new_route.total_dur += stop_to_stop;
+
+        for (let i = 0; i < drivers.length; i++) {
+          let poss_route_stops = drivers[i].possible_route_stops;
+          for (let l = 0; l < poss_route_stops.length; l++) {
+            if (stop_uid == poss_route_stops[l]) {
+              poss_route_stops.splice(l, 1);
+              break;
+            }
+          }
         }
       }
 
-      // stop for route selected -- now check to make sure the stop is within the route tollerance
-      new_route.stops_by_uid.push(stop_uid);
-      new_route.stops.push(stop_user);
-      let stop_to_stop = await stop_user.durationToUid(
-        new_route.stops_by_uid[new_route.stops_by_uid.length - 2],
-        client
-      );
-      new_route.total_dur += stop_to_stop;
-
-      for (let i = 0; i < drivers.length; i++) {
-        let poss_route_stops = drivers[i].possible_route_stops;
-        for (let l = 0; l < poss_route_stops.length; l++) {
-          if (stop_uid == poss_route_stops[l]) {
-            poss_route_stops.splice(l, 1);
-            break;
-          }
-        }
-      }
+      new_route.total_dur +=
+        new_route.stops[new_route.stops.length - 1].to_school;
+      resolve(new_route);
     }
-
-    new_route.total_dur +=
-      new_route.stops[new_route.stops.length - 1].to_school;
-    resolve(new_route);
   });
 }
 
 function checkIfBetter() {
   if (new_efficiency > best_efficiency) {
-    console.log("BETTER ROUTES");
     let driver;
     for (let i = 0; i < drivers.length; i++) {
       driver = drivers[i];
@@ -375,7 +374,7 @@ async function saveNewJson() {
       driver.best_route.stops_by_uid[j] = ObjectID(stop_uid);
     }
     const result = await client
-      .db("dummyData")
+      .db("myFirstDatabase")
       .collection("pairings")
       .updateOne(
         {
@@ -403,5 +402,5 @@ async function saveNewJson() {
   // fs.writeFile("./final_routes/driver.json", drivers_json, "utf8", () => {
   //   console.log("exported");
   // });
-  await client.close();
+  // await client.close();
 }

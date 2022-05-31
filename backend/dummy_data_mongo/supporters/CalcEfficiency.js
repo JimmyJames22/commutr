@@ -1,8 +1,8 @@
 // weights need to be adjusted to help normalize
-let route_stops_weight = 1000;
-let route_time_weight = 100;
-let arrival_time_weight = 0.005;
-let departure_time_weight = 0.005;
+let route_stops_weight = 10000;
+let route_time_weight = 10;
+let arrival_time_weight = 0.0000005;
+let departure_time_weight = 0.0000005;
 
 function sumEfficiency(drivers) {
   let efficiency_back = 0;
