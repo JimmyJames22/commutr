@@ -19,7 +19,7 @@ function LoginPage() {
     const responseSuccessGoogle = (response) => {
         axios({
             method: "POST",
-            url: "http://localhost:8000/api/googlelogin",
+            url: "http://192.168.50.129:8000/api/googlelogin",
             data: {
                 tokenId: response.tokenId
             }

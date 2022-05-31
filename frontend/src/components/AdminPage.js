@@ -30,7 +30,7 @@ function AdminPage() {
     function getDrivers(){
         axios({
             method: "GET",
-            url: "http://localhost:8000/api/getdrivers",
+            url: "http://192.168.50.129:8000/api/getdrivers",
             data: {
             }
         }).then(response => {

@@ -28,13 +28,7 @@
 
 @media screen and (max-width: 600px) {
     .App{
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #e8edeb;
-        overflow: hidden;
-        overflow-y: scroll;
+        min-height: -webkit-fill-available;
     }
     
 }
@@ -317,15 +311,14 @@ form .form-inner input[type="submit"]:hover {
         overflow-y: auto;
         height:2000%;
         padding-bottom: 60px;
+        padding-top: 50px;
     }
-
     
-
     .close-modal{
         color: red;
         font-size: 25px;
         position: fixed; 
-        top:-1470%;
+        top:-1350%;
         left:-73%;
     }
     
