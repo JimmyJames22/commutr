@@ -25,7 +25,8 @@ function HomePage() {
         
         axios({
             method: "POST",
-            url: "http://192.168.50.129:8000/api/findRoute",
+            url: "http://192.168.1.253:8000/api/findRoute",
+            // "http://192.168.50.129:8000/api/findRoute,"
             data: {
                 _id: data._id,
             }
@@ -74,7 +75,8 @@ function HomePage() {
                 <h1 className='main-logo' onClick={() => {window.location.reload(false)}}>Commut<text className='r'>r</text></h1>
                 <Profile passengers = {passengers}/>
             </div>
-                <Ride pos = {data.lat_lng} passengers = {passengers} destination = {destination}/>
+                <Ride pos = {data.lat_lng} passengers = {passengers} destination = {destination} isDriver = {data.isDriver}/>
+
     </div>
     </div>
     )

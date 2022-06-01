@@ -3,6 +3,8 @@ import {
     withGoogleMap,
     GoogleMap,
     Marker,
+    Polyline,
+   
   } from "react-google-maps";
 
 function Map(props) {
@@ -13,6 +15,8 @@ function Map(props) {
 
     console.log("Props:", props)
     console.log("Found this things:", props.passengers)
+
+    const pathCoordinates = [];
 
 
 
@@ -39,7 +43,23 @@ function Map(props) {
           ) : (
           <></>
           )}
-          
+        {props.destination.length >= 1 ? (
+          <Marker
+            position={{ lat: props.destination[0].lat_lng[0], lng: props.destination[0].lat_lng[1] }}
+          />
+        ) :(
+          <></>
+        )}
+        <Polyline
+                path={pathCoordinates}
+                geodesic={true}
+                options={{
+                    strokeColor: "#ff2527",
+                    strokeOpacity: 0.75,
+                    strokeWeight: 2,
+                }}
+            />
+
         </GoogleMap>
       );
       

@@ -5,6 +5,7 @@ import Back from './BackButton';
 import Quit from './QuitButton';
 import Passengers from './PassengerEdit';
 import axios from'axios';
+import Modal from './ScheduleModal';
 
 function SettingsPage() {
 
@@ -27,6 +28,7 @@ function SettingsPage() {
     
 
     const [passengers, setPassengers] = useState([])
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         getRoute();
@@ -47,6 +49,11 @@ function SettingsPage() {
                 }
             }
         })
+    }
+
+    function openModal(){
+        setShowModal(prev => !prev)
+        console.log(showModal)
     }
 
     
@@ -82,13 +89,9 @@ function SettingsPage() {
         }
     }
     
-
-    
-
-    
-    
     const data = JSON.parse(localStorage.getItem('userData'));
-    const [details, setDetails] = useState({firstname:data.nameLast, lastname:data.nameFirst, address:data.address, phone:data.phone, status:data.isDriver, carCapacity:data.carCapacity})
+    console.log(data);
+    const [details, setDetails] = useState({firstname:data.nameLast, lastname:data.nameFirst, address:data.address, phone:data.phone, arrivalTimes: data.arrivalTimes, departureTimes: data.departureTimes, status:data.isDriver, carCapacity:data.carCapacity})
 
     if(localStorage.getItem('userData')== null){
         return <Navigate to="/login" />;
@@ -143,15 +146,31 @@ function SettingsPage() {
                     <button className="edit-btn" onClick={() => alert("Please contact administrator if you wish to change your driving status")}>edit</button>
                     </p>
                 </div>
-                <br/> <br/>
+                <br/>   <br/>
+                <div className="form-group">
+                    <p className="content-wrapper">
+                    <label htmlFor="status-label">Schedule: </label>
+                    </p>
+                    <div classNmae="form-inner">
+                    <p className="schedule-edit-wrapper">
+                    <button className="modal-button" onClick={() => {openModal()}}>Change Schedule</button>
+                    <div className="modal-wrapper"><Modal showModal={showModal} setShowModal={setShowModal} details={details} setDetails={setDetails} settings ={true} id={data._id}/></div>
+                    </p>
+                    </div>
+                </div>
+
+                <br/> <br/> <br/>
                 <div className="settings-subtitle">
                 <h3>{data.isDriver ? ("Change Passenger") : ("Drop Route")}</h3>
                 </div>
                 <Passengers passengers={passengers} data={data}/>
                 <br/>
             </div>
-            <Quit />
+            
+            <Quit id={data._id}/>
+            
            </div>
+           
         </div>
     )
 }

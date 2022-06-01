@@ -24,7 +24,18 @@ function AdminPage() {
     }
 
     const pairAlg = () => {
-        alert("paired"); //James' pairing algorithm goes here
+        axios({
+            method: "GET",
+            url: "http://192.168.50.129:8000/api/initroutes",
+            data: {
+                dest_id:data.org_id,
+                dest_place_id:data.org_place_id
+            }
+        }).then(response => {
+            console.log("Pairing Begun", response);
+        })
+
+        alert("paired");
     }
     
     function getDrivers(){

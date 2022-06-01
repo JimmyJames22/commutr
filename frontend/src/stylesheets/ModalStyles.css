@@ -115,12 +115,36 @@ form .form-inner .form-group{
     bottom:-2340%;
 }
 
+.settings-modal-app{
+    position:fixed;
+    left:35%;
+    bottom:-97%;
+    overflow-y: scroll;
+    height:200%;
+    padding-bottom: 800px;
+    padding-top: 50px;
+    -ms-overflow-style: none;  
+    scrollbar-width: none; 
+}
+
+.settings-modal-app::-webkit-scrollbar{
+    display: none;
+}
+
 .close-modal{
     color: red;
     font-size: 20px;
     position: fixed; 
     top:-1430%;
     left:-57%;
+}
+
+.settings-modal-app .close-modal{
+    color: red;
+    font-size: 20px;
+    position: fixed; 
+    top:4%;
+    left:35.5%;
 }
 
 .close-modal:hover{
@@ -153,7 +177,34 @@ form .form-inner .form-group{
     transition: 0.4s;
 }
 
+.settings-modal-app .form-inner .form-group label{
+    display:block;
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 5px;
+    transition: 0.4s;
+}
 
+.settings-modal-app .form-inner .form-group .sub-label{
+    display:block;
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 5px;
+    transition: 0.4s;
+}
+
+.schedule-button{
+    
+}
+
+.settings-modal-app .form-inner .form-group .pref-label{
+    display:block;
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 5px;
+    margin-top:10px;
+    transition: 0.4s;
+}
 
 .form-inner .form-group:focus-within label{
     color:#28965A;

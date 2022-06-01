@@ -10,9 +10,23 @@ import '../stylesheets/ModalStyles.css';
 
 
 
-function ScheduleModal({showModal, setShowModal, details, setDetails}) {
+function ScheduleModal({showModal, setShowModal, details, setDetails, settings, id}) {
 
     const navigate = useNavigate();
+
+    const updateSchedule = () =>{
+        axios({
+            method: "POST",
+            url: "http://192.168.50.129:8000/api/changeschedule",
+            data: {
+                id: id,
+                info:[details.arrivalTimes, details.departureTimes]
+            }
+        }).then(response => {
+            console.log(response)
+            alert("Schedule Updated");
+        })
+    }
 
     const checkTimes = (response) => {
         let error = false
@@ -109,6 +123,7 @@ function ScheduleModal({showModal, setShowModal, details, setDetails}) {
         document.getElementById(chkid).disabled = !document.getElementById(chkid).disabled;
         details.arrivalTimes[index].commuting = !details.arrivalTimes[index].commuting
         details.departureTimes[index].commuting = !details.departureTimes[index].commuting
+   
         if(details.arrivalTimes[index].commuting == false){
             details.arrivalTimes[index].time = NaN
             details.departureTimes[index].time = NaN
@@ -131,7 +146,11 @@ function changePref(name1, name2, index){
 
             {showModal ? 
             <div className="modal-container">
-            <div className="modal-app">
+            
+            
+
+            <div className={settings ? "settings-modal-app" : "modal-app" } >
+
             <form>
             
             <div className="form-inner">
@@ -147,7 +166,7 @@ function changePref(name1, name2, index){
 
                 <label className="sub-label" htmlFor="mon">Arrival:</label>
                 
-                <input type="time" id="mon-arr-time" disabled onChange={e => {details.arrivalTimes[0].time = convTime(e.target.value)}}></input>
+                <input type="time" id="mon-arr-time" disabled value={details.arrivalTimes[0].time} onChange={e => {details.arrivalTimes[0].time = convTime(e.target.value)}}></input>
                 <label className="sub-label" htmlFor="mon">Departure:</label>
                 <input type="time" id="mon-dep-time" disabled onChange={e => {details.departureTimes[0].time = convTime(e.target.value)}} ></input>
 
@@ -257,15 +276,17 @@ function changePref(name1, name2, index){
                 <div className="form-group">
                 <div className='submit-container'>
                 <div className='submit-center'>
-                
-                 <GoogleLogin
-                 className="google-login-button"
-                 clientId="277843423406-m30j9jo3krghef8dfae3uvfp3ujk10as.apps.googleusercontent.com"
-                 buttonText="Sign up with google"
-                 onSuccess={checkTimes}
-                 onFailure={responseErrorGoogle}
-                 cookiePolicy={'single_host_origin'}
-                />
+                {settings ? (
+                    <button className="schedule-button" onClick={()=> {updateSchedule()}}>Change Schedule</button>
+                    ): (<GoogleLogin
+                    className="google-login-button"
+                    clientId="277843423406-m30j9jo3krghef8dfae3uvfp3ujk10as.apps.googleusercontent.com"
+                    buttonText="Sign up with google"
+                    onSuccess={checkTimes}
+                    onFailure={responseErrorGoogle}
+                    cookiePolicy={'single_host_origin'}
+                   />)}
+                 
                 </div>
                 </div>
                 </div>

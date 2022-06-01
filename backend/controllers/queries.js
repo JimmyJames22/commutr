@@ -90,6 +90,22 @@ exports.changeInfo = (req, res) => {
     })
 }
 
+exports.changeSchedule = (req, res) => {
+    const {id, info} = req.body;
+    var arrivals = info[0];
+    var departures = info[1];
+    var user_id = mongo.ObjectId(id);
+    var query = {_id:user_id};
+    db.collection("users").updateMany(
+        query,
+        {$set: {'arrivalTimes':{ arrivals }, 'departureTimes':{departures}}}
+    ).then(response => {
+        res.json({
+            result:response
+        })
+    })
+}
+
 exports.getDrivers = (req, res) => {
     db.collection("users").find({"isDriver": true}).sort( { ridesGiven: -1 } ).toArray().then(response => {
         var driverList = []
@@ -135,5 +151,7 @@ exports.adminSignup = (req, res) => {
     })
     
 }
+
+
 
 // 

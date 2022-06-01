@@ -33,6 +33,8 @@ function LoginPage() {
                 "address":response.data.user.address,
                 "phone":response.data.user.phone,
                 "isDriver":response.data.user.isDriver,
+                "arrivalTimes":response.data.user.arrivalTimes,
+                "departureTimes":response.data.user.departureTimes,
                 "ridesTaken":response.data.user.ridesTaken,
                 "ridesGiven":response.data.user.ridesGiven,
                 "_id":response.data.user._id,

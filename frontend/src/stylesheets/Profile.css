@@ -1,6 +1,7 @@
 .profile-wrapper{
     max-width: 40vw;
     min-width: 40vw;
+
 }
 
 @media screen and (max-width: 600px) {
@@ -190,10 +191,22 @@ div .pass-wrapper h4{
 
 /*Settings here*/
 
+.App{
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e8edeb;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
 .settings-wrapper{
     max-width: 40vw;
     min-width: 40vw;
+    overflow-y: auto;
 }
+
 
 @media screen and (max-width: 600px) {
     .settings-wrapper{
@@ -236,6 +249,11 @@ div .pass-wrapper h4{
     color: #888;
     border: 0px solid #888;
     border-bottom-width: 1px;
+    background-color: transparent;
+}
+
+.schedule-edit-wrapper{
+    float: right;
     background-color: transparent;
 }
 
