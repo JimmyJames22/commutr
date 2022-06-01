@@ -6,30 +6,58 @@ import Back from './BackButton';
 import Logout from './LogoutButton';
 import Settings from './SettingsButton';
 import Passengers from './PassengerList';
+
 import axios from 'axios';
 
-function ProfilePage(passengers) {
+function ProfilePage() {
+
+    useEffect(() => {
+        if(localStorage.getItem('userData')!= null){
+            getRoute();
+        }
+    }, [])
+
+    const [passengers, setPassengers] = useState([])
+
+    const data = JSON.parse(localStorage.getItem('userData')) //Real code
 
     if(localStorage.getItem('userData')== null){ //Real coode
         return <Navigate to="/login" />;
     }
 
-    const data = JSON.parse(localStorage.getItem('userData')) //Real code
+    if(data.org_id!= null){
+        return <Navigate to="/admin" />;
+    }
 
-    //FILLER CODE
-    // const data = 
-    //     {
-    //         _id: "6279117ed72496a2f1a50c09",
-    //         nameFirst: 'Gunner',
-    //         nameLast: 'Peterson',
-    //         address: '14 Old Farm Road',
-    //         phone:'7814921706',
-    //         isDriver:true,
-    //         email: 'Gunnerpeterson14@gmail.com',
-    //         ridesGiven:0,
-    //         ridesTaken:0,
-    //         carCapacity:4
-    //     }
+
+    
+    
+    function getRoute(){
+        axios({
+            method: "POST",
+            url: "http://192.168.50.129:8000/api/findRoute",
+            data: {
+                _id: data._id,
+            }
+        }).then(response => {
+            console.log("Got passengers:", response.data.routes);
+            setPassengers([]);
+
+            for (const item of response.data.routes){
+                setPassengers(arr => [...arr, item]);
+            }
+         
+           
+            console.log("Passengers state:",passengers)
+            //if data doesn't have route id in it save it to localstorage.
+            if(localStorage.getItem('passengers') == null){
+                localStorage.setItem('passengers', passengers);
+                console.log("Saved passengers:", passengers);
+            }
+
+            
+        })
+    }
 
 
     return(

@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
         lowercase: true
     },
     destination_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     phone: {
@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    lng_lat: {
+    lat_lng: {
         type: Array,
         required: true
     },
