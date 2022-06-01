@@ -4,8 +4,6 @@ const API_KEY = "AIzaSyCiN6uQWhP-Di1Lnwn63aw8tQJKUD-amPA";
 const { encode } = require("@googlemaps/polyline-codec");
 const { ObjectID } = require("mongodb");
 const { calcEfficiency, sumEfficiency } = require("./supporters/CalcEfficiency");
-const user = require("../models/user");
-
 
 const mongo_uri =
   "mongodb+srv://gumba:COiUaIcaegjHWO41@cluster0.kiwky.mongodb.net/dummyData?retryWrites=true&w=majority";
@@ -57,7 +55,8 @@ exports.addUser = async (req, res) => {
     cursor = await client.db("dummyData").collection("destinations").find({
       _id: ObjectId(user.destination_id)
     })
-    dest_obj = await cursor.toArray()[0];
+    dest_obj = await cursor.toArray();
+    dest_obj = dest_obj[0]
 
     cursor = await client.db("dummyData").collection("userMap").find({
       dest: ObjectID(user.destination_id)
@@ -247,7 +246,7 @@ async function assignRoute(){
     route.stops_by_id = route.stops.slice(0);
     for(let j=0; j<route.stops.length; j++){
       for(let l=0; l<existing_users.length; l++){
-        if(existing_users[l]._id == route.stops[j]){
+        if(existing_users[l]._id.toString() == route.stops[j].toString()){
           route.stops[k] = existing_users[l];
         }
       }

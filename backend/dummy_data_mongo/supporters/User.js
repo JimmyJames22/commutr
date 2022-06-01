@@ -50,44 +50,44 @@ class User {
     return this.best_route.efficiency;
   }
 
-  async durationToUid(uid, client) {
-    return new Promise(async (resolve, reject) => {
-      let cursor = await client.db("dummyData").collection("userMap").find({
-        u1: this.uid,
-        u2: uid,
-      });
-
-      let results = await cursor.toArray();
-
-      if (results.length == 0) {
-        let cursor_2 = await client.db("dummyData").collection("userMap").find({
-          u1: uid,
-          u2: this.uid,
-        });
-
-        let results_2 = await cursor_2.toArray();
-
-        if (results_2.length == 0) {
-          resolve(NaN);
-        } else {
-          resolve(results_2[0].dur);
-        }
-      } else {
-        resolve(results[0].dur);
+  durationToUid(uid, userMap) {
+    //  calls from userMap
+    let map;
+    for (let k = 0; k < userMap.length; k++) {
+      map = userMap[k];
+      if (map.u1 == this.uid && map.u2 == uid) {
+        return map.dur;
+      } else if (map.u1 == uid && map.u2 == this.uid) {
+        return map.dur;
       }
+    }
+    return NaN;
 
-      // // calls from userMap
-      // let map;
-      // for (let k = 0; k < userMap.length; k++) {
-      //   map = userMap[k];
-      //   if (map.u1 == this.uid && map.u2 == uid) {
-      //     return map.dur;
-      //   } else if (map.u1 == uid && map.u2 == this.uid) {
-      //     return map.dur;
-      //   }
-      // }
-      // return 0;
-    });
+    // return new Promise(async (resolve, reject) => {
+    //   let cursor = await client.db("dummyData").collection("userMap").find({
+    //     u1: this.uid,
+    //     u2: uid,
+    //   });
+
+    //   let results = await cursor.toArray();
+
+    //   if (results.length == 0) {
+    //     let cursor_2 = await client.db("dummyData").collection("userMap").find({
+    //       u1: uid,
+    //       u2: this.uid,
+    //     });
+
+    //     let results_2 = await cursor_2.toArray();
+
+    //     if (results_2.length == 0) {
+    //       resolve(NaN);
+    //     } else {
+    //       resolve(results_2[0].dur);
+    //     }
+    //   } else {
+    //     resolve(results[0].dur);
+    //   }
+    // })
   }
 }
 
