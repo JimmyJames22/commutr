@@ -1,30 +1,22 @@
 const Time = require("./Time.js");
 const { calcEfficiency } = require("./CalcEfficiency");
+const { ObjectId } = require("mongodb");
 
 class User {
   constructor(user) {
-    this.firstname = user.firstname;
-    this.lastname = user.lastname;
     this.place_id = user.place_id;
     this.lng = user.lng;
     this.lat = user.lat;
-    this.address = user.address;
-    this.dest_place_id = user.dest_place_id;
-    this.dest_lng = user.dest_lng;
-    this.dest_lat = user.dest_lat;
-    this.dest_address = user.dest_address;
     this.is_driver = user.is_driver;
-    this.email = user.email;
-    this.phone = user.phone;
     this.uid = user.uid;
-    this.to_school = 0;
+    this.to_school = user.to_school;
 
     this.arrival_times = user.arrival_times;
     this.departure_times = user.departure_times;
 
     if (this.is_driver) {
-      this.max_stops = user.car_capacity;
-      this.max_dur;
+      this.max_stops = user.max_stops;
+      this.max_dur = user.max_dur;
       this.driver_stop_object = {};
       this.best_route = {};
       this.best_route.efficiency;
@@ -36,15 +28,9 @@ class User {
 
   makeFirstRoute() {
     this.driver_stop_object = {
-      firstname: this.firstname,
-      lastname: this.lastname,
       place_id: this.place_id,
       lng: this.lng,
       lat: this.lat,
-      address: this.address,
-      class_year: this.class_year,
-      email: this.email,
-      phone: this.phone,
       uid: this.uid,
       is_driver: true,
       to_school: this.to_school,
@@ -60,10 +46,12 @@ class User {
       this.max_dur - this.best_route.total_dur,
       this.best_route.stops
     );
+
+    return this.best_route.efficiency;
   }
 
   durationToUid(uid, userMap) {
-    // calls from userMap
+    //  calls from userMap
     let map;
     for (let k = 0; k < userMap.length; k++) {
       map = userMap[k];
@@ -73,7 +61,33 @@ class User {
         return map.dur;
       }
     }
-    return 0;
+    return NaN;
+
+    // return new Promise(async (resolve, reject) => {
+    //   let cursor = await client.db("dummyData").collection("userMap").find({
+    //     u1: this.uid,
+    //     u2: uid,
+    //   });
+
+    //   let results = await cursor.toArray();
+
+    //   if (results.length == 0) {
+    //     let cursor_2 = await client.db("dummyData").collection("userMap").find({
+    //       u1: uid,
+    //       u2: this.uid,
+    //     });
+
+    //     let results_2 = await cursor_2.toArray();
+
+    //     if (results_2.length == 0) {
+    //       resolve(NaN);
+    //     } else {
+    //       resolve(results_2[0].dur);
+    //     }
+    //   } else {
+    //     resolve(results[0].dur);
+    //   }
+    // })
   }
 }
 
