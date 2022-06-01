@@ -8,56 +8,75 @@ import axios from 'axios';
 
 function HomePage() {
 
-    
+    const [passengers, setPassengers] = useState([])
 
     useEffect(() => {
         if(localStorage.getItem('userData')!= null){
             getRoute();
         }
-    }, [])
+    }, [passengers])
+
+
 
     
-
-    const [passengers, setPassengers] = useState([])
+    const [destination, setDestination] = useState([])
 
     function getRoute(){
+        
         axios({
             method: "POST",
-            url: "http://localhost:8000/api/findRoute",
+            url: "http://192.168.1.253:8000/api/findRoute",
+            // "http://192.168.50.129:8000/api/findRoute,"
             data: {
                 _id: data._id,
             }
         }).then(response => {
             console.log("Got passengers:", response.data.routes);
+            if(passengers.length != response.data.routes.length){
             setPassengers([]);
+            setDestination([]);
             for (const item of response.data.routes){
                 setPassengers(arr => [...arr, item]);
             }
+            for (const item of response.data.dest){
+                setDestination(arr => [...arr, item]);
+            }
+           
+            console.log("destination state:", destination);
             console.log("Passengers state:",passengers)
             //if data doesn't have route id in it save it to localstorage.
-            if(localStorage.getItem('route') == null){
-                localStorage.setItem('route', response.data.id);
-                console.log("Saved id:", response.data.id);
+            if(localStorage.getItem('passengers') == null){
+                localStorage.setItem('passengers', passengers);
+                console.log("Saved passengers:", passengers);
             }
+        }
+
             
         })
     }
+    const data = JSON.parse(localStorage.getItem('userData'))
+    console.log(data)
 
     if(localStorage.getItem('userData')== null){
         return <Navigate to="/login" />;
     }
 
-    const data = JSON.parse(localStorage.getItem('userData'))
+    if(data.org_id!= null){
+        return <Navigate to="/admin" />;
+    }
+
+    
     
     return(
     <div className='home-wrapper'>
        <div className='home-div'>
             <div className="form-inner">
-                <Map pos={data.xy} passengers = {passengers}/>
+                <Map pos={data.lat_lng} passengers = {passengers} destination = {destination}/>
                 <h1 className='main-logo' onClick={() => {window.location.reload(false)}}>Commut<text className='r'>r</text></h1>
                 <Profile passengers = {passengers}/>
             </div>
-                <Ride />
+                <Ride pos = {data.lat_lng} passengers = {passengers} destination = {destination} isDriver = {data.isDriver}/>
+
     </div>
     </div>
     )

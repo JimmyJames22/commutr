@@ -1,0 +1,402 @@
+/* copy of prof */
+
+:root {
+    --color-1:#2A6041;
+    --color-2:#28965A;
+    --color-3:#2CEAA3;
+    --color-4:#6BFFB8;
+    --color-5:#7CFEF0;
+}
+
+*{
+    margin:0;
+    padding: 0;
+    box-sizing:border-box;
+    font-family: montserrat, sans-serif;
+}
+
+
+.App{
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e8edeb;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+@media screen and (max-width: 600px) {
+    .App{
+        min-height: -webkit-fill-available;
+    }
+    
+}
+
+.logo-div{
+    padding-bottom: 10px;
+    
+}
+
+.logo{
+    color: #232B2B;
+}
+
+.logo .r{
+   color: #2CEAA3; 
+}
+
+
+.main-logo{
+    width:60px;
+    height:60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: center;
+    position:fixed;
+    left:5%;
+    top: 3%;
+    text-shadow: 2px 2px 2px #888888;
+    z-index: 2;
+    color: #232B2B;
+    text-align: center;
+    cursor: pointer;
+}
+
+.main-logo .r{
+   color: #2CEAA3; 
+}
+
+form {
+    display: block;
+    position: relative;
+}
+
+form:after{
+    content:"";
+    display:block;
+    position:absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    z-index: 1;
+    background-image: linear-gradient(to bottom right, #28965A, #7CFEF0);
+    border-radius: 10px;
+    
+}
+
+form .form-inner{
+    position: relative;
+    display: block;
+    background-color: #fff;
+    border-radius: 10px;
+    padding:30px;
+    z-index:2;
+}
+
+form .form-inner h2{
+    color: #888;
+    font-size: 28px;
+    font-weight: 500;
+    margin-bottom: 30px;
+}
+
+form .form-inner .form-group{
+    display:block;
+    width: 300px;
+    margin-bottom: 15px;
+}
+
+.modal-app{
+    position:fixed;
+    left:-60%;
+    bottom:-2340%;
+}
+
+.settings-modal-app{
+    position:fixed;
+    left:35%;
+    bottom:-97%;
+    overflow-y: scroll;
+    height:200%;
+    padding-bottom: 800px;
+    padding-top: 50px;
+    -ms-overflow-style: none;  
+    scrollbar-width: none; 
+}
+
+.settings-modal-app::-webkit-scrollbar{
+    display: none;
+}
+
+.close-modal{
+    color: red;
+    font-size: 20px;
+    position: fixed; 
+    top:-1430%;
+    left:-57%;
+}
+
+.settings-modal-app .close-modal{
+    color: red;
+    font-size: 20px;
+    position: fixed; 
+    top:4%;
+    left:35.5%;
+}
+
+.close-modal:hover{
+    color: rgb(107, 4, 4);
+    cursor: pointer;
+}
+
+.modal-app .form-inner .form-group label{
+    display:block;
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 5px;
+    transition: 0.4s;
+}
+
+.modal-app .form-inner .form-group .sub-label{
+    display:block;
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 5px;
+    transition: 0.4s;
+}
+
+.modal-app .form-inner .form-group .pref-label{
+    display:block;
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 5px;
+    margin-top:10px;
+    transition: 0.4s;
+}
+
+.settings-modal-app .form-inner .form-group label{
+    display:block;
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 5px;
+    transition: 0.4s;
+}
+
+.settings-modal-app .form-inner .form-group .sub-label{
+    display:block;
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 5px;
+    transition: 0.4s;
+}
+
+.schedule-button{
+    
+}
+
+.settings-modal-app .form-inner .form-group .pref-label{
+    display:block;
+    color: #666;
+    font-size: 12px;
+    margin-bottom: 5px;
+    margin-top:10px;
+    transition: 0.4s;
+}
+
+.form-inner .form-group:focus-within label{
+    color:#28965A;
+}
+
+.status-group{
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+}
+
+form .form-inner .form-group input{
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    transition: 0.4s;
+}
+
+/* checkbox styles */
+
+form .form-inner .form-group input[type="checkbox"]{
+    height:1px;
+    width:1px;
+    cursor:pointer;
+    position:relative;
+    transition: .10s;
+    float: right;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    word-wrap: break-word;
+    box-shadow: 0px 0px 3px #28965A;
+}
+
+form .form-inner .form-group .pref-wrapper input[type="checkbox"]{
+    padding-left: 5px;
+    padding-bottom: 5px;
+    margin-right: 10px;
+    cursor: pointer;
+    position:relative;
+    transition: .10s;
+    float: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    word-wrap: break-word;
+    box-shadow: 0px 0px 3px #75cf9d;
+}
+
+form .form-inner .form-group .pref-wrapper input[type="checkbox"]:disabled{
+    padding-left: 5px;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+
+form .form-inner .form-group .pref-wrapper input[type="checkbox"]:before, input[type="checkbox"]:checked:before {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    line-height:1.2em;
+    text-align:center;
+    color:white;
+    }
+
+
+
+input[type='checkbox'] {
+    display: block;
+    width: 30px;
+  }
+
+form .form-inner .form-group input[type="checkbox"]:checked {
+    background-color:#28965A;
+}
+
+form .form-inner .form-group input[type="checkbox"]:before, input[type="checkbox"]:checked:before {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    line-height:1.5em;
+    text-align:center;
+    color:white;
+    }
+
+form .form-inner .form-group input[type="checkbox"]:checked:before {
+    content: '✔';
+}
+/* end of checkbox styles */
+
+form .form-inner .form-group input:focus{
+   box-shadow: 0px 0px 3px #28965A;
+}
+
+form .form-inner input[type="submit"] {
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background-image: linear-gradient(to right, #28965A, #7CFEF0);
+    background-size: 200%;
+    background-position: 0%;
+    transition: 0.4s;
+    color: #FFF;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+form .form-inner .submit-container{
+    height: 45px;
+    position: relative;
+}
+
+form .form-inner .submit-center{
+    margin-left: 20%;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%); 
+}
+
+
+
+form .form-inner input[type="submit"]:hover {
+    background-position: 100% 0%;
+}
+
+.pref-wrapper{
+    
+    padding-bottom: 10px;
+}
+
+
+
+@media screen and (max-width: 600px) {
+    .map-div{
+        height: 89.1vh;
+        width: 100vw;
+        overflow: hidden;
+        
+    }
+   
+    .modal-app{
+        position:fixed;
+        left:-80%;
+        bottom:-400%;
+        width: 110vw;
+        overflow-y: auto;
+        height:2000%;
+        padding-bottom: 60px;
+        padding-top: 50px;
+    }
+    
+    .close-modal{
+        color: red;
+        font-size: 25px;
+        position: fixed; 
+        top:-1350%;
+        left:-73%;
+    }
+    
+   .home-wrapper{
+        top: 0%;
+        left: 0%;
+        position:fixed;
+        overflow-y:hidden;
+      }
+
+      .main-logo{
+        width:60px;
+        height:60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: center;
+        border-radius: 50%;
+        border:none;
+        position:fixed;
+        left:15%;
+        top: 4%;
+        z-index: 2;
+        color: #232B2B;
+        text-align: center;
+    }
+}
+
+
+  

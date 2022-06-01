@@ -1,16 +1,25 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { componentDidUpdate } from 'react';
+import { useState } from 'react';
 import GoogleLogin from 'react-google-login';
 import axios from 'axios';
+import AdminModal from './AdminSignup';
+import '../stylesheets/AdminStyles.css'
 
 function LoginPage() {
 
     const navigate = useNavigate();
 
+    const [showModal, setShowModal] = useState(false)
+
+    const openModal = (e) => {
+        e.preventDefault();
+        setShowModal(prev => !prev);
+    }
+
     const responseSuccessGoogle = (response) => {
         axios({
             method: "POST",
-            url: "http://localhost:8000/api/googlelogin",
+            url: "http://192.168.50.129:8000/api/googlelogin",
             data: {
                 tokenId: response.tokenId
             }
@@ -24,10 +33,12 @@ function LoginPage() {
                 "address":response.data.user.address,
                 "phone":response.data.user.phone,
                 "isDriver":response.data.user.isDriver,
+                "arrivalTimes":response.data.user.arrivalTimes,
+                "departureTimes":response.data.user.departureTimes,
                 "ridesTaken":response.data.user.ridesTaken,
                 "ridesGiven":response.data.user.ridesGiven,
                 "_id":response.data.user._id,
-                "xy":response.data.user.xy,
+                "lat_lng":response.data.user.lat_lng,
                 "place_id":response.data.user.place_id
             }))
             navigate('/');
@@ -65,7 +76,9 @@ function LoginPage() {
                 </div>
                 </div>
                 <div className="form-group">
-                <label htmlFor="signup-label">Don't have an account? <Link className = "login-link" to="/signup" >Sign up!</Link> </label> 
+                <label htmlFor="signup-label">Don't have an account? <Link className = "login-link" to="/signup" >Sign up!</Link> </label>
+                <button className="admin-button" onClick={openModal}>For Administrators</button>
+                <div className="admin-wrapper"><AdminModal showModal={showModal} setShowModal={(e) => {setShowModal(e)}}/></div> 
                 </div>
             </div>
         </form>

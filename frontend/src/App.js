@@ -6,6 +6,7 @@ import Signup from './components/SignupPage'
 import Home from './components/HomePage'
 import Profile from './components/ProfilePage'
 import Settings from './components/SettingsPage'
+import Admin from './components/AdminPage'
 
 function App() {
 
@@ -29,6 +30,8 @@ function App() {
           <Route exact path="/profile" element={ <Profile/> }>
           </Route>
           <Route exact path="/settings" element={ <Settings/> }>
+          </Route>
+          <Route exact path="/admin" element={ <Admin/> }>
           </Route>
           </Routes>
       </header>

@@ -1,18 +1,20 @@
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import { AiOutlineUserDelete } from 'react-icons/ai';
+import axios from "axios";
 
 function PassengerList({passengers, requests, data}) {
 
-    const addPass =(id, name)=>{
-        if (window.confirm("Add "+name+" to your carpool?")){ 
-            alert("Added");
-        }
-    }
-
-    const denyPass =(id, name)=>{
-        if (window.confirm("Deny "+name+" from your carpool?")){ 
-            alert("Denied");
-        }
+    const addUser =()=>{
+        axios({
+            method: "POST",
+            url: "http://192.168.50.129:8000/api/adduser",
+            data: {
+                user: {destination_id: data.destination_id, isDriver: data.isDriver, place_id: data.place_id, _id: data._id}
+            }
+        }).then(() => {
+            alert("You're in the system!");
+            window.location.reload(false); 
+        })
     }
 
         return (
@@ -27,22 +29,7 @@ function PassengerList({passengers, requests, data}) {
                 </div>
             ))}
             </div>
-            {/* Not using requests at the moment */}
-            {/* <h2 className="pass-title">Requests</h2>
-            <div className="pass-wrapper">
-            {requests.map((req) =>(
-                <div className="req-div">
-                <p className="req-content">
-                <h3 key={req.id}>{req.nameFirst} {req.nameLast}</h3>
-                <h4 key={req.id}>{req.address}, +{req.timeAdded} minutes</h4>
-                </p>
-                <p className="req-btns">
-                <button onClick={() => addPass(req.id, req.nameFirst)} className="confirm-btn" ><AiOutlineUserAdd /></button>
-                <button onClick={() => denyPass(req.id, req.nameFirst)} className="deny-btn" ><AiOutlineUserDelete /></button>
-                </p>
-                </div>
-            ))}
-            </div> */}
+         
             </>
         )
     
