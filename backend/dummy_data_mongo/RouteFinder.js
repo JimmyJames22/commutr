@@ -50,10 +50,6 @@ let init_promises = [];
 let route_promises = [];
 
 // begin program
-
-// dummy function to help select users
-function getUser(uid) {}
-
 init();
 
 async function init() {
@@ -117,7 +113,7 @@ async function init() {
 // NEED TO COMMENT EVERYTHING BELOW THIS COMMENT
 
 async function runProgram() {
-  await Promise.all(init_promises).then(() => {
+  await Promise.all(init_promises).then(async () => {
     console.log("DONE");
     let possible_stops = [];
 
@@ -130,7 +126,7 @@ async function runProgram() {
     }
 
     for (let j = 0; j < num_epochs; j++) {
-      if (j / 10 >= counter) {
+      if (j / 1000 >= counter) {
         counter++;
         console.log(j);
       }
@@ -139,7 +135,9 @@ async function runProgram() {
       new_efficiency = sumEfficiency(drivers);
       checkIfBetter();
     }
-    saveRouteData();
+    await saveRouteData();
+
+    client.close();
   });
 }
 
@@ -380,7 +378,6 @@ async function saveRouteData() {
       .updateOne(
         {
           driver_id: ObjectID(driver.uid),
-          stops: driver.best_route.stops_by_uid,
         },
         {
           $set: {
