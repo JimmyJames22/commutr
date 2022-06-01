@@ -12,6 +12,7 @@ function HomePage() {
 
     useEffect(() => {
         if(localStorage.getItem('userData')!= null){
+            console.log("Running function")
             getRoute();
         }
     }, [passengers])
@@ -25,7 +26,7 @@ function HomePage() {
         
         axios({
             method: "POST",
-            url: "http://192.168.1.253:8000/api/findRoute",
+            url: "http://localhost:8000/api/findRoute",
             // "http://192.168.50.129:8000/api/findRoute,"
             data: {
                 _id: data._id,

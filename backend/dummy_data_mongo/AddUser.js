@@ -65,7 +65,7 @@ exports.addUser = async (req, res) => {
     userMap = await cursor.toArray();
 
     await updateUserMap(user);
-    await Promise.all(user_map_promises).then(() => {
+    await Promise.all(user_map_promises).then( async () => {
       console.log(user_map_updates);
       // pushNewUserMap();
 
@@ -85,7 +85,7 @@ exports.addUser = async (req, res) => {
   }
 };
 
-function updateUserMap(user) {
+async function updateUserMap(user) {
   let users_by_rate = [];
   let user_coords_by_rate = [];
   let user_coords_current_rate = [];

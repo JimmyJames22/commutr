@@ -26,7 +26,7 @@ function AdminPage() {
     const pairAlg = () => {
         axios({
             method: "GET",
-            url: "http://192.168.50.129:8000/api/initroutes",
+            url: "http://localhost:8000/api/initroutes",
             data: {
                 dest_id:data.org_id,
                 dest_place_id:data.org_place_id
@@ -41,7 +41,7 @@ function AdminPage() {
     function getDrivers(){
         axios({
             method: "GET",
-            url: "http://192.168.50.129:8000/api/getdrivers",
+            url: "http://localhost:8000/api/getdrivers",
             data: {
             }
         }).then(response => {

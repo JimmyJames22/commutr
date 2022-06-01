@@ -35,7 +35,7 @@ function ProfilePage() {
     function getRoute(){
         axios({
             method: "POST",
-            url: "http://192.168.50.129:8000/api/findRoute",
+            url: "http://localhost:8000/api/findRoute",
             data: {
                 _id: data._id,
             }

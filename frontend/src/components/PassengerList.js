@@ -7,7 +7,7 @@ function PassengerList({passengers, requests, data}) {
     const addUser =()=>{
         axios({
             method: "POST",
-            url: "http://192.168.50.129:8000/api/adduser",
+            url: "http://localhost:8000/api/adduser",
             data: {
                 user: {destination_id: data.destination_id, isDriver: data.isDriver, place_id: data.place_id, _id: data._id}
             }

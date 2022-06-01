@@ -6,7 +6,7 @@ const PassengerEdit = ({passengers, data}) => {
     function deletePassenger(pass_id){
         axios({
             method: "POST",
-            url: "http://192.168.50.129:8000/api/removeuserfromroute",
+            url: "http://localhost:8000/api/removeuserfromroute",
             data: {
                 user_id: pass_id
             }
