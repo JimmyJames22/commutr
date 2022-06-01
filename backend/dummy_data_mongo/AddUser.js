@@ -24,7 +24,8 @@ let user_map_updates = [];
 let userMap = [];
 
 exports.addUser = async (req, res) => {
-  const { user } = req.body;
+  let { user } = req.body;
+  user._id = ObjectID(user._id);
   try {
     await client.connect();
     console.log("Mongo connected");

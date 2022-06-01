@@ -22,10 +22,7 @@ const mongo_uri =
   "mongodb+srv://gumba:COiUaIcaegjHWO41@cluster0.kiwky.mongodb.net/dummyData?retryWrites=true&w=majority";
 const client = new MongoClient(mongo_uri);
 
-let dest_data = {
-  _id: "6276c1571c5ff58e410661c2",
-  place_id: "ChIJ0VjiTT9844kRBLc0QGPqwrY",
-};
+let dest_data;
 
 // init gloval variables
 let users = [];
@@ -50,9 +47,10 @@ let init_promises = [];
 let route_promises = [];
 
 // begin program
-init();
-
-async function init() {
+exports.routeFinder = async (dest_id) => {
+  dest_data = {
+    _id: dest_id,
+  };
   let student_ids = [];
   try {
     console.log("Attempting to connect");
@@ -109,7 +107,7 @@ async function init() {
   }
 
   runProgram();
-}
+};
 // NEED TO COMMENT EVERYTHING BELOW THIS COMMENT
 
 async function runProgram() {

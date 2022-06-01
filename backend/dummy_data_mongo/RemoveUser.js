@@ -1,3 +1,4 @@
+const { ObjectID } = require("mongodb");
 const { MongoClient } = require("mongodb");
 const mongo_uri =
   "mongodb+srv://gumba:COiUaIcaegjHWO41@cluster0.kiwky.mongodb.net/dummyData?retryWrites=true&w=majority";
@@ -5,7 +6,8 @@ const client = new MongoClient(mongo_uri);
 
 exports.deleteUser = async (req, res) => {
   console.log("deleteUser");
-  const { user } = req.body;
+  let { user_id } = req.body;
+  user_id = ObjectID(user_id);
   try {
     await client.connect();
     console.log("Mongo connected");
@@ -24,7 +26,8 @@ exports.deleteUser = async (req, res) => {
 
 exports.removeUserFromRoute = async (req, res) => {
   console.log("removeUserFromRoute");
-  const { user } = req.body;
+  let { user_id } = req.body;
+  user_id = ObjectID(user_id);
   try {
     await client.connect();
     console.log("Mongo connected");
@@ -46,7 +49,7 @@ async function removeFromRoute(user) {
     .collection("pairings")
     .find({
       stops: {
-        $all: [user._id],
+        $all: [user_id],
       },
     });
 
@@ -55,7 +58,7 @@ async function removeFromRoute(user) {
   console.log(route_obj);
 
   for (let i = 0; i < route_obj.stops.length; i++) {
-    if (user._id.toString() == route_obj.stops[i].toString()) {
+    if (user_id.toString() == route_obj.stops[i].toString()) {
       console.log(i);
       route_obj.stops.splice(i, 1);
       break;
@@ -86,16 +89,16 @@ async function removeFromRoute(user) {
 
 async function removeFromUsers(user) {
   await client.db("dummyData").collection("users").deleteOne({
-    _id: user._id,
+    _id: user_id,
   });
 }
 
 async function removeFromUserMap(user) {
   await client.db("dummyData").collection("userMap").deleteMany({
-    u1: user._id.toString(),
+    u1: user_id.toString(),
   });
 
   await client.db("dummyData").collection("userMap").deleteMany({
-    u2: user._id.toString(),
+    u2: user_id.toString(),
   });
 }

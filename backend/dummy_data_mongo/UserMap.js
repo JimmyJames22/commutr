@@ -15,18 +15,17 @@ let userMap = [];
 let init_promises = [];
 let store_promises = [];
 
-let dest_data = {
-  _id: "6276c1571c5ff58e410661c2",
-  place_id: "ChIJ0VjiTT9844kRBLc0QGPqwrY",
-};
+let dest_data;
 
 let route_time_tolerance = 1.15;
 
 // ! CODE CURRENTLY WORKS BUT IT'S VERY JANKED -- USERMAP IS FORMED AND INIT_PROMISES FINISHED BEFORE TO_SCHOOLS ARE UPDATED
 
-getUserData();
-
-async function getUserData() {
+exports.userMap = async (dest_id, dest_place_id) => {
+  dest_data = {
+    _id: dest_id,
+    place_id: dest_place_id,
+  };
   try {
     await client.connect();
     console.log("Mongo connected");
@@ -51,7 +50,7 @@ async function getUserData() {
   } catch (e) {
     console.error(e);
   }
-}
+};
 
 function processDistances() {
   // this method creates the sequenced gmaps distance matrix api requests
