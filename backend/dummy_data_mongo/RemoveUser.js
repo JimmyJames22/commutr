@@ -1,4 +1,4 @@
-const { ObjectID } = require("mongodb");
+const mongo = require('mongodb')
 const { MongoClient } = require("mongodb");
 const mongo_uri =
   "mongodb+srv://gumba:COiUaIcaegjHWO41@cluster0.kiwky.mongodb.net/dummyData?retryWrites=true&w=majority";
@@ -6,15 +6,15 @@ const client = new MongoClient(mongo_uri);
 
 exports.deleteUser = async (req, res) => {
   console.log("deleteUser");
-  let { user_id } = req.body;
-  user_id = ObjectID(user_id);
+  const { user_id } = req.body;
+  const uid = mongo.ObjectID(user_id);
   try {
     await client.connect();
     console.log("Mongo connected");
 
-    await removeFromUsers(user);
-    await removeFromRoute(user);
-    await removeFromUserMap(user);
+    await removeFromUsers(uid);
+    await removeFromRoute(uid);
+    await removeFromUserMap(uid);
     console.log("user deleted");
   } catch (e) {
     console.error(e);
@@ -42,7 +42,7 @@ exports.removeUserFromRoute = async (req, res) => {
   }
 };
 
-async function removeFromRoute(user) {
+async function removeFromRoute(user_id) {
   //! VERIFIED WORKING
   let cursor = await client
     .db("dummyData")
@@ -87,13 +87,13 @@ async function removeFromRoute(user) {
   client.close();
 }
 
-async function removeFromUsers(user) {
+async function removeFromUsers(user_id) {
   await client.db("dummyData").collection("users").deleteOne({
     _id: user_id,
   });
 }
 
-async function removeFromUserMap(user) {
+async function removeFromUserMap(user_id) {
   await client.db("dummyData").collection("userMap").deleteMany({
     u1: user_id.toString(),
   });
