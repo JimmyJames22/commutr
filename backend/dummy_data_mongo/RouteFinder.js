@@ -1,11 +1,11 @@
 // imports
 const fs = require("fs");
-const { format, resolve } = require("path");
-const { stringify } = require("querystring");
+const {format, resolve} = require("path");
+const {stringify} = require("querystring");
 const User = require("./supporters/User.js");
-const { encode } = require("@googlemaps/polyline-codec");
+const {encode} = require("@googlemaps/polyline-codec");
 const axios = require("axios");
-const { MongoClient } = require("mongodb");
+const {MongoClient} = require("mongodb");
 const ObjectId = require("mongodb").ObjectID;
 
 const {
@@ -13,8 +13,8 @@ const {
   sumEfficiency,
 } = require("./supporters/CalcEfficiency.js");
 
-const { rejects } = require("assert");
-const { ObjectID } = require("mongodb");
+const {rejects} = require("assert");
+const {ObjectID} = require("mongodb");
 
 // init global environment
 const API_KEY = "AIzaSyCiN6uQWhP-Di1Lnwn63aw8tQJKUD-amPA";
@@ -366,10 +366,16 @@ async function saveRouteData() {
     console.log("Driver " + i + ":");
     console.log(drivers[i].best_route.stops_by_uid);
     console.log(drivers[i].best_route.efficiency);
+    let route_lat_lng = [];
     for (j = 0; j < driver.best_route.stops_by_uid.length; j++) {
       let stop_uid = driver.best_route.stops_by_uid[j];
       driver.best_route.stops_by_uid[j] = ObjectID(stop_uid);
+      route_lat_lng.push([
+        driver.best_route.stops[j].lat,
+        driver.best_route.stops[j].lng,
+      ]);
     }
+    let route_polyline = encode(route_lat_lng);
     const result = await client
       .db("dummyData")
       .collection("pairings")
@@ -380,7 +386,9 @@ async function saveRouteData() {
         {
           $set: {
             driver_id: ObjectID(driver.uid),
+            dest_id: ObjectID(dest_data._id),
             stops: driver.best_route.stops_by_uid,
+            polyline: route_polyline,
           },
         },
         {
