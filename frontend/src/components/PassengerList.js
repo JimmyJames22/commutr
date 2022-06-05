@@ -1,39 +1,78 @@
-import { AiOutlineUserAdd } from 'react-icons/ai';
-import { AiOutlineUserDelete } from 'react-icons/ai';
+/** @format */
+
+import { AiOutlineUserAdd } from "react-icons/ai";
+import { AiOutlineUserDelete } from "react-icons/ai";
 import axios from "axios";
+import "../stylesheets/ButtonStyles.css";
 
-function PassengerList({passengers, requests, data}) {
+function PassengerList({ passengers, requests, data, dest }) {
+  let paired = false;
+  if (dest.length > 0) {
+    paired = dest[0].paired;
+  }
 
-    const addUser =()=>{
-        axios({
-            method: "POST",
-            url: "http://localhost:8000/api/adduser",
-            data: {
-                user: {destination_id: data.destination_id, isDriver: data.isDriver, place_id: data.place_id, _id: data._id}
-            }
-        }).then(() => {
-            alert("You're in the system!");
-            window.location.reload(false); 
-        })
+  console.log("dest:", dest);
+  const addUser = () => {
+    if (window.confirm("Pair Me?")) {
+      axios({
+        method: "POST",
+        url: "http://localhost:8000/api/adduser",
+        data: {
+          user: {
+            destination_id: data.destination_id,
+            isDriver: data.isDriver,
+            place_id: data.place_id,
+            _id: data._id,
+            lat_lng: data.lat_lng,
+            arrival_times: data.arrivalTimes,
+            departure_times: data.departureTimes,
+          },
+        },
+      }).then((response) => {
+        console.log(response);
+        alert("You're in the system!");
+        // window.location.reload(false);
+      });
     }
+  };
 
-        return (
-            <>
-            <h2 className="pass-title">Your Route</h2>
-            <div className="pass-wrapper">
-            
-            {passengers.map((passenger) =>(
-                <div className="pass-div" style={{ background: passenger.id == data._id? '#98fb98': '#F8F0E3'}} >
-                <h3 key={passenger.id}>{passenger.nameFirst} {passenger.nameLast} <text>{passenger.isDriver == true? '(Driver)':''}</text></h3>
+  return (
+    <>
+      <h2 className="pass-title">Your Route</h2>
+      {paired & (passengers.length < 1) ? (
+        <div className="user-add-wrapper">
+          <p>Your route is empty :(</p>
+          <button
+            className="user-add-button"
+            onClick={() => {
+              addUser();
+            }}
+          >
+            Add me to the map! <AiOutlineUserAdd className="add-icon" />
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className="pass-wrapper">
+            {passengers.map((passenger) => (
+              <div
+                className="pass-div"
+                style={{
+                  background: passenger.id == data._id ? "#98fb98" : "#F8F0E3",
+                }}
+              >
+                <h3 key={passenger.id}>
+                  {passenger.nameFirst} {passenger.nameLast}{" "}
+                  <text>{passenger.isDriver == true ? "(Driver)" : ""}</text>
+                </h3>
                 <h4 key={passenger.id}>{passenger.address}</h4>
-                </div>
+              </div>
             ))}
-            </div>
-         
-            </>
-        )
-    
-    
+          </div>
+        </>
+      )}
+    </>
+  );
 }
 
-export default PassengerList
+export default PassengerList;

@@ -30,6 +30,7 @@ function HomePage() {
             // "http://192.168.50.129:8000/api/findRoute,"
             data: {
                 _id: data._id,
+                destination_id: data.destination_id
             }
         }).then(response => {
             console.log("Got passengers:", response.data.routes);

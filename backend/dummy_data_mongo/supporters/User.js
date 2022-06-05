@@ -1,3 +1,5 @@
+/** @format */
+
 const Time = require("./Time.js");
 const { calcEfficiency } = require("./CalcEfficiency");
 const { ObjectId } = require("mongodb");
@@ -60,7 +62,7 @@ class User {
       } else if (map.u1 == uid && map.u2 == this.uid) {
         return map.dur;
       }
-    }
+    } 
     return NaN;
 
     // return new Promise(async (resolve, reject) => {

@@ -22,12 +22,13 @@ function SettingsPage() {
             <button className="edit-btn" onClick={() => {changeElement('capacity_box', details.carCapacity, 'carCapacity')}}>edit</button>
             </p>
         </div>;
-          }
+        }
     }
 
     
 
-    const [passengers, setPassengers] = useState([])
+    const [passengers, setPassengers] = useState([]);
+    const [destination, setDestination] = useState([]);
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
@@ -37,17 +38,31 @@ function SettingsPage() {
     function getRoute(){
         axios({
             method: "POST",
-            url: "http://192.168.50.129:8000/api/findRoute",
+            url: "http://localhost:8000/api/findRoute",
             data: {
                 _id: data._id,
+                destination_id: data.destination_id
             }
         }).then(response => {
+            console.log("Got passengers:", response.data.routes);
+            if(passengers.length != response.data.routes.length){
             setPassengers([]);
+            setDestination([]);
             for (const item of response.data.routes){
-                if(item["nameFirst"] != data.nameFirst && item["nameLast"] != data.nameLast){
-                    setPassengers(arr => [...arr, item]);
-                }
+                setPassengers(arr => [...arr, item]);
             }
+            for (const item of response.data.dest){
+                setDestination(arr => [...arr, item]);
+            }
+           
+            console.log("destination state:", destination);
+            console.log("Passengers state:",passengers)
+            //if data doesn't have route id in it save it to localstorage.
+            if(localStorage.getItem('passengers') == null){
+                localStorage.setItem('passengers', passengers);
+                console.log("Saved passengers:", passengers);
+            }
+        }
         })
     }
 
@@ -117,7 +132,8 @@ function SettingsPage() {
             <div>
             <div className="settings-form-group">
                     <p className="settings-content-wrapper">
-                    <label htmlFor="address-label">Address: </label>
+                    {/* fix address */}
+                    <label htmlFor="address-label">Address: </label> 
                     </p>
                     <p className="edit-wrapper">
                     <input type="text" name="address" className="address_box" id="address_box" readOnly="true" onChange={e => setDetails({...details, address: e.target.value})} value={details.address}/>
@@ -135,8 +151,7 @@ function SettingsPage() {
                     </p>
                 </div>
                 <br/>
-                <Capacity /> 
-                <br/>
+             
                 <div className="settings-form-group">
                     <p className="settings-content-wrapper">
                     <label htmlFor="status-label">Status: </label>
@@ -146,9 +161,20 @@ function SettingsPage() {
                     <button className="edit-btn" onClick={() => alert("Please contact administrator if you wish to change your driving status")}>edit</button>
                     </p>
                 </div>
-                <br/>   <br/>
-                <div className="form-group">
-                    <p className="content-wrapper">
+                <br/> <br/>
+             
+                {/* <div className="settings-form-group">
+                    <p className="settings-content-wrapper">
+                    <label htmlFor="status-label">Commute Name: </label>
+                    </p>
+                    <p className="edit-wrapper">
+                    <input type="text" name="phone" className="status_box" id="status_box" readOnly="true" value={data.isDriver ? ("Driver") : ("Passenger")}/>
+                    <button className="edit-btn" onClick={() => alert("Please contact administrator if you wish to change your driving status")}>edit</button>
+                    </p>
+                </div>
+                <br/>   <br/> */}
+                <div className="settings-form-group">
+                    <p className="settings-content-wrapper">
                     <label htmlFor="status-label">Schedule: </label>
                     </p>
                     <div classNmae="form-inner">
@@ -163,7 +189,7 @@ function SettingsPage() {
                 <div className="settings-subtitle">
                 <h3>{data.isDriver ? ("Change Passenger") : ("Drop Route")}</h3>
                 </div>
-                <Passengers passengers={passengers} data={data}/>
+                <Passengers passengers={passengers} data={data} dest={destination[0]}/>
                 <br/>
             </div>
             

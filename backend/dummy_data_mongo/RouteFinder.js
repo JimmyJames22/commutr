@@ -1,11 +1,13 @@
+/** @format */
+
 // imports
 const fs = require("fs");
-const {format, resolve} = require("path");
-const {stringify} = require("querystring");
+const { format, resolve } = require("path");
+const { stringify } = require("querystring");
 const User = require("./supporters/User.js");
-const {encode} = require("@googlemaps/polyline-codec");
+const { encode } = require("@googlemaps/polyline-codec");
 const axios = require("axios");
-const {MongoClient} = require("mongodb");
+const { MongoClient } = require("mongodb");
 const ObjectId = require("mongodb").ObjectID;
 
 const {
@@ -13,8 +15,8 @@ const {
   sumEfficiency,
 } = require("./supporters/CalcEfficiency.js");
 
-const {rejects} = require("assert");
-const {ObjectID} = require("mongodb");
+const { rejects } = require("assert");
+const { ObjectID } = require("mongodb");
 
 // init global environment
 const API_KEY = "AIzaSyCiN6uQWhP-Di1Lnwn63aw8tQJKUD-amPA";
@@ -30,7 +32,7 @@ let drivers = [];
 let students = [];
 
 let route_time_tolerance = 1.15; // maximum multiple of original commute distance for drivers
-let num_epochs = 5000;
+let num_epochs = 200000;
 let loading_usermap = false; // variable to indicate whether or not the new usermap is calculated each time
 // ^ if set to false, it creates a new one from the data; if set to true it loads it from ./data/usermap.json
 
@@ -98,6 +100,16 @@ exports.routeFinder = async (dest_id) => {
       });
 
     userMap = await cursor.toArray();
+
+    cursor = await client
+      .db("dummyData")
+      .collection("destinations")
+      .find({
+        _id: ObjectID(dest_data._id),
+      });
+
+    dest_data = await cursor.toArray();
+    dest_data = dest_data[0];
   } catch (e) {
     console.error(e);
   }
@@ -268,6 +280,7 @@ function randomStops(num_stops, driver) {
         let new_dur = new_route.total_dur + stop_to_stop + stop_user.to_school;
 
         if (new_dur > driver.max_dur) {
+          // OKAY
           over_duration = true;
           // check if the new stop is over distance and if so remove it from the driver's list
           let driver_to_stop = driver.durationToUid(stop_uid, userMap);
@@ -364,8 +377,10 @@ async function saveRouteData() {
   for (i = 0; i < drivers.length; i++) {
     let driver = drivers[i];
     console.log("Driver " + i + ":");
-    console.log(drivers[i].best_route.stops_by_uid);
-    console.log(drivers[i].best_route.efficiency);
+    console.log(driver.best_route.stops_by_uid);
+    console.log(driver.best_route.efficiency);
+    driver.best_route.stops.push(dest_data);
+    driver.best_route.stops_by_uid.push(dest_data._id.toString());
     let route_lat_lng = [];
     for (j = 0; j < driver.best_route.stops_by_uid.length; j++) {
       let stop_uid = driver.best_route.stops_by_uid[j];

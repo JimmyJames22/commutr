@@ -1,3 +1,5 @@
+/** @format */
+
 const { MongoClient } = require("mongodb");
 const ObjectId = require("mongodb").ObjectID;
 const { encode } = require("@googlemaps/polyline-codec");
@@ -46,13 +48,13 @@ exports.userMap = async (dest_id, dest_place_id) => {
     });
 
     console.log(users);
-    processDistances();
+    await processDistances();
   } catch (e) {
     console.error(e);
   }
 };
 
-function processDistances() {
+async function processDistances() {
   // this method creates the sequenced gmaps distance matrix api requests
   // they have to be sequenced because gmaps limits them based on the calculations and it throws errors otherwise
   // init local variables
@@ -145,7 +147,7 @@ function processDistances() {
   });
 
   // make all the gmaps api requests and process incoming data
-  makeUserMapReq(reqs_by_rate, all_user_coords);
+  await makeUserMapReq(reqs_by_rate, all_user_coords);
 }
 
 async function makeUserMapReq(reqs_by_rate, all_user_coords) {
@@ -255,7 +257,7 @@ async function makeUserMapReq(reqs_by_rate, all_user_coords) {
     // log rough percent of requests made -- DEV TOOL SHOULD BE REMOVED
     console.log((i / (all_user_coords.length - 1)) * 100);
   }
-  saveUsermap();
+  await saveUsermap();
 }
 
 function updateUserDur(user, dur) {

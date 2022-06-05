@@ -27,12 +27,12 @@ exports.deleteUser = async (req, res) => {
 exports.removeUserFromRoute = async (req, res) => {
   console.log("removeUserFromRoute");
   let { user_id } = req.body;
-  user_id = ObjectID(user_id);
+  user_id = mongo.ObjectID(user_id);
   try {
     await client.connect();
     console.log("Mongo connected");
 
-    await removeFromRoute(user);
+    await removeFromRoute(user_id);
     console.log("user removed from route");
   } catch (e) {
     console.error(e);
@@ -83,8 +83,6 @@ async function removeFromRoute(user_id) {
     );
 
   console.log(route_obj);
-
-  client.close();
 }
 
 async function removeFromUsers(user_id) {
