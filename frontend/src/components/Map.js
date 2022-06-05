@@ -10,11 +10,6 @@ function Map(props) {
     disableDefaultUI: true,
   };
 
-  console.log("Props:", props);
-
-  // console.log("Found this things:", props.passengers);
-  console.log("Decoded polyline:", decode(props.polyline)[0]);
-  const polyarray = decode(props.polyline);
   const [polycords, setPolycords] = useState([]);
 
   const addCord = (cord) => {
@@ -23,6 +18,7 @@ function Map(props) {
 
   useEffect(() => {
     setPolycords((polycords) => []);
+
     if (decode(props.polyline).length > 1) {
       var myobj;
       for (var i = 0; i < decode(props.polyline).length; i++) {

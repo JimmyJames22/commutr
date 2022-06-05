@@ -262,7 +262,6 @@ async function pushNewUserMap() {
 async function assignRoute(user) {
   let effArray = [];
   for (let i = 0; i < drivers.length; i++) {
-    console.log(drivers[i].route.stops.length);
     let route = drivers[i].route;
     let driver = drivers[i].driver;
     route.total_dur = 0; // WORKS
@@ -303,8 +302,9 @@ async function assignRoute(user) {
       let current_driver = driver;
 
       // update duration
+
       if (j > 0) {
-        current_driver.new_route.total_dur += distanceTo(
+        current_driver.new_route.total_dur += distanceTo( //This returns NaN (nothing found in userMap)
           user._id.toString(),
           current_driver.new_route.stops[j - 1]._id.toString()
         );
@@ -435,6 +435,7 @@ async function pushNewPairing(user) {
 }
 
 function distanceTo(u1, u2) {
+  console.log("Usermap:", userMap);
   for (let l = 0; l < userMap.length; l++) {
     if (userMap[l].u1 == u1 && userMap[l].u2 == u2) {
       return userMap[l].dur;

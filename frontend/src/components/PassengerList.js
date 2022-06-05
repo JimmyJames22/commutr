@@ -33,8 +33,14 @@ function PassengerList({ passengers, requests, data, dest }) {
         },
       }).then((response) => {
         console.log(response);
-        alert("You're in the system!");
-        window.location.reload(false);
+        if (response.data == "User could not be added to any route") {
+          alert(
+            "No routes could be found based on your location and/or schedule. Please check again later."
+          );
+        } else {
+          alert("You're in the system!");
+          window.location.reload(false);
+        }
       });
     }
   };
