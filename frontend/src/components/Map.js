@@ -11,19 +11,28 @@ function Map(props) {
   };
 
   console.log("Props:", props);
+
   // console.log("Found this things:", props.passengers);
-  // console.log("Decoded polyline:", decode(props.polyline));
+  console.log("Decoded polyline:", decode(props.polyline)[0]);
   const polyarray = decode(props.polyline);
   const [polycords, setPolycords] = useState([]);
+
+  const addCord = (cord) => {
+    setPolycords((state) => [...state, cord]);
+  };
+
   useEffect(() => {
+    setPolycords((polycords) => []);
     if (decode(props.polyline).length > 1) {
-      setPolycords([]);
+      var myobj;
       for (var i = 0; i < decode(props.polyline).length; i++) {
-        var myobj = {
+        myobj = {
           lat: decode(props.polyline)[i][0],
           lng: decode(props.polyline)[i][1],
         };
-        setPolycords((arr) => [...arr, myobj]);
+        console.log(myobj);
+        addCord(myobj);
+        console.log("intermediate polyline:", polycords);
       }
       console.log("Polyline now:", polycords);
     }
@@ -65,12 +74,19 @@ function Map(props) {
         <></>
       )}
       <Polyline
-        paths={polycords}
-        geodesic={true}
+        path={polycords}
+        geodesic={false}
         options={{
           strokeColor: "#ff2527",
-          strokeOpacity: 0.75,
-          strokeWeight: 2,
+          strokeOpacity: 1,
+          strokeWeight: 6,
+          icons: [
+            {
+              icon: "hello",
+              offset: "0",
+              repeat: "10px",
+            },
+          ],
         }}
       />
     </GoogleMap>
