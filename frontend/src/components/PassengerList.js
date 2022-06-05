@@ -1,11 +1,13 @@
 /** @format */
-
+import { useState, useEffect } from "react";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { AiOutlineUserDelete } from "react-icons/ai";
 import axios from "axios";
 import "../stylesheets/ButtonStyles.css";
 
 function PassengerList({ passengers, requests, data, dest }) {
+  const [loading, setLoading] = useState(true);
+
   let paired = false;
   if (dest.length > 0) {
     paired = dest[0].paired;
@@ -14,6 +16,7 @@ function PassengerList({ passengers, requests, data, dest }) {
   console.log("dest:", dest);
   const addUser = () => {
     if (window.confirm("Pair Me?")) {
+      setLoading(false);
       axios({
         method: "POST",
         url: "http://localhost:8000/api/adduser",
@@ -31,7 +34,7 @@ function PassengerList({ passengers, requests, data, dest }) {
       }).then((response) => {
         console.log(response);
         alert("You're in the system!");
-        // window.location.reload(false);
+        window.location.reload(false);
       });
     }
   };
@@ -40,17 +43,23 @@ function PassengerList({ passengers, requests, data, dest }) {
     <>
       <h2 className="pass-title">Your Route</h2>
       {paired & (passengers.length < 1) ? (
-        <div className="user-add-wrapper">
-          <p>Your route is empty :(</p>
-          <button
-            className="user-add-button"
-            onClick={() => {
-              addUser();
-            }}
-          >
-            Add me to the map! <AiOutlineUserAdd className="add-icon" />
-          </button>
-        </div>
+        <>
+          {loading ? (
+            <div className="user-add-wrapper">
+              <p>Your route is empty :(</p>
+              <button
+                className="user-add-button"
+                onClick={() => {
+                  addUser();
+                }}
+              >
+                Add me to the map! <AiOutlineUserAdd className="add-icon" />
+              </button>
+            </div>
+          ) : (
+            <h3>You are being paired. Check back in later.</h3>
+          )}
+        </>
       ) : (
         <>
           <div className="pass-wrapper">
