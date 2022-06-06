@@ -27,6 +27,7 @@ function AdminPage() {
   }
 
   const pairAlg = () => {
+    console.log(data);
     axios({
       method: "POST",
       url: "http://localhost:8000/api/initroutes",

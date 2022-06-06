@@ -204,6 +204,7 @@ exports.adminSignup = (req, res) => {
                 org_id,
                 hasPaired,
                 org_name,
+                org_place_id,
               } = user;
               res.json({
                 token,
@@ -216,6 +217,7 @@ exports.adminSignup = (req, res) => {
                   org_id,
                   hasPaired,
                   org_name,
+                  org_place_id,
                 },
               });
             } else {

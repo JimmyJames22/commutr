@@ -123,6 +123,8 @@ async function updateUserMap(user) {
       user_coords_by_rate.push(user_coords_current_rate);
       users_by_rate.push(users_current_rate);
       counter = 0;
+      user_coords_current_rate = [];
+      users_current_rate = [];
     }
   }
 

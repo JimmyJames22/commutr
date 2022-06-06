@@ -19,6 +19,7 @@ class User {
     if (this.is_driver) {
       this.max_stops = user.max_stops;
       this.max_dur = user.max_dur;
+      this.max_dur += 2000;
       this.driver_stop_object = {};
       this.best_route = {};
       this.best_route.efficiency;
@@ -62,7 +63,7 @@ class User {
       } else if (map.u1 == uid && map.u2 == this.uid) {
         return map.dur;
       }
-    } 
+    }
     return NaN;
 
     // return new Promise(async (resolve, reject) => {

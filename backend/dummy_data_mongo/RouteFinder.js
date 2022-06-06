@@ -32,7 +32,7 @@ let drivers = [];
 let students = [];
 
 let route_time_tolerance = 1.15; // maximum multiple of original commute distance for drivers
-let num_epochs = 200000;
+let num_epochs = 10000;
 let loading_usermap = false; // variable to indicate whether or not the new usermap is calculated each time
 // ^ if set to false, it creates a new one from the data; if set to true it loads it from ./data/usermap.json
 
@@ -373,7 +373,53 @@ function checkIfBetter() {
   }
 }
 
+async function getRoutePolyline(driver, route_lat_lng) {
+  let waypoint_polyline = encode(route_lat_lng);
+  if (route_lat_lng.length > 0) {
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_data.place_id}&origin=place_id:${driver.place_id}&waypoints=enc:${waypoint_polyline}:&key=${API_KEY}`
+    );
+    console.log(
+      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_data.place_id}&origin=place_id:${driver.place_id}&waypoints=enc:${waypoint_polyline}:&key=${API_KEY}`
+    );
+    try {
+      return response.data.routes[0].overview_polyline.points;
+    } catch (err) {
+      return waypoint_polyline;
+    }
+  } else {
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_data.place_id}&origin=place_id:${driver.place_id}&key=${API_KEY}`
+    );
+    console.log(
+      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_data.place_id}&origin=place_id:${driver.place_id}&key=${API_KEY}`
+    );
+    try {
+      return response.data.routes[0].overview_polyline.points;
+    } catch (err) {
+      console.log(err.message);
+      return waypoint_polyline;
+    }
+  }
+}
+
 async function saveRouteData() {
+  const switchedvar = await client
+    .db("dummyData")
+    .collection("destinations")
+    .updateOne(
+      {
+        _id: ObjectID(dest_data._id),
+      },
+      {
+        $set: {
+          pairingsRun: true,
+        },
+      },
+      {
+        upsert: true,
+      }
+    );
   for (i = 0; i < drivers.length; i++) {
     let driver = drivers[i];
     console.log("Driver " + i + ":");
@@ -384,7 +430,7 @@ async function saveRouteData() {
 
     // make polyline for route
     let route_lat_lng = [];
-    for (j = 1; j < driver.best_route.stops_by_uid.length - 1; j++) {
+    for (j = 0; j < driver.best_route.stops_by_uid.length; j++) {
       let stop_uid = driver.best_route.stops_by_uid[j];
       driver.best_route.stops_by_uid[j] = ObjectID(stop_uid);
       route_lat_lng.push([
@@ -416,35 +462,5 @@ async function saveRouteData() {
       );
 
     console.log("Posted route for driver: " + i);
-  }
-}
-
-async function getRoutePolyline(driver, route_lat_lng) {
-  let waypoint_polyline = encode(route_lat_lng);
-  if (route_lat_lng.length > 0) {
-    const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_data.place_id}&origin=place_id:${driver.place_id}&waypoints=enc:${waypoint_polyline}:&key=${API_KEY}`
-    );
-    console.log(
-      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_data.place_id}&origin=place_id:${driver.place_id}&waypoints=enc:${waypoint_polyline}:&key=${API_KEY}`
-    );
-    try {
-      return response.data.routes[0].overview_polyline.points;
-    } catch (err) {
-      return waypoint_polyline;
-    }
-  } else {
-    const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_data.place_id}&origin=place_id:${driver.place_id}&key=${API_KEY}`
-    );
-    console.log(
-      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_data.place_id}&origin=place_id:${driver.place_id}&key=${API_KEY}`
-    );
-    try {
-      return response.data.routes[0].overview_polyline.points;
-    } catch (err) {
-      console.log(err.message);
-      return waypoint_polyline;
-    }
   }
 }

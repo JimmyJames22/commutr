@@ -33,6 +33,7 @@ function AdminSignup({ showModal, setShowModal }) {
             org_id: response.data.user.org_id,
             hasPaired: response.data.user.hasPaired,
             org_name: response.data.user.org_name,
+            org_place_id: response.data.user.org_place_id,
           })
         );
         navigate("/admin");
