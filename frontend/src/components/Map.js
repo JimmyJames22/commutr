@@ -3,38 +3,11 @@
 import Ride from "./RideButton";
 import { useState, useEffect } from "react";
 import { withGoogleMap, GoogleMap, Marker, Polyline } from "react-google-maps";
-const { decode } = require("@googlemaps/polyline-codec");
 
 function Map(props) {
   const mapOptions = {
     disableDefaultUI: true,
   };
-
-  const [polycords, setPolycords] = useState([]);
-
-  const addCord = (cord) => {
-    setPolycords((state) => [...state, cord]);
-  };
-
-  useEffect(() => {
-    setPolycords((polycords) => []);
-
-    if (decode(props.polyline).length > 1) {
-      var myobj;
-      for (var i = 0; i < decode(props.polyline).length; i++) {
-        myobj = {
-          lat: decode(props.polyline)[i][0],
-          lng: decode(props.polyline)[i][1],
-        };
-        console.log(myobj);
-        addCord(myobj);
-        console.log("intermediate polyline:", polycords);
-      }
-      console.log("Polyline now:", polycords);
-    }
-  }, []);
-
-  const pathCoordinates = [];
 
   const MapWithAMarker = withGoogleMap((p) => (
     <GoogleMap
@@ -70,7 +43,7 @@ function Map(props) {
         <></>
       )}
       <Polyline
-        path={polycords}
+        path={props.polyline}
         geodesic={false}
         options={{
           strokeColor: "#ff2527",

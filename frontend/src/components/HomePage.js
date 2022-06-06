@@ -7,14 +7,42 @@ import Map from "./Map";
 import Profile from "./ProfileButton";
 import Ride from "./RideButton";
 import axios from "axios";
+const { decode } = require("@googlemaps/polyline-codec");
 
 function HomePage() {
   const [passengers, setPassengers] = useState([]);
+  const [polycords, setPolycords] = useState([]);
+
+  const addCord = (cord) => {
+    setPolycords((state) => [...state, cord]);
+  };
+
+  const polyFunct = (polyline) => {
+    setPolycords((polycords) => []);
+    console.log(polyline.length);
+
+    if (polyline.length > 1) {
+      var myobj;
+      for (var i = 0; i < polyline.length; i++) {
+        myobj = {
+          lat: polyline[i][0],
+          lng: polyline[i][1],
+        };
+        console.log(myobj);
+        addCord(myobj);
+        console.log("intermediate polyline:", polycords);
+      }
+      console.log("Polyline now:", polycords);
+    }
+  };
+
+  const pathCoordinates = [];
 
   useEffect(() => {
     if (localStorage.getItem("userData") != null) {
       console.log("Running function");
       getRoute();
+      polyFunct(decode(polyline));
     }
   }, [passengers]);
 
@@ -78,7 +106,7 @@ function HomePage() {
             pos={data.lat_lng}
             passengers={passengers}
             destination={destination}
-            polyline={polyline}
+            polyline={polycords}
           />
           <h1
             className="main-logo"
