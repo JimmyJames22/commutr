@@ -117,7 +117,7 @@ form .form-inner .form-group{
 
 .settings-modal-app{
     position:fixed;
-    left:35%;
+    left:37%;
     bottom:-97%;
     overflow-y: scroll;
     height:200%;
@@ -144,7 +144,7 @@ form .form-inner .form-group{
     font-size: 20px;
     position: fixed; 
     top:4%;
-    left:35.5%;
+    left:37.3%;
 }
 
 .close-modal:hover{
@@ -193,8 +193,28 @@ form .form-inner .form-group{
     transition: 0.4s;
 }
 
+.submit-center .schedule-button{
+    margin-left: 20%;
+    margin-top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%); 
+}
+
 .schedule-button{
-    
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background-image: linear-gradient(to right, #28965A, #7CFEF0);
+    background-size: 200%;
+    background-position: 0%;
+    transition: 0.4s;
+    color: #FFF;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.schedule-button:hover{
+    background-position: 100% 0%;
 }
 
 .settings-modal-app .form-inner .form-group .pref-label{

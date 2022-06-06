@@ -1,3 +1,5 @@
+/** @format */
+
 const Time = require("./Time.js");
 const { calcEfficiency } = require("./CalcEfficiency");
 const { ObjectId } = require("mongodb");
@@ -17,6 +19,7 @@ class User {
     if (this.is_driver) {
       this.max_stops = user.max_stops;
       this.max_dur = user.max_dur;
+      this.max_dur += 2000;
       this.driver_stop_object = {};
       this.best_route = {};
       this.best_route.efficiency;

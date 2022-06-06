@@ -1,3 +1,5 @@
+/** @format */
+
 const { MongoClient } = require("mongodb");
 const ObjectId = require("mongodb").ObjectID;
 const { encode } = require("@googlemaps/polyline-codec");
@@ -45,14 +47,13 @@ exports.userMap = async (dest_id, dest_place_id) => {
       });
     });
 
-    console.log(users);
-    processDistances();
+    await processDistances();
   } catch (e) {
     console.error(e);
   }
 };
 
-function processDistances() {
+async function processDistances() {
   // this method creates the sequenced gmaps distance matrix api requests
   // they have to be sequenced because gmaps limits them based on the calculations and it throws errors otherwise
   // init local variables
@@ -72,9 +73,7 @@ function processDistances() {
 
   // loop through all users to all other users and append those requests to current_rate
   for (let k = 0; k < users.length; k++) {
-    console.log(users[k]._id);
     for (let l = k + 1; l < users.length; l++) {
-      console.log(l);
       if (dest_counter >= 25) {
         // check if over the limit for the current rate
         // append current rate to reqs_by_rate
@@ -145,7 +144,7 @@ function processDistances() {
   });
 
   // make all the gmaps api requests and process incoming data
-  makeUserMapReq(reqs_by_rate, all_user_coords);
+  await makeUserMapReq(reqs_by_rate, all_user_coords);
 }
 
 async function makeUserMapReq(reqs_by_rate, all_user_coords) {
@@ -207,7 +206,6 @@ async function makeUserMapReq(reqs_by_rate, all_user_coords) {
           `https://maps.googleapis.com/maps/api/distancematrix/json?origins=place_id:${dest_data.place_id}&destinations=enc:${all_user_coords[i].polyline}:&key=${API_KEY}`
         )
         .then((response) => {
-          console.log("TOSCHOOL");
           // init environment vars
           let user;
 
@@ -255,7 +253,7 @@ async function makeUserMapReq(reqs_by_rate, all_user_coords) {
     // log rough percent of requests made -- DEV TOOL SHOULD BE REMOVED
     console.log((i / (all_user_coords.length - 1)) * 100);
   }
-  saveUsermap();
+  await saveUsermap();
 }
 
 function updateUserDur(user, dur) {
@@ -304,8 +302,6 @@ function sleep(ms) {
 
 async function saveUsermap() {
   Promise.all(init_promises).then(async () => {
-    console.log(userMap);
-    console.log("USERMAP");
     try {
       await writeUserMap(client);
     } catch (e) {

@@ -1,9 +1,15 @@
-const {MongoClient} = require("mongodb");
+/** @format */
+
+const { MongoClient } = require("mongodb");
 const ObjectId = require("mongodb").ObjectID;
 const API_KEY = "AIzaSyCiN6uQWhP-Di1Lnwn63aw8tQJKUD-amPA";
-const {encode} = require("@googlemaps/polyline-codec");
-const {ObjectID} = require("mongodb");
-const {calcEfficiency, sumEfficiency} = require("./supporters/CalcEfficiency");
+const { encode } = require("@googlemaps/polyline-codec");
+const { ObjectID } = require("mongodb");
+const axios = require("axios");
+const {
+  calcEfficiency,
+  sumEfficiency,
+} = require("./supporters/CalcEfficiency");
 
 const mongo_uri =
   "mongodb+srv://gumba:COiUaIcaegjHWO41@cluster0.kiwky.mongodb.net/dummyData?retryWrites=true&w=majority";
@@ -17,7 +23,7 @@ let dest_data;
 
 let dest_obj;
 
-let route_dist_tolerance = 1.15;
+let route_time_tolerance = 1.15;
 
 let user_map_promises = [];
 
@@ -26,26 +32,24 @@ let user_map_updates = [];
 let userMap = [];
 
 exports.addUser = async (req, res) => {
-  let {user} = req.body;
+  let { user } = req.body;
   user._id = ObjectID(user._id);
+  let msg_back;
   try {
     await client.connect();
     console.log("Mongo connected");
+
+    console.log("Destination id:", user.destination_id);
 
     let cursor = await client.db("dummyData").collection("users").find({
       destination_id: user.destination_id,
     });
     existing_users = await cursor.toArray();
 
-    cursor = await client
-      .db("dummyData")
-      .collection("destinations")
-      .find({
-        _id: ObjectID(user.destination_id),
-      });
-
-    dest_data = await cursor.toArray();
-    dest_data = dest_data[0];
+    for (let i = 0; i < existing_users.length; i++) {
+      existing_users[i].arrival_times = existing_users[i].arrivalTimes;
+      existing_users[i].departure_times = existing_users[i].departureTimes;
+    }
 
     for (let i = 0; i < existing_users.length; i++) {
       if (existing_users[i].isDriver == true) {
@@ -55,7 +59,7 @@ exports.addUser = async (req, res) => {
 
         routes = await cursor.toArray();
 
-        if (routes[0].stops.length < existing_users[i].carCapacity) {
+        if (routes[0].stops.length < existing_users[i].carCapacity + 1) {
           routes[0].stops.pop();
           drivers.push({
             driver: existing_users[i],
@@ -84,22 +88,19 @@ exports.addUser = async (req, res) => {
 
     await updateUserMap(user);
     await Promise.all(user_map_promises).then(async () => {
-      console.log(user_map_updates);
-      // pushNewUserMap();
+      await pushNewUserMap();
 
-      let msg_back;
       if (user.isDriver) {
-        msg_back = await pushNewPairing();
+        msg_back = await pushNewPairing(user);
       } else {
-        msg_back = await assignRoute();
+        msg_back = await assignRoute(user);
       }
-
-      res.end(msg_back);
     });
   } catch (e) {
     console.error(e);
   } finally {
     client.close();
+    res.end(msg_back);
   }
 };
 
@@ -112,16 +113,18 @@ async function updateUserMap(user) {
 
   for (let i = 0; i < existing_users.length; i++) {
     user_coords_current_rate.push([
-      existing_users.lat_lng[0],
-      existing_users.lat_lng[1],
+      existing_users[i].lat_lng[0], //What is existing users here?
+      existing_users[i].lat_lng[1],
     ]);
-    users_current_rate.push(existing_users._id.toString());
+    users_current_rate.push(existing_users[i]._id.toString());
     counter++;
 
     if (counter == 25) {
       user_coords_by_rate.push(user_coords_current_rate);
       users_by_rate.push(users_current_rate);
       counter = 0;
+      user_coords_current_rate = [];
+      users_current_rate = [];
     }
   }
 
@@ -129,76 +132,65 @@ async function updateUserMap(user) {
   users_by_rate.push(users_current_rate);
 
   for (let i = 0; i < user_coords_by_rate.length; i++) {
-    user_map_promises.push(
-      axios
-        .get(
-          `https://maps.googleapis.com/maps/api/distancematrix/json?origins=place_id:${
-            user.place_id
-          }&destinations=enc:${encode(user_coords_by_rate[i])}:&key=${API_KEY}`
-        )
-        .then((response) => {
-          console.log(
-            `https://maps.googleapis.com/maps/api/distancematrix/json?origins=place_id:${
-              user.place_id
-            }&destinations=enc:${encode(
-              user_coords_by_rate[i]
-            )}:&key=${API_KEY}`
-          );
-
-          let dur;
-          for (let l = 0; l < response.data.rows[0].elements.length; l++) {
-            try {
-              dur = response.data.rows[0].elements[l].duration.value;
-            } catch (err) {
-              console.log(err.message);
-              dur = -1;
-            }
-
-            let new_entry = {
-              u1: user._id.toString(),
-              u2: users_by_rate[i][l]._id.toString(),
-              dur: dur,
-              dest: ObjectID(user.destination_id),
-            };
-
-            user_map_updates.push(new_entry);
-            userMap.push(new_entry);
-          }
-        })
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/distancematrix/json?origins=place_id:${
+        user.place_id
+      }&destinations=enc:${encode(user_coords_by_rate[i])}:&key=${API_KEY}`
     );
 
-    await sleep(5000);
+    console.log(
+      `https://maps.googleapis.com/maps/api/distancematrix/json?origins=place_id:${
+        user.place_id
+      }&destinations=enc:${encode(user_coords_by_rate[i])}:&key=${API_KEY}`
+    );
+
+    let dur;
+    for (let l = 0; l < response.data.rows[0].elements.length; l++) {
+      try {
+        dur = response.data.rows[0].elements[l].duration.value;
+      } catch (err) {
+        console.log(err.message);
+        dur = -1;
+      }
+
+      let new_entry = {
+        u1: user._id.toString(),
+        u2: users_by_rate[i][l].toString(),
+        dur: dur,
+        dest: ObjectID(user.destination_id),
+      };
+
+      user_map_updates.push(new_entry);
+      userMap.push(new_entry);
+    }
+
+    await sleep(7000);
   }
 
-  user_map_promises.push(
-    axios
-      .get(
-        `https://maps.googleapis.com/maps/api/distancematrix/json?origins=place_id:${user.place_id}&destinations=place_id:${dest_obj.place_id}&key=${API_KEY}`
-      )
-      .then((response) => {
-        let dur;
-        try {
-          dur = response.data.rows[0].elements[l].duration.value;
-        } catch (err) {
-          console.log(err.message);
-          dur = -1;
-        }
-
-        updateUserDur(user, dur);
-        user.to_school = dur;
-
-        if (user.isDriver) {
-          if (dur == -1) {
-            max_dur = -1;
-          } else {
-            max_dur = dur * route_time_tolerance;
-          }
-
-          updateUserMaxDur(user, max_dur);
-          user.max_dur = max_dur;
-        }
-      })
+  const response = await axios.get(
+    `https://maps.googleapis.com/maps/api/distancematrix/json?origins=place_id:${user.place_id}&destinations=place_id:${dest_obj.place_id}&key=${API_KEY}`
   );
+  let dur;
+  try {
+    dur = response.data.rows[0].elements[0].duration.value;
+  } catch (err) {
+    console.log(err.message);
+    dur = -1;
+  }
+
+  user.to_school = dur;
+  updateUserDur(user, dur);
+
+  if (user.isDriver) {
+    if (dur == -1) {
+      max_dur = -1;
+    } else {
+      max_dur = dur * route_time_tolerance;
+    }
+
+    user.max_dur = max_dur;
+    updateUserMaxDur(user, max_dur);
+  }
 }
 
 function updateUserDur(user, dur) {
@@ -251,12 +243,14 @@ async function pushNewUserMap() {
           u1: userMapEntry.u1,
           u2: userMapEntry.u2,
           dur: userMapEntry.dur,
+          dest: userMapEntry.dest,
         },
         {
           $set: {
             u1: userMapEntry.u1,
             u2: userMapEntry.u2,
             dur: userMapEntry.dur,
+            dest: userMapEntry.dest,
           },
         },
         {
@@ -267,27 +261,29 @@ async function pushNewUserMap() {
   console.log("DONE UPDATING");
 }
 
-async function assignRoute() {
+async function assignRoute(user) {
   let effArray = [];
-  let driver_arr = [];
+  console.log("DRIVERS");
+  console.log(drivers);
   for (let i = 0; i < drivers.length; i++) {
     let route = drivers[i].route;
     let driver = drivers[i].driver;
-    route.total_dur = 0;
+    route.total_dur = 0; // WORKS
     route.stops_by_id = route.stops.slice(0);
     for (let j = 0; j < route.stops.length; j++) {
       for (let l = 0; l < existing_users.length; l++) {
         if (existing_users[l]._id.toString() == route.stops[j].toString()) {
-          route.stops[k] = existing_users[l];
+          route.stops[j] = existing_users[l];
         }
       }
 
-      distanceTo(route.stops[j], route.stops[j - 1]);
-
       if (j > 0) {
-        let dur;
-
-        route.total_dur += dur;
+        route.total_dur += distanceTo(
+          route.stops[j]._id.toString(),
+          route.stops[j - 1]._id.toString()
+        );
+        console.log("TWO");
+        console.log(route.total_dur);
       }
     }
 
@@ -302,54 +298,82 @@ async function assignRoute() {
     stop_index: -1,
   };
 
+  // loop that determines which driver's route is being changed
   for (let i = 0; i < drivers.length; i++) {
-    for (let j = 0; j < driver_arr.length; j++) {
-      if (j == i) {
-        for (let l = 0; l < driver.stops.length; l++) {
-          let driver_arr = drivers.slice(0);
-          let driver = driver_arr[j];
-          if (l > 0) {
-            driver.new_route.total_dur += distanceTo(
-              user._id.toString(),
-              driver.new_route.stops[l - 1]._id.toString()
-            );
-          }
-          if (l < driver.stops.length - 1) {
-            driver.new_route.total_dur += distanceTo(
-              user._id.toString(),
-              driver.new_route.stops[l]._id.toString()
-            );
-          } else if (l == driver.stops.length - 1) {
-            driver.new_route.total_dur += user.to_school;
-          }
-          if (driver_arr[j].new_route.total_dur <= driver.max_dur) {
-            driver.new_route.stops.splice(l, 0, user);
-            for (let m = 0; m < driver_arr.length; m++) {
-              if (m != j) {
-                driver_arr[m].new_route.total_dur +=
-                  driver_arr[m].new_route.stops[
-                    driver_arr[m].new_route.stops.length - 1
-                  ].to_school;
-              }
-            }
-            effArray.push({
-              eff: sumEfficiency(driver_arr),
-              driver_index: j,
-              stop_index: l,
-            });
-          }
-        }
+    console.log(i + " AHHHHHHHHHH");
+    let driver = drivers[i]; // driver whose route is being changed
+    for (let j = 1; j < driver.new_route.stops.length; j++) {
+      console.log("BEFORE SHIFT");
+      console.log(driver.new_route.stops);
+
+      const first_stop = driver.new_route.stops.shift();
+      let current_driver = JSON.stringify(driver);
+      current_driver = JSON.parse(current_driver);
+      current_driver.new_route.stops.unshift(first_stop);
+      driver.new_route.stops.unshift(first_stop);
+
+      // update duration
+      if (j > 0) {
+        current_driver.new_route.total_dur += distanceTo(
+          //This returns NaN (nothing found in userMap)
+          user._id.toString(),
+          current_driver.new_route.stops[j - 1]._id.toString()
+        );
+        console.log("THREE");
+        console.log(current_driver.new_route.total_dur);
+      }
+      if (j < current_driver.new_route.stops.length - 1) {
+        current_driver.new_route.total_dur += distanceTo(
+          user._id.toString(),
+          current_driver.new_route.stops[j]._id.toString()
+        );
+        console.log("FOUR");
+        console.log(current_driver.new_route.total_dur);
+      } else if (j == current_driver.new_route.stops.length - 1) {
+        current_driver.new_route.total_dur += user.to_school;
+        console.log("FIVE");
+        console.log(current_driver.new_route.total_dur);
       }
 
-      if (j == driver_arr.length - 1) {
-        effArray.push(sumEfficiency(driver_arr));
+      // check if within the bounds
+      if (
+        current_driver.new_route.total_dur <=
+        current_driver.max_dur + 10000
+      ) {
+        current_driver.new_route.stops.splice(j, 0, user);
+        let new_drivers = [current_driver];
+        for (let l = 0; l < drivers.length; l++) {
+          if (l != i) {
+            new_driver = drivers[l];
+
+            new_driver.new_route.total_dur +=
+              new_driver.new_route.stops[
+                new_driver.new_route.stops.length - 1
+              ].to_school;
+
+            new_drivers.push(new_driver);
+          }
+        }
+        effArray.push({
+          eff: sumEfficiency(new_drivers),
+          driver_index: i,
+          stop_index: j,
+        });
       }
     }
   }
 
+  console.log("best eff");
+  console.log(best_eff);
+
+  console.log("EFF YOU ");
+  console.log(effArray);
+
   for (let i = 0; i < effArray.length; i++) {
     if (effArray[i].eff > best_eff.eff) {
-      best_eff = effArray[i];
+      best_eff.eff = effArray[i].eff;
+      best_eff.driver_index = effArray[i].driver_index;
+      best_eff.stop_index = effArray[i].stop_index;
     }
   }
 
@@ -358,20 +382,21 @@ async function assignRoute() {
   } else {
     let driver = drivers[best_eff.driver_index];
     driver.new_route.stops.splice(best_eff.stop_index, 0, user);
-    driver.new_route.stops_by_id.splice(best_eff.stop_index, 0, user._id);
-    driver.new_route.stops.push(dest_data);
-    driver.new_route.stops_by_id.push(dest_data._id);
+    driver.new_route.stops.push(dest_obj);
 
     let lat_lng_arr = [];
+    let stops = [];
 
     for (let i = 0; i < driver.new_route.stops.length; i++) {
       lat_lng_arr.push([
         driver.new_route.stops[i].lat_lng[0],
         driver.new_route.stops[i].lat_lng[1],
       ]);
+      stops.push(driver.new_route.stops[i]._id);
     }
 
-    let polyline = encode(lat_lng_arr);
+    let polyline = await getRoutePolyline(driver, lat_lng_arr);
+
     await client
       .db("dummyData")
       .collection("pairings")
@@ -381,9 +406,9 @@ async function assignRoute() {
         },
         {
           $set: {
-            driver_id: user._id,
-            dest_id: dest_data._id,
-            stops: driver.new_route.stops_by_id,
+            driver_id: driver._id,
+            dest_id: dest_obj._id,
+            stops: stops,
             polyline: polyline,
           },
         },
@@ -396,13 +421,13 @@ async function assignRoute() {
   }
 }
 
-async function pushNewPairing() {
-  let lng_lat_arr = [
-    [user.lat_lng[0], user.lat_lng[1]][
-      (dest_data.lat_lng[0], dest_data.lat_lng[1])
-    ],
+async function pushNewPairing(user) {
+  let route_lat_lng = [
+    [user.lat_lng[0], user.lat_lng[1]],
+    [dest_obj.lat_lng[0], dest_obj.lat_lng[1]],
   ];
-  let polyline = encode(lng_lat_arr);
+  console.log(route_lat_lng);
+  let polyline = await getRoutePolyline(user, route_lat_lng);
   const result = await client
     .db("dummyData")
     .collection("pairings")
@@ -413,8 +438,8 @@ async function pushNewPairing() {
       {
         $set: {
           driver_id: user._id,
-          dest_id: dest_data._id,
-          stops: [user._id, dest_data._id],
+          dest_id: dest_obj._id,
+          stops: [user._id, dest_obj._id],
           polyline: polyline,
         },
       },
@@ -428,14 +453,45 @@ async function pushNewPairing() {
 
 function distanceTo(u1, u2) {
   for (let l = 0; l < userMap.length; l++) {
-    if (userMap[l].u1 == u1 && userMap.u2 == u2) {
+    if (userMap[l].u1 == u1 && userMap[l].u2 == u2) {
       return userMap[l].dur;
-    } else if (userMap[l].u2 == u1 && userMap.u1 == u2) {
+    } else if (userMap[l].u2 == u1 && userMap[l].u1 == u2) {
       return userMap[l].dur;
     }
   }
+  return NaN;
 }
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function getRoutePolyline(driver, route_lat_lng) {
+  let waypoint_polyline = encode(route_lat_lng);
+  if (route_lat_lng.length > 0) {
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_obj.place_id}&origin=place_id:${driver.place_id}&waypoints=enc:${waypoint_polyline}:&key=${API_KEY}`
+    );
+    console.log(
+      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_obj.place_id}&origin=place_id:${driver.place_id}&waypoints=enc:${waypoint_polyline}:&key=${API_KEY}`
+    );
+    try {
+      return response.data.routes[0].overview_polyline.points;
+    } catch (err) {
+      return waypoint_polyline;
+    }
+  } else {
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_obj.place_id}&origin=place_id:${driver.place_id}&key=${API_KEY}`
+    );
+    console.log(
+      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_obj.place_id}&origin=place_id:${driver.place_id}&key=${API_KEY}`
+    );
+    try {
+      return response.data.routes[0].overview_polyline.points;
+    } catch (err) {
+      console.log(err.message);
+      return waypoint_polyline;
+    }
+  }
 }

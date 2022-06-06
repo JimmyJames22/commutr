@@ -332,3 +332,35 @@ div .edit-pass-wrapper h4{
         opacity: 0;
     }
 }
+
+.user-add-wrapper{
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.user-add-wrapper p{
+    color:#888;
+    padding-bottom: 10px;
+}
+
+.add-icon{
+    font-size: 15px;
+    vertical-align: middle;
+}
+
+.user-add-button{
+    padding:10px 15%;
+    border-radius: 8px;
+    background-image: linear-gradient(to right, #12c2e9 50%, #12c2e9 50%, #7CFEF0 );
+    background-size: 200%;
+    background-position: 0%;
+    transition: 0.4s;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.user-add-button:hover{
+    background-position:100% 0%;
+}

@@ -21,18 +21,23 @@ exports.driveRequest = (req, res) => {
 }
 
 exports.driveNotification = (req, res) => {
-    const {phoneNumber, timeEst} = req.body;
+    const {phoneNumbers} = req.body;
+    console.log("phoneNumbers:", phoneNumbers)
     
-    client.messages
+    for(var i in phoneNumbers){
+      console.log("i:", phoneNumbers[i])
+      client.messages
       .create({ 
-         body: 'Your driver has begun a route. Estimated time: '+timeEst+' minutes',  
+         body: 'Your driver has begun a route.',  
          messagingServiceSid: 'MGa43ec52b58d76e21189658edc0e95fa3', 
-         to: phoneNumber
+         to: phoneNumbers[i]
        }) 
       .then(message => {console.log(message.sid);
-                        res.json({
-                            message: message.sid
-                })}
-      ) 
+              res.json({
+                message: message.sid
+              })}
+      )
       .done();
+    }
+
 }

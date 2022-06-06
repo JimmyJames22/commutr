@@ -37,6 +37,7 @@ function LoginPage() {
                 "departureTimes":response.data.user.departureTimes,
                 "ridesTaken":response.data.user.ridesTaken,
                 "ridesGiven":response.data.user.ridesGiven,
+                "destination_id":response.data.user.destination_id,
                 "_id":response.data.user._id,
                 "lat_lng":response.data.user.lat_lng,
                 "place_id":response.data.user.place_id

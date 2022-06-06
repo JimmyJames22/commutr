@@ -12,12 +12,14 @@ import axios from 'axios';
 function ProfilePage() {
 
     useEffect(() => {
+        console.log("Userdata:", localStorage.getItem('userData'));
         if(localStorage.getItem('userData')!= null){
             getRoute();
         }
     }, [])
 
     const [passengers, setPassengers] = useState([])
+    const [dest, setDest] = useState([])
 
     const data = JSON.parse(localStorage.getItem('userData')) //Real code
 
@@ -38,16 +40,20 @@ function ProfilePage() {
             url: "http://localhost:8000/api/findRoute",
             data: {
                 _id: data._id,
+                destination_id: data.destination_id
             }
         }).then(response => {
-            console.log("Got passengers:", response.data.routes);
+
             setPassengers([]);
 
             for (const item of response.data.routes){
                 setPassengers(arr => [...arr, item]);
             }
-         
+            console.log()
            
+            console.log("Got passengers:", response.data.dest);
+            setDest(response.data.dest)
+            console.log("Dest:",dest);
             console.log("Passengers state:",passengers)
             //if data doesn't have route id in it save it to localstorage.
             if(localStorage.getItem('passengers') == null){
@@ -87,7 +93,7 @@ function ProfilePage() {
             </div>
             <br/>
             <div>
-            <Passengers passengers={passengers} data={data}/>
+            <Passengers passengers={passengers} data={data} dest={dest}/>
             </div>
             <Logout />
             </div>
