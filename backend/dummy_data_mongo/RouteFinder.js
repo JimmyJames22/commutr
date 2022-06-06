@@ -69,8 +69,8 @@ exports.routeFinder = async (dest_id) => {
       let user;
       let user_obj = {
         place_id: result.place_id,
-        lng: result.lat_lng[0],
-        lat: result.lat_lng[1],
+        lat: result.lat_lng[0],
+        lng: result.lat_lng[1],
         is_driver: result.isDriver,
         uid: result._id.toString(),
         to_school: result.to_school,
@@ -381,8 +381,10 @@ async function saveRouteData() {
     console.log(driver.best_route.efficiency);
     driver.best_route.stops.push(dest_data);
     driver.best_route.stops_by_uid.push(dest_data._id.toString());
+
+    // make polyline for route
     let route_lat_lng = [];
-    for (j = 0; j < driver.best_route.stops_by_uid.length; j++) {
+    for (j = 1; j < driver.best_route.stops_by_uid.length - 1; j++) {
       let stop_uid = driver.best_route.stops_by_uid[j];
       driver.best_route.stops_by_uid[j] = ObjectID(stop_uid);
       route_lat_lng.push([
@@ -390,7 +392,9 @@ async function saveRouteData() {
         driver.best_route.stops[j].lng,
       ]);
     }
-    let route_polyline = encode(route_lat_lng);
+
+    let route_polyline = await getRoutePolyline(driver, route_lat_lng);
+
     const result = await client
       .db("dummyData")
       .collection("pairings")
@@ -413,13 +417,34 @@ async function saveRouteData() {
 
     console.log("Posted route for driver: " + i);
   }
-  // let student_json = JSON.stringify(students);
-  // let drivers_json = JSON.stringify(drivers);
-  // fs.writeFile("./final_routes/student.json", student_json, "utf8", () => {
-  //   console.log("exported");
-  // });
-  // fs.writeFile("./final_routes/driver.json", drivers_json, "utf8", () => {
-  //   console.log("exported");
-  // });
-  // await client.close();
+}
+
+async function getRoutePolyline(driver, route_lat_lng) {
+  let waypoint_polyline = encode(route_lat_lng);
+  if (route_lat_lng.length > 0) {
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_data.place_id}&origin=place_id:${driver.place_id}&waypoints=enc:${waypoint_polyline}:&key=${API_KEY}`
+    );
+    console.log(
+      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_data.place_id}&origin=place_id:${driver.place_id}&waypoints=enc:${waypoint_polyline}:&key=${API_KEY}`
+    );
+    try {
+      return response.data.routes[0].overview_polyline.points;
+    } catch (err) {
+      return waypoint_polyline;
+    }
+  } else {
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_data.place_id}&origin=place_id:${driver.place_id}&key=${API_KEY}`
+    );
+    console.log(
+      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_data.place_id}&origin=place_id:${driver.place_id}&key=${API_KEY}`
+    );
+    try {
+      return response.data.routes[0].overview_polyline.points;
+    } catch (err) {
+      console.log(err.message);
+      return waypoint_polyline;
+    }
+  }
 }

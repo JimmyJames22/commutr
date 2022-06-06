@@ -47,7 +47,6 @@ exports.userMap = async (dest_id, dest_place_id) => {
       });
     });
 
-    console.log(users);
     await processDistances();
   } catch (e) {
     console.error(e);
@@ -74,9 +73,7 @@ async function processDistances() {
 
   // loop through all users to all other users and append those requests to current_rate
   for (let k = 0; k < users.length; k++) {
-    console.log(users[k]._id);
     for (let l = k + 1; l < users.length; l++) {
-      console.log(l);
       if (dest_counter >= 25) {
         // check if over the limit for the current rate
         // append current rate to reqs_by_rate
@@ -209,7 +206,6 @@ async function makeUserMapReq(reqs_by_rate, all_user_coords) {
           `https://maps.googleapis.com/maps/api/distancematrix/json?origins=place_id:${dest_data.place_id}&destinations=enc:${all_user_coords[i].polyline}:&key=${API_KEY}`
         )
         .then((response) => {
-          console.log("TOSCHOOL");
           // init environment vars
           let user;
 
@@ -306,8 +302,6 @@ function sleep(ms) {
 
 async function saveUsermap() {
   Promise.all(init_promises).then(async () => {
-    console.log(userMap);
-    console.log("USERMAP");
     try {
       await writeUserMap(client);
     } catch (e) {

@@ -34,6 +34,7 @@ let userMap = [];
 exports.addUser = async (req, res) => {
   let { user } = req.body;
   user._id = ObjectID(user._id);
+  let msg_back;
   try {
     await client.connect();
     console.log("Mongo connected");
@@ -85,24 +86,21 @@ exports.addUser = async (req, res) => {
       });
     userMap = await cursor.toArray();
 
-    // await updateUserMap(user);
+    await updateUserMap(user);
     await Promise.all(user_map_promises).then(async () => {
-      // await pushNewUserMap();
+      await pushNewUserMap();
 
-      let msg_back;
       if (user.isDriver) {
         msg_back = await pushNewPairing(user);
       } else {
-        console.log(user);
         msg_back = await assignRoute(user);
       }
-
-      res.end(msg_back);
     });
   } catch (e) {
     console.error(e);
   } finally {
     client.close();
+    res.end(msg_back);
   }
 };
 
@@ -132,7 +130,7 @@ async function updateUserMap(user) {
   users_by_rate.push(users_current_rate);
 
   for (let i = 0; i < user_coords_by_rate.length; i++) {
-    let response = await axios.get(
+    const response = await axios.get(
       `https://maps.googleapis.com/maps/api/distancematrix/json?origins=place_id:${
         user.place_id
       }&destinations=enc:${encode(user_coords_by_rate[i])}:&key=${API_KEY}`
@@ -167,7 +165,7 @@ async function updateUserMap(user) {
     await sleep(7000);
   }
 
-  let response = await axios.get(
+  const response = await axios.get(
     `https://maps.googleapis.com/maps/api/distancematrix/json?origins=place_id:${user.place_id}&destinations=place_id:${dest_obj.place_id}&key=${API_KEY}`
   );
   let dur;
@@ -243,12 +241,14 @@ async function pushNewUserMap() {
           u1: userMapEntry.u1,
           u2: userMapEntry.u2,
           dur: userMapEntry.dur,
+          dest: userMapEntry.dest,
         },
         {
           $set: {
             u1: userMapEntry.u1,
             u2: userMapEntry.u2,
             dur: userMapEntry.dur,
+            dest: userMapEntry.dest,
           },
         },
         {
@@ -261,6 +261,8 @@ async function pushNewUserMap() {
 
 async function assignRoute(user) {
   let effArray = [];
+  console.log("DRIVERS");
+  console.log(drivers);
   for (let i = 0; i < drivers.length; i++) {
     let route = drivers[i].route;
     let driver = drivers[i].driver;
@@ -299,12 +301,19 @@ async function assignRoute(user) {
     console.log(i + " AHHHHHHHHHH");
     let driver = drivers[i]; // driver whose route is being changed
     for (let j = 1; j < driver.new_route.stops.length; j++) {
-      let current_driver = driver;
+      console.log("BEFORE SHIFT");
+      console.log(driver.new_route.stops);
+
+      const first_stop = driver.new_route.stops.shift();
+      let current_driver = JSON.stringify(driver);
+      current_driver = JSON.parse(current_driver);
+      current_driver.new_route.stops.unshift(first_stop);
+      driver.new_route.stops.unshift(first_stop);
 
       // update duration
-
       if (j > 0) {
-        current_driver.new_route.total_dur += distanceTo( //This returns NaN (nothing found in userMap)
+        current_driver.new_route.total_dur += distanceTo(
+          //This returns NaN (nothing found in userMap)
           user._id.toString(),
           current_driver.new_route.stops[j - 1]._id.toString()
         );
@@ -352,12 +361,17 @@ async function assignRoute(user) {
     }
   }
 
+  console.log("best eff");
+  console.log(best_eff);
+
   console.log("EFF YOU ");
   console.log(effArray);
 
   for (let i = 0; i < effArray.length; i++) {
     if (effArray[i].eff > best_eff.eff) {
-      best_eff = effArray[i];
+      best_eff.eff = effArray[i].eff;
+      best_eff.driver_index = effArray[i].driver_index;
+      best_eff.stop_index = effArray[i].stop_index;
     }
   }
 
@@ -376,10 +390,11 @@ async function assignRoute(user) {
         driver.new_route.stops[i].lat_lng[0],
         driver.new_route.stops[i].lat_lng[1],
       ]);
-      stops.push(driver.new_route.stops._id);
+      stops.push(driver.new_route.stops[i]._id);
     }
 
-    let polyline = encode(lat_lng_arr);
+    let polyline = await getRoutePolyline(driver, lat_lng_arr);
+
     await client
       .db("dummyData")
       .collection("pairings")
@@ -391,7 +406,7 @@ async function assignRoute(user) {
           $set: {
             driver_id: driver._id,
             dest_id: dest_obj._id,
-            stops: driver.new_route.stops_by_id,
+            stops: stops,
             polyline: polyline,
           },
         },
@@ -405,12 +420,12 @@ async function assignRoute(user) {
 }
 
 async function pushNewPairing(user) {
-  let lat_lng_arr = [
+  let route_lat_lng = [
     [user.lat_lng[0], user.lat_lng[1]],
     [dest_obj.lat_lng[0], dest_obj.lat_lng[1]],
   ];
-  console.log(lat_lng_arr);
-  let polyline = encode(lat_lng_arr);
+  console.log(route_lat_lng);
+  let polyline = await getRoutePolyline(user, route_lat_lng);
   const result = await client
     .db("dummyData")
     .collection("pairings")
@@ -435,7 +450,6 @@ async function pushNewPairing(user) {
 }
 
 function distanceTo(u1, u2) {
-  console.log("Usermap:", userMap);
   for (let l = 0; l < userMap.length; l++) {
     if (userMap[l].u1 == u1 && userMap[l].u2 == u2) {
       return userMap[l].dur;
@@ -448,4 +462,34 @@ function distanceTo(u1, u2) {
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function getRoutePolyline(driver, route_lat_lng) {
+  let waypoint_polyline = encode(route_lat_lng);
+  if (route_lat_lng.length > 0) {
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_obj.place_id}&origin=place_id:${driver.place_id}&waypoints=enc:${waypoint_polyline}:&key=${API_KEY}`
+    );
+    console.log(
+      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_obj.place_id}&origin=place_id:${driver.place_id}&waypoints=enc:${waypoint_polyline}:&key=${API_KEY}`
+    );
+    try {
+      return response.data.routes[0].overview_polyline.points;
+    } catch (err) {
+      return waypoint_polyline;
+    }
+  } else {
+    const response = await axios.get(
+      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_obj.place_id}&origin=place_id:${driver.place_id}&key=${API_KEY}`
+    );
+    console.log(
+      `https://maps.googleapis.com/maps/api/directions/json?destination=place_id:${dest_obj.place_id}&origin=place_id:${driver.place_id}&key=${API_KEY}`
+    );
+    try {
+      return response.data.routes[0].overview_polyline.points;
+    } catch (err) {
+      console.log(err.message);
+      return waypoint_polyline;
+    }
+  }
 }

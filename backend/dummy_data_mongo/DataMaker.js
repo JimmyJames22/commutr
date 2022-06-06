@@ -36,11 +36,11 @@ const milton_list = {
   address: "170 Centre Street",
   name: "Milton Academy",
   domain: "@milton.edu",
-  lat_lng: [y, x],
+  lat_lng: [x, y],
   place_id: dest_place_id,
 };
 
-const dest_oid = mongo.ObjectId(milton_list._id);
+const dest_oid = milton_list._id;
 
 // const mongoose = require("mongoose");
 // const { MongoClient } = require("mongodb");
