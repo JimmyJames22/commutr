@@ -9,7 +9,7 @@ const max_dist = 1;
 const min_dist = 0.05;
 
 const num_dests = 5;
-const num_users = 40;
+const num_users = 100;
 const max__id = 10000;
 let used__ids = [];
 
@@ -66,10 +66,18 @@ function make_id() {
 }
 
 function saveData() {
+  const users_js = "const user_list = " + JSON.stringify(users) + ";";
+  const dests_js = "const dest_list = " + JSON.stringify(dests) + ";";
   fs.writeFile("./ref/users.json", JSON.stringify(users), () => {
-    console.log("users exported");
+    console.log("user json exported");
+  });
+  fs.writeFile("./ref/users.js", users_js, () => {
+    console.log("user js exported");
   });
   fs.writeFile("./ref/dests.json", JSON.stringify(dests), () => {
-    console.log("dests exported");
+    console.log("dest json exported");
+  });
+  fs.writeFile("./ref/dests.js", dests_js, () => {
+    console.log("dest js exported");
   });
 }
