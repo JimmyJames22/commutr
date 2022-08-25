@@ -1,83 +1,72 @@
 /** @format */
 
-const Time = require("./Time.js");
-const { calcEfficiency } = require("./CalcEfficiency");
 const { ObjectId } = require("mongodb");
 
 class User {
   constructor(user) {
-    this.place_id = user.place_id;
+    this._id = user._id;
+    // this.place_id = user.place_id;
     this.lng = user.lng;
     this.lat = user.lat;
-    this.is_driver = user.is_driver;
-    this.uid = user.uid;
-    this.to_school = user.to_school;
+    // this.is_driver = user.is_driver;
+    // this.to_school = user.to_school;
 
-    this.arrival_times = user.arrival_times;
-    this.departure_times = user.departure_times;
-
-    if (this.is_driver) {
-      this.max_stops = user.max_stops;
-      this.max_dur = user.max_dur;
-      this.max_dur += 2000;
-      this.driver_stop_object = {};
-      this.best_route = {};
-      this.best_route.efficiency;
-      this.new_route = {};
-      this.possible_stops = [];
-      this.possible_route_stops = [];
-    }
+    // this.arrival_times = user.arrival_times;
+    // this.departure_times = user.departure_times;
   }
 
-  makeFirstRoute() {
-    this.driver_stop_object = {
-      place_id: this.place_id,
-      lng: this.lng,
-      lat: this.lat,
-      uid: this.uid,
-      is_driver: true,
-      to_school: this.to_school,
-      arrival_times: this.arrival_times,
-      departure_times: this.departure_times,
-    };
-    this.best_route = {
-      stops: [this.driver_stop_object],
-      stops_by_uid: [this.uid],
-      total_dur: this.to_school,
-    };
-    this.best_route.efficiency = calcEfficiency(
-      this.max_dur - this.best_route.total_dur,
-      this.best_route.stops
-    );
+  // makeFirstRoute() {
+  //   this.driver_stop_object = {
+  //     place_id: this.place_id,
+  //     lng: this.lng,
+  //     lat: this.lat,
+  //     _id: this._id,
+  //     is_driver: true,
+  //     to_school: this.to_school,
+  //     arrival_times: this.arrival_times,
+  //     departure_times: this.departure_times,
+  //   };
+  //   this.best_route = {
+  //     stops: [this.driver_stop_object],
+  //     stops_by__id: [this._id],
+  //     total_dur: this.to_school,
+  //   };
+  //   this.best_route.efficiency = calcEfficiency(
+  //     this.max_dur - this.best_route.total_dur,
+  //     this.best_route.stops
+  //   );
 
-    return this.best_route.efficiency;
-  }
+  //   return this.best_route.efficiency;
+  // }
 
-  durationToUid(uid, userMap) {
+  durationTo_id(_id, userMap) {
     //  calls from userMap
+    if (this._id == _id) {
+      return 0;
+    }
     let map;
     for (let k = 0; k < userMap.length; k++) {
       map = userMap[k];
-      if (map.u1 == this.uid && map.u2 == uid) {
-        return map.dur;
-      } else if (map.u1 == uid && map.u2 == this.uid) {
-        return map.dur;
+      if (map.u1 == this._id && map.u2 == _id) {
+        return map.dist;
+      } else if (map.u1 == _id && map.u2 == this._id) {
+        return map.dist;
       }
     }
     return NaN;
 
     // return new Promise(async (resolve, reject) => {
     //   let cursor = await client.db("dummyData").collection("userMap").find({
-    //     u1: this.uid,
-    //     u2: uid,
+    //     u1: this._id,
+    //     u2: _id,
     //   });
 
     //   let results = await cursor.toArray();
 
     //   if (results.length == 0) {
     //     let cursor_2 = await client.db("dummyData").collection("userMap").find({
-    //       u1: uid,
-    //       u2: this.uid,
+    //       u1: _id,
+    //       u2: this._id,
     //     });
 
     //     let results_2 = await cursor_2.toArray();
@@ -110,7 +99,7 @@ constructor(user, route_time_tolerance) {
     this.class_year = user.class_year;
     this.email = user.email;
     this.phone = user.phone;
-    this.uid = user.uid;
+    this._id = user._id;
     this.to_school;
 
     this.arrival_times = user.arrival_times;
@@ -127,7 +116,7 @@ constructor(user, route_time_tolerance) {
         class_year: this.class_year,
         email: this.email,
         phone: this.phone,
-        uid: this.uid,
+        _id: this._id,
         is_driver: true,
         to_school: this.to_school,
         arrival_times: this.arrival_times,
@@ -135,7 +124,7 @@ constructor(user, route_time_tolerance) {
       };
       this.best_route = {
         stops: [this.driver_stop_object],
-        stops_by_uid: [this.uid],
+        stops_by__id: [this._id],
         total_dist: this.to_school,
       };
       this.best_route.efficiency = calcEfficiency(
